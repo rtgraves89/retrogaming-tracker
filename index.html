@@ -2993,6 +2993,105 @@ textarea { resize: vertical; min-height: 72px; }
 
 
 <script>
+// ── AUTO CLOUD SYNC ───────────────────────────────────────────────────────────
+const SYNC_WORKER = 'https://retro-sync.rtgraves.workers.dev';
+
+let _syncTimer = null;
+let _syncBusy = false;
+
+function setSyncStatus(msg, state = 'idle') {
+  // state: idle | syncing | ok | error
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = msg;
+  if (state === 'error') el.style.color = 'var(--maker)';
+  else if (state === 'ok') el.style.color = 'var(--franchise)';
+  else el.style.color = 'var(--muted)';
+  const dot = document.getElementById('syncDot');
+  if (dot) {
+    dot.className = 'sync-dot ' + (state === 'syncing' ? 'syncing' : state === 'ok' ? 'ok' : state === 'error' ? 'error' : '');
+  }
+}
+
+// Debounced auto-push: fires 2s after last data change
+function scheduleSync() {
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(doSyncPush, 2000);
+}
+
+async function doSyncPush() {
+  if (_syncBusy) { scheduleSync(); return; }
+  _syncBusy = true;
+  setSyncStatus('Syncing…', 'syncing');
+  try {
+    const payload = {
+      posts:     JSON.parse(localStorage.getItem('retro_posts')     || 'null'),
+      owned:     JSON.parse(localStorage.getItem('retro_owned')     || 'null'),
+      completed: JSON.parse(localStorage.getItem('retro_completed') || 'null'),
+      legend:    JSON.parse(localStorage.getItem('retro_legend')    || 'null'),
+      series:    JSON.parse(localStorage.getItem('retro_series')    || 'null'),
+      seriesLogos: JSON.parse(localStorage.getItem('retro_series_logos') || 'null'),
+    };
+    const res = await fetch(`${SYNC_WORKER}/sync`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const t = new Date(data.savedAt);
+    setSyncStatus(`Synced ${t.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`, 'ok');
+  } catch(e) {
+    setSyncStatus(`Sync failed — ${e.message}`, 'error');
+  } finally {
+    _syncBusy = false;
+  }
+}
+
+// On load: pull from cloud first, then set up auto-push on changes
+async function initSync() {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    setSyncStatus('Local — sync disabled', 'idle');
+    return;
+  }
+  setSyncStatus('Loading…', 'syncing');
+  try {
+    const res = await fetch(`${SYNC_WORKER}/sync`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.savedAt) { setSyncStatus('Ready', 'idle'); return; }
+
+    // Check if cloud is newer than local (or if no local data)
+    const cloudTime = new Date(data.savedAt).getTime();
+    const localTime = parseInt(localStorage.getItem('retro_sync_ts') || '0');
+
+    if (cloudTime > localTime) {
+      // Apply cloud data
+      if (data.posts)       { localStorage.setItem('retro_posts',       JSON.stringify(data.posts));       posts = data.posts; }
+      if (data.owned)       { localStorage.setItem('retro_owned',       JSON.stringify(data.owned));       ownedGames = data.owned; ownedNextId = Math.max(1,...([0,...ownedGames.map(g=>g.id+1)])); }
+      if (data.completed)   { localStorage.setItem('retro_completed',   JSON.stringify(data.completed));   completedGames = data.completed; completedNextId = Math.max(1,...([0,...completedGames.map(g=>g.id+1)])); }
+      if (data.legend)      { localStorage.setItem('retro_legend',      JSON.stringify(data.legend));      legendSettings = data.legend; applyLegendSettings(); }
+      if (data.series)      { localStorage.setItem('retro_series',      JSON.stringify(data.series));      seriesData = data.series; }
+      if (data.seriesLogos) { localStorage.setItem('retro_series_logos',JSON.stringify(data.seriesLogos)); seriesLogos = data.seriesLogos; }
+      localStorage.setItem('retro_sync_ts', cloudTime.toString());
+
+      // Re-render active tab
+      render();
+      const active = document.querySelector('.app-tab.active')?.id?.replace('tab-','');
+      if (active === 'owned')     { renderGTConsoleTabs(); renderGTView(); }
+      if (active === 'completed') { renderCompletedYearTabs(); renderCompletedTable(); populatePlatformFilter('completedPlatformFilter', completedGames); }
+      if (active === 'series')    { renderSeriesView(); }
+
+      const t = new Date(data.savedAt);
+      setSyncStatus(`Loaded ${t.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} ${t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`, 'ok');
+    } else {
+      setSyncStatus('Up to date', 'ok');
+    }
+  } catch(e) {
+    setSyncStatus(`Offline — ${e.message}`, 'error');
+  }
+}
+
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const POSTS = [
   // JULY
@@ -6409,101 +6508,7 @@ try {
 // Kick off sync on load
 initSync();
 
-// ── AUTO CLOUD SYNC ───────────────────────────────────────────────────────────
-const SYNC_WORKER = 'https://retro-sync.rtgraves.workers.dev';
 
-let _syncTimer = null;
-let _syncBusy = false;
-
-function setSyncStatus(msg, state = 'idle') {
-  // state: idle | syncing | ok | error
-  const el = document.getElementById('syncStatus');
-  if (!el) return;
-  el.textContent = msg;
-  if (state === 'error') el.style.color = 'var(--maker)';
-  else if (state === 'ok') el.style.color = 'var(--franchise)';
-  else el.style.color = 'var(--muted)';
-  // also update status bar dot if present
-  const dot = document.getElementById('syncDot');
-  if (dot) {
-    dot.className = 'sync-dot ' + (state === 'syncing' ? 'syncing' : state === 'ok' ? 'ok' : state === 'error' ? 'error' : '');
-  }
-}
-
-// Debounced auto-push: fires 2s after last data change
-function scheduleSync() {
-  if (_syncTimer) clearTimeout(_syncTimer);
-  _syncTimer = setTimeout(doSyncPush, 2000);
-}
-
-async function doSyncPush() {
-  if (_syncBusy) { scheduleSync(); return; }
-  _syncBusy = true;
-  setSyncStatus('Syncing…', 'syncing');
-  try {
-    const payload = {
-      posts:     JSON.parse(localStorage.getItem('retro_posts')     || 'null'),
-      owned:     JSON.parse(localStorage.getItem('retro_owned')     || 'null'),
-      completed: JSON.parse(localStorage.getItem('retro_completed') || 'null'),
-      legend:    JSON.parse(localStorage.getItem('retro_legend')    || 'null'),
-      series:    JSON.parse(localStorage.getItem('retro_series')    || 'null'),
-      seriesLogos: JSON.parse(localStorage.getItem('retro_series_logos') || 'null'),
-    };
-    const res = await fetch(`${SYNC_WORKER}/sync`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const t = new Date(data.savedAt);
-    setSyncStatus(`Synced ${t.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`, 'ok');
-  } catch(e) {
-    setSyncStatus(`Sync failed — ${e.message}`, 'error');
-  } finally {
-    _syncBusy = false;
-  }
-}
-
-// On load: pull from cloud first, then set up auto-push on changes
-async function initSync() {
-  setSyncStatus('Loading…', 'syncing');
-  try {
-    const res = await fetch(`${SYNC_WORKER}/sync`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!data.savedAt) { setSyncStatus('Ready', 'idle'); return; }
-
-    // Check if cloud is newer than local (or if no local data)
-    const cloudTime = new Date(data.savedAt).getTime();
-    const localTime = parseInt(localStorage.getItem('retro_sync_ts') || '0');
-
-    if (cloudTime > localTime) {
-      // Apply cloud data
-      if (data.posts)       { localStorage.setItem('retro_posts',       JSON.stringify(data.posts));       posts = data.posts; }
-      if (data.owned)       { localStorage.setItem('retro_owned',       JSON.stringify(data.owned));       ownedGames = data.owned; ownedNextId = Math.max(1,...([0,...ownedGames.map(g=>g.id+1)])); }
-      if (data.completed)   { localStorage.setItem('retro_completed',   JSON.stringify(data.completed));   completedGames = data.completed; completedNextId = Math.max(1,...([0,...completedGames.map(g=>g.id+1)])); }
-      if (data.legend)      { localStorage.setItem('retro_legend',      JSON.stringify(data.legend));      legendSettings = data.legend; applyLegendSettings(); }
-      if (data.series)      { localStorage.setItem('retro_series',      JSON.stringify(data.series));      seriesData = data.series; }
-      if (data.seriesLogos) { localStorage.setItem('retro_series_logos',JSON.stringify(data.seriesLogos)); seriesLogos = data.seriesLogos; }
-      localStorage.setItem('retro_sync_ts', cloudTime.toString());
-
-      // Re-render active tab
-      render();
-      const active = document.querySelector('.app-tab.active')?.id?.replace('tab-','');
-      if (active === 'owned')     { renderGTConsoleTabs(); renderGTView(); }
-      if (active === 'completed') { renderCompletedYearTabs(); renderCompletedTable(); populatePlatformFilter('completedPlatformFilter', completedGames); }
-      if (active === 'series')    { renderSeriesView(); }
-
-      const t = new Date(data.savedAt);
-      setSyncStatus(`Loaded ${t.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} ${t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`, 'ok');
-    } else {
-      setSyncStatus('Up to date', 'ok');
-    }
-  } catch(e) {
-    setSyncStatus(`Offline — ${e.message}`, 'error');
-  }
-}
 
 </script>
 
