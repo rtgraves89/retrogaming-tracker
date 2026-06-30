@@ -4237,35 +4237,60 @@ async function downloadImageAsDataUrl(url) {
   });
 }
 
-async function fetchCoverArtForTitle(title) {
-  if (!title) return null;
-  const q = encodeURIComponent(title + ' video game');
-  const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=5&format=json&origin=*`;
+async function searchWikipediaCandidates(query) {
+  const q = encodeURIComponent(query);
+  const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=8&format=json&origin=*`;
   console.log('[cover-fetch] searching:', searchUrl);
-
   const searchRes = await fetch(searchUrl);
   if (!searchRes.ok) throw new Error('search request failed: ' + searchRes.status);
   const searchData = await searchRes.json();
-  const candidates = (searchData && searchData.query && searchData.query.search) || [];
-  console.log('[cover-fetch] candidates:', candidates.map(c => c.title));
-  if (!candidates.length) return null;
+  return (searchData && searchData.query && searchData.query.search) || [];
+}
 
-  // Try each candidate in order until one has a usable thumbnail — the first
-  // search hit is sometimes a disambiguation or franchise-overview page with
-  // no infobox image, so don't give up after just one.
+async function tryWikipediaThumbnail(page) {
+  const pageTitle = encodeURIComponent(page.title);
+  // redirects=1 matters here: a lot of game titles resolve to a redirect
+  // stub, and without following it the API looks at the empty stub instead
+  // of the real article and reports no thumbnail even though one exists.
+  const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&pithumbsize=600&redirects=1&format=json&origin=*`;
+  const imgRes = await fetch(imgUrl);
+  if (!imgRes.ok) return null;
+  const imgData = await imgRes.json();
+  const pages = (imgData && imgData.query && imgData.query.pages) || {};
+  const first = Object.values(pages)[0];
+  return (first && first.thumbnail && first.thumbnail.source) || null;
+}
+
+async function fetchCoverArtForTitle(title) {
+  const result = { dataUrl: null, tried: [] };
+  if (!title) return result;
+
+  // Try a plain title search first — appending "video game" sometimes steers
+  // the search away from the actual article (e.g. towards a "video games in
+  // <year>" list page). Fall back to the suffixed version if that turns up
+  // nothing usable.
+  let candidates = await searchWikipediaCandidates(title);
+  if (!candidates.length) candidates = await searchWikipediaCandidates(title + ' video game');
+
   for (const page of candidates) {
-    const pageTitle = encodeURIComponent(page.title);
-    const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&pithumbsize=600&format=json&origin=*`;
-    const imgRes = await fetch(imgUrl);
-    if (!imgRes.ok) { console.warn('[cover-fetch] image lookup failed for', page.title, imgRes.status); continue; }
-    const imgData = await imgRes.json();
-    const pages = (imgData && imgData.query && imgData.query.pages) || {};
-    const first = Object.values(pages)[0];
-    const thumb = first && first.thumbnail && first.thumbnail.source;
-    console.log('[cover-fetch]', page.title, '→', thumb || 'no thumbnail');
-    if (thumb) return await downloadImageAsDataUrl(thumb);
+    result.tried.push(page.title);
+    const thumb = await tryWikipediaThumbnail(page);
+    if (thumb) { result.dataUrl = await downloadImageAsDataUrl(thumb); return result; }
   }
-  return null;
+
+  // Nothing had an image yet — if the plain search is what found these
+  // candidates, give the suffixed query one more shot before giving up.
+  if (candidates.length) {
+    const fallback = await searchWikipediaCandidates(title + ' video game');
+    for (const page of fallback) {
+      if (result.tried.includes(page.title)) continue;
+      result.tried.push(page.title);
+      const thumb = await tryWikipediaThumbnail(page);
+      if (thumb) { result.dataUrl = await downloadImageAsDataUrl(thumb); return result; }
+    }
+  }
+
+  return result;
 }
 
 async function fetchCoverForModal(prefix) {
@@ -4281,12 +4306,14 @@ async function fetchCoverForModal(prefix) {
   btn.textContent = 'Fetching…';
   status.textContent = '';
   try {
-    const dataUrl = await fetchCoverArtForTitle(title);
-    if (dataUrl) {
-      coverEl.value = dataUrl;
+    const result = await fetchCoverArtForTitle(title);
+    if (result.dataUrl) {
+      coverEl.value = result.dataUrl;
       status.textContent = 'Found and saved a permanent copy.';
+    } else if (result.tried.length) {
+      status.textContent = `No image on the pages checked (${result.tried.join(', ')}) — paste a URL instead.`;
     } else {
-      status.textContent = 'No usable image found on Wikipedia — paste a URL instead.';
+      status.textContent = 'No matching Wikipedia page found — paste a URL instead.';
     }
   } catch (e) {
     console.error('[cover-fetch] failed:', e);
