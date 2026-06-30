@@ -3097,6 +3097,36 @@ textarea { resize: vertical; min-height: 72px; }
   .post-tile { -webkit-tap-highlight-color: transparent; }
 }
 
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+@media (max-width: 760px) { .dash-stats { grid-template-columns: repeat(2, 1fr); } }
+.dash-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 10px;
+  text-align: center;
+}
+.dash-stat-num {
+  font-family: var(--mono);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+.dash-stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 8px;
+}
 .dash-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3105,32 +3135,107 @@ textarea { resize: vertical; min-height: 72px; }
 @media (max-width: 760px) { .dash-grid { grid-template-columns: 1fr; } }
 .dash-section {
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 14px;
-  background: var(--panel, transparent);
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--surface);
 }
+.dash-section.dash-attention-active { border-color: var(--maker-border); background: var(--maker-bg); }
 .dash-section-title {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--muted2, var(--muted));
-  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.dash-section-title .dash-count-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--maker-bg);
+  color: var(--maker);
+  border: 1px solid var(--maker-border);
 }
 .dash-row {
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 12px;
+  border-left: 3px solid var(--border-strong);
+  background: var(--surface2);
+  margin-bottom: 6px;
+  transition: transform 0.1s, box-shadow 0.1s;
 }
-.dash-row:last-child { border-bottom: none; }
-.dash-row:hover { color: var(--text); }
+.dash-row:last-child { margin-bottom: 0; }
+.dash-row:hover { transform: translateX(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.dash-row.type-anniversary { border-left-color: var(--anniversary); }
+.dash-row.type-release { border-left-color: var(--release); }
+.dash-row.type-collection { border-left-color: var(--collection); }
+.dash-row.type-maker { border-left-color: var(--maker); }
+.dash-row.type-franchise { border-left-color: var(--franchise); }
+.dash-rank {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--muted2);
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.dash-row-body { flex: 1; min-width: 0; }
+.dash-row-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .dash-row-meta {
   font-family: var(--mono);
   font-size: 9px;
   color: var(--muted);
   letter-spacing: 0.03em;
   margin-top: 2px;
+}
+.dash-row-metric {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.dash-empty {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--muted2);
+  text-align: center;
+  padding: 18px 6px;
+}
+.dash-chart-section { grid-column: 1 / -1; }
+.dash-chart-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.dash-chart-svg { width: 100%; height: 180px; display: block; }
+.dash-chart-bar { transition: opacity 0.12s; cursor: pointer; }
+.dash-chart-bar:hover { opacity: 0.75; }
+.dash-chart-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  fill: var(--muted);
+}
+.dash-chart-value {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  fill: var(--text);
 }
 </style>
 </head>
@@ -4889,30 +4994,77 @@ function dashJumpToPost(id) {
   openModal(post);
 }
 
-function dashPostRow(p) {
+function dashPostRow(p, opts) {
+  opts = opts || {};
   const yr = p.year || 2026;
   const monthData = MONTHS.find(m => m.idx === p.month && m.year === yr);
-  const monthLabel = monthData ? monthData.name.slice(0, 3) : '';
-  return `<div class="dash-row" onclick="dashJumpToPost(${p.id})">
-    ${escHtml(p.title)}
-    <div class="dash-row-meta">${monthLabel} ${p.day}, ${yr} · ${escHtml(TYPE_LABELS[p.type] || p.type)}</div>
+  const monthLabel = monthData ? monthData.name.slice(0, 3).toUpperCase() : '';
+  const metricBit = opts.metric ? `<div class="dash-row-metric">${(p.metrics[opts.metric] || 0).toLocaleString()}</div>` : '';
+  const rankBit = opts.rank ? `<div class="dash-rank">#${opts.rank}</div>` : '';
+  return `<div class="dash-row type-${p.type || ''}" onclick="dashJumpToPost(${p.id})">
+    ${rankBit}
+    <div class="dash-row-body">
+      <div class="dash-row-title">${escHtml(p.title)}</div>
+      <div class="dash-row-meta">${monthLabel} ${p.day}${opts.metric ? '' : ` · ${escHtml(TYPE_LABELS[p.type] || p.type || '')}`}</div>
+    </div>
+    ${metricBit}
   </div>`;
 }
 
 function dashCompletedRow(c) {
-  return `<div class="dash-row" onclick="openIdeaModal()">
-    ${escHtml(c.title)}
-    <div class="dash-row-meta">Completed ${escHtml(c.completedDate || '')}${c.rating ? ` · ${c.rating}★` : ''}</div>
+  return `<div class="dash-row type-collection" onclick="openIdeaModal()">
+    <div class="dash-row-body">
+      <div class="dash-row-title">${escHtml(c.title)}</div>
+      <div class="dash-row-meta">Completed ${escHtml(c.completedDate || '')}${c.rating ? ` · ${c.rating}★` : ''}</div>
+    </div>
   </div>`;
 }
 
-function dashMetricRow(p, metric) {
-  const monthData = MONTHS.find(m => m.idx === p.month && m.year === (p.year || 2026));
-  const monthLabel = monthData ? monthData.name.slice(0, 3) : '';
-  return `<div class="dash-row" onclick="dashJumpToPost(${p.id})">
-    ${escHtml(p.title)}
-    <div class="dash-row-meta">${(p.metrics[metric] || 0).toLocaleString()} ${metric} · ${monthLabel} ${p.day}</div>
-  </div>`;
+function dashStatCard(num, label) {
+  return `<div class="dash-stat"><div class="dash-stat-num">${num}</div><div class="dash-stat-label">${escHtml(label)}</div></div>`;
+}
+
+let dashChartMetric = 'likes';
+function dashSetChartMetric(m) { dashChartMetric = m; renderDashboard(); }
+
+function dashTypeColor(type) {
+  const map = { anniversary: '#c17f2a', release: '#2a7fc1', collection: '#7a3fc1', maker: '#c12a5a', franchise: '#2a9c6a' };
+  return map[type] || '#888880';
+}
+
+function buildPerformanceChartSvg(metric) {
+  const logged = posts
+    .filter(p => p.metricsLoggedAt && p.metrics && p.metrics[metric] != null)
+    .sort((a, b) => postDateObj(a) - postDateObj(b))
+    .slice(-10); // most recent 10 logged posts, chronological
+
+  if (!logged.length) {
+    return `<div class="dash-empty">No ${escHtml(metric)} logged yet — numbers you enter on posts will start charting here once you've logged a few.</div>`;
+  }
+
+  const w = 760, h = 160, padBottom = 22, padTop = 16, gap = 10;
+  const barW = (w - gap * (logged.length - 1)) / logged.length;
+  const maxVal = Math.max(...logged.map(p => p.metrics[metric] || 0), 1);
+
+  const bars = logged.map((p, i) => {
+    const val = p.metrics[metric] || 0;
+    const barH = Math.max(2, (val / maxVal) * (h - padTop - padBottom));
+    const x = i * (barW + gap);
+    const y = h - padBottom - barH;
+    const yr = p.year || 2026;
+    const monthData = MONTHS.find(m => m.idx === p.month && m.year === yr);
+    const monthLabel = monthData ? monthData.name.slice(0, 3) : '';
+    const valLabel = val >= 1000 ? (val / 1000).toFixed(1) + 'k' : String(val);
+    return `
+      <g class="dash-chart-bar" onclick="dashJumpToPost(${p.id})">
+        <title>${escHtml(p.title)} — ${val.toLocaleString()} ${escHtml(metric)}</title>
+        <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="${dashTypeColor(p.type)}"></rect>
+        <text class="dash-chart-value" x="${x + barW / 2}" y="${y - 5}" text-anchor="middle">${valLabel}</text>
+        <text class="dash-chart-label" x="${x + barW / 2}" y="${h - 7}" text-anchor="middle">${monthLabel} ${p.day}</text>
+      </g>`;
+  }).join('');
+
+  return `<svg class="dash-chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${bars}</svg>`;
 }
 
 function renderDashboard() {
@@ -4921,6 +5073,8 @@ function renderDashboard() {
 
   const today = new Date();
   const todayStr = today.toDateString();
+  const curMonthData = MONTHS.find(m => m.year === today.getFullYear() && m.idx === today.getMonth());
+
   const todayPosts = posts.filter(p => { const d = postDateObj(p); return !isNaN(d) && d.toDateString() === todayStr; });
   const weekPosts = posts.filter(p => {
     const d = postDateObj(p);
@@ -4933,25 +5087,46 @@ function renderDashboard() {
   const needsMetrics = postsNeedingMetrics();
   const unpostedCompletions = completedGames.filter(isCompletedUnposted)
     .sort((a, b) => (b.completedDate || '').localeCompare(a.completedDate || ''));
+  const attentionCount = needsMetrics.length + unpostedCompletions.length;
+
+  const monthPostCount = curMonthData ? posts.filter(p => p.month === curMonthData.idx && (p.year || 2026) === curMonthData.year).length : 0;
+  const pastPublished = posts.filter(p => p.published !== false).filter(p => { const d = postDateObj(p); return !isNaN(d) && d <= today; }).sort((a,b) => postDateObj(b) - postDateObj(a));
+  const daysSinceLast = pastPublished.length ? Math.round((today - postDateObj(pastPublished[0])) / (1000*60*60*24)) : '—';
+  const loggedCount = posts.filter(p => p.metricsLoggedAt).length;
 
   el.innerHTML = `
+    <div class="dash-stats">
+      ${dashStatCard(monthPostCount, curMonthData ? curMonthData.name.toUpperCase() + ' POSTS' : 'POSTS THIS MONTH')}
+      ${dashStatCard(daysSinceLast, 'DAYS SINCE LAST POST')}
+      ${dashStatCard(unpostedCompletions.length, 'COMPLETED, NOT POSTED')}
+      ${dashStatCard(loggedCount, 'POSTS WITH METRICS LOGGED')}
+    </div>
+
+    <div class="dash-section dash-chart-section">
+      <div class="dash-section-title">📈 PERFORMANCE TRENDS — LAST 10 LOGGED POSTS</div>
+      <div class="dash-chart-tabs">
+        ${['views', 'likes', 'shares', 'saves'].map(m => `<button class="ct-sort-btn${dashChartMetric === m ? ' active' : ''}" onclick="dashSetChartMetric('${m}')">${m.charAt(0).toUpperCase() + m.slice(1)}</button>`).join('')}
+      </div>
+      ${buildPerformanceChartSvg(dashChartMetric)}
+    </div>
+
     <div class="dash-section">
-      <div class="dash-section-title">TODAY</div>
-      ${todayPosts.length ? todayPosts.map(dashPostRow).join('') : `<div class="gt-empty">Nothing planned for today.</div>`}
+      <div class="dash-section-title">📅 TODAY</div>
+      ${todayPosts.length ? todayPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned for today.</div>`}
     </div>
     <div class="dash-section">
-      <div class="dash-section-title">UPCOMING WEEK</div>
-      ${weekPosts.length ? weekPosts.map(dashPostRow).join('') : `<div class="gt-empty">Nothing planned in the next 7 days.</div>`}
+      <div class="dash-section-title">🗓 UPCOMING WEEK</div>
+      ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
     </div>
     <div class="dash-section">
-      <div class="dash-section-title">BEST POSTS — LAST 30 DAYS</div>
-      ${best.length ? best.map(p => dashMetricRow(p, 'likes')).join('') : `<div class="gt-empty">Not enough performance data logged yet for the last month. Log numbers on a post once you've checked Instagram Insights.</div>`}
+      <div class="dash-section-title">🏆 BEST POSTS — LAST 30 DAYS</div>
+      ${best.length ? best.map((p, i) => dashPostRow(p, { rank: i + 1, metric: 'likes' })).join('') : `<div class="dash-empty">Not enough performance data logged yet. Log numbers on a post once you've checked Instagram Insights.</div>`}
     </div>
-    <div class="dash-section">
-      <div class="dash-section-title">NEEDS ATTENTION</div>
-      ${needsMetrics.length ? `<div class="linked-box-subtitle" style="margin-bottom:4px">${needsMetrics.length} published post${needsMetrics.length !== 1 ? 's' : ''} from 2+ weeks ago still need${needsMetrics.length === 1 ? 's' : ''} performance logged:</div>${needsMetrics.map(dashPostRow).join('')}` : ''}
-      ${unpostedCompletions.length ? `<div class="linked-box-subtitle" style="margin:${needsMetrics.length ? '12px' : '0'} 0 4px">${unpostedCompletions.length} completed game${unpostedCompletions.length !== 1 ? 's' : ''} not yet turned into a post:</div>${unpostedCompletions.map(dashCompletedRow).join('')}` : ''}
-      ${(!needsMetrics.length && !unpostedCompletions.length) ? `<div class="gt-empty">All caught up.</div>` : ''}
+    <div class="dash-section${attentionCount ? ' dash-attention-active' : ''}">
+      <div class="dash-section-title">⚠ NEEDS ATTENTION${attentionCount ? `<span class="dash-count-badge">${attentionCount}</span>` : ''}</div>
+      ${needsMetrics.length ? needsMetrics.map(p => dashPostRow(p)).join('') : ''}
+      ${unpostedCompletions.length ? unpostedCompletions.map(dashCompletedRow).join('') : ''}
+      ${!attentionCount ? `<div class="dash-empty">All caught up.</div>` : ''}
     </div>
   `;
 }
