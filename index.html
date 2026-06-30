@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.0.0</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.1.0</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -4293,12 +4293,38 @@ async function fetchCoverArtForTitle(title) {
   return result;
 }
 
+// If the game already has a Wikipedia URL saved (set manually, so it's known
+// to be the right page), pull the page title straight out of it and look up
+// the image directly — far more reliable than guessing via search, since you
+// already know exactly which article this is.
+function wikipediaTitleFromUrl(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (!u.hostname.endsWith('wikipedia.org')) return null;
+    const match = u.pathname.match(/\/wiki\/(.+)$/);
+    if (!match) return null;
+    return decodeURIComponent(match[1].replace(/_/g, ' '));
+  } catch (e) {
+    return null;
+  }
+}
+
+async function fetchCoverArtFromKnownUrl(wikiUrl) {
+  const title = wikipediaTitleFromUrl(wikiUrl);
+  if (!title) return null;
+  const thumb = await tryWikipediaThumbnail({ title });
+  return thumb ? await downloadImageAsDataUrl(thumb) : null;
+}
+
 async function fetchCoverForModal(prefix) {
   const titleEl = document.getElementById(prefix + '-title');
+  const wikiEl = document.getElementById(prefix + '-wiki');
   const coverEl = document.getElementById(prefix + '-cover');
   const btn = document.getElementById(prefix + '-cover-fetch-btn');
   const status = document.getElementById(prefix + '-cover-fetch-status');
   const title = titleEl ? titleEl.value.trim() : '';
+  const wikiUrl = wikiEl ? wikiEl.value.trim() : '';
   if (!title) { alert('Enter a title first.'); return; }
 
   btn.disabled = true;
@@ -4306,10 +4332,23 @@ async function fetchCoverForModal(prefix) {
   btn.textContent = 'Fetching…';
   status.textContent = '';
   try {
+    // Known Wikipedia URL on file — go straight there, no guessing.
+    if (wikiUrl) {
+      const direct = await fetchCoverArtFromKnownUrl(wikiUrl);
+      if (direct) {
+        coverEl.value = direct;
+        status.textContent = 'Found via the saved Wikipedia link.';
+        return;
+      }
+      status.textContent = 'No image on the saved Wikipedia page — trying a search instead… ';
+    }
+
     const result = await fetchCoverArtForTitle(title);
     if (result.dataUrl) {
       coverEl.value = result.dataUrl;
-      status.textContent = 'Found and saved a permanent copy.';
+      status.textContent = wikiUrl
+        ? 'No image on the saved Wikipedia page, but found one via search.'
+        : 'Found and saved a permanent copy.';
     } else if (result.tried.length) {
       status.textContent = `No image on the pages checked (${result.tried.join(', ')}) — paste a URL instead.`;
     } else {
