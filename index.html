@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.0</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.1</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -4010,6 +4010,7 @@ const POSTS = [
 
 const MONTHS = [
   // ── 2026 ──
+  { name:'June',      idx:5,  year:2026, days:30, startDay:1 }, // Mon
   { name:'July',      idx:6,  year:2026, days:31, startDay:3 }, // Wed
   { name:'August',    idx:7,  year:2026, days:31, startDay:6 }, // Sat
   { name:'September', idx:8,  year:2026, days:30, startDay:2 }, // Tue
