@@ -3158,6 +3158,18 @@ textarea { resize: vertical; min-height: 72px; }
   font-weight: 700;
   fill: var(--text);
 }
+.field-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  opacity: 0.5;
+  padding: 0;
+  line-height: 1;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.field-copy-btn:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -3177,7 +3189,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.4</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.5</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -3587,7 +3599,7 @@ textarea { resize: vertical; min-height: 72px; }
       <datalist id="f-game-options"></datalist>
     </div>
     <div class="form-group">
-      <label>Post title</label>
+      <label style="display:flex;align-items:center;justify-content:space-between">Post title <button type="button" class="field-copy-btn" onclick="copyFieldValue('f-title', this)" title="Copy to clipboard">📋</button></label>
       <input type="text" id="f-title" placeholder="e.g. Surprise Indie Drop — Launch Day">
     </div>
     <div class="form-group">
@@ -3595,11 +3607,11 @@ textarea { resize: vertical; min-height: 72px; }
       <select id="f-type"></select>
     </div>
     <div class="form-group">
-      <label>Description (optional)</label>
+      <label style="display:flex;align-items:center;justify-content:space-between">Description (optional) <button type="button" class="field-copy-btn" onclick="copyFieldValue('f-caption', this)" title="Copy to clipboard">📋</button></label>
       <textarea id="f-caption" placeholder="Draft caption..."></textarea>
     </div>
     <div class="form-group">
-      <label>Instagram Hashtags (optional)</label>
+      <label style="display:flex;align-items:center;justify-content:space-between">Instagram Hashtags (optional) <button type="button" class="field-copy-btn" onclick="copyFieldValue('f-tags', this)" title="Copy to clipboard">📋</button></label>
       <input type="text" id="f-tags" placeholder="#Gaming #Nintendo ..." autocomplete="off" oninput="showHashtagSuggestions('f-tags', 'ht-sug-tags')">
       <div class="ht-suggestions" id="ht-sug-tags"></div>
       <button type="button" class="btn-cancel" style="margin-top:6px;padding:5px 10px;font-size:10px" onclick="generateHashtagsDraft()">#️⃣ Generate hashtags</button>
@@ -4794,6 +4806,30 @@ function closeIdeaModal() {
 document.getElementById('ideaModalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeIdeaModal();
 });
+
+function copyFieldValue(fieldId, btn) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const text = el.value.trim();
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = '✓';
+    btn.style.opacity = '1';
+    setTimeout(() => { btn.textContent = original; btn.style.opacity = ''; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const original = btn.textContent;
+    btn.textContent = '✓';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
 
 function copyField(elId, btn) {
   const text = document.getElementById(elId).textContent;
