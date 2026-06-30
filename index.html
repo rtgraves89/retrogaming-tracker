@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.1.0</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.1.1</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -4252,7 +4252,7 @@ async function tryWikipediaThumbnail(page) {
   // redirects=1 matters here: a lot of game titles resolve to a redirect
   // stub, and without following it the API looks at the empty stub instead
   // of the real article and reports no thumbnail even though one exists.
-  const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&pithumbsize=600&redirects=1&format=json&origin=*`;
+  const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&pithumbsize=600&piprop=thumbnail&pilicense=any&redirects=1&format=json&origin=*`;
   const imgRes = await fetch(imgUrl);
   if (!imgRes.ok) return null;
   const imgData = await imgRes.json();
