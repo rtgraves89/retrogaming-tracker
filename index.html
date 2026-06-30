@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.3.0</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.0</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -4737,7 +4737,7 @@ function useCompletedIdeaForPost(completedId) {
   const c = completedGames.find(g => g.id === completedId);
   if (!c) return;
   c.postedAsContent = true;
-  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames)); } catch(e) {}
+  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   scheduleSync();
 
   closeIdeaModal();
@@ -7940,13 +7940,71 @@ function importSeedGames() {
     : `Added ${added} title${added !== 1 ? 's' : ''}${skipped ? `, ${skipped} already present` : ''}.`;
 }
 
+// ── COVER STORE (IndexedDB) ─────────────────────────────────────────────────
+// Base64 cover images are too large for localStorage (5MB limit).
+// IndexedDB has no meaningful size cap. Keys: 'gt_<id>' / 'ct_<id>'.
+const CoverStore = {
+  _db: null,
+  async db() {
+    if (this._db) return this._db;
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('retro_covers', 1);
+      req.onupgradeneeded = e => e.target.result.createObjectStore('covers');
+      req.onsuccess = e => { this._db = e.target.result; resolve(this._db); };
+      req.onerror = () => reject(req.error);
+    });
+  },
+  async get(key) {
+    const db = await this.db();
+    return new Promise((resolve, reject) => {
+      const req = db.transaction('covers', 'readonly').objectStore('covers').get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  },
+  async set(key, value) {
+    const db = await this.db();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('covers', 'readwrite');
+      tx.objectStore('covers').put(value, key);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  async getAll() {
+    const db = await this.db();
+    return new Promise((resolve, reject) => {
+      const result = {};
+      const req = db.transaction('covers', 'readonly').objectStore('covers').openCursor();
+      req.onsuccess = e => {
+        const cursor = e.target.result;
+        if (cursor) { result[cursor.key] = cursor.value; cursor.continue(); }
+        else resolve(result);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+};
+
+// Load all covers into memory at startup so rendering stays synchronous.
+async function initCovers() {
+  try {
+    const all = await CoverStore.getAll();
+    ownedGames.forEach(g => { const v = all['gt_' + g.id]; if (v) g.coverArt = v; });
+    completedGames.forEach(g => { const v = all['ct_' + g.id]; if (v) g.cover = v; });
+    renderGTView();
+    renderCompletedTable();
+  } catch(e) { console.warn('[CoverStore] initCovers failed:', e); }
+}
+
 function loadOwned() {
   try { const s = localStorage.getItem('retro_owned'); if (s) return JSON.parse(s); } catch(e) {}
   return [];
 }
 
 function persistOwned() {
-  try { localStorage.setItem('retro_owned', JSON.stringify(ownedGames)); } catch(e) {}
+  // Strip coverArt before saving to localStorage — images live in IndexedDB now.
+  try { localStorage.setItem('retro_owned', JSON.stringify(ownedGames.map(g => { const {coverArt, ...rest} = g; return rest; }))); } catch(e) {}
   scheduleSync();
 }
 
@@ -8008,6 +8066,7 @@ async function bulkFetchCovers() {
       }
       if (dataUrl) {
         game.coverArt = dataUrl;
+        await CoverStore.set('gt_' + game.id, dataUrl);
         found++;
       } else {
         failed++;
@@ -8651,6 +8710,7 @@ function saveGTGame() {
 
   if (savedGameId !== undefined) {
     syncRelatedItemsForGame(savedGameId, oldRelatedItems, [...modalRelatedRows]);
+    if (coverArt) CoverStore.set('gt_' + savedGameId, coverArt).catch(e => console.warn('[CoverStore] set failed:', e));
   }
 
   persistOwned();
@@ -9290,14 +9350,18 @@ function saveCompleted() {
 
   if (!title) { alert('Please enter a game title.'); return; }
 
+  let savedCtId;
   if (completedEditingId !== null) {
     const g = completedGames.find(g => g.id === completedEditingId);
-    if (g) { g.title = title; g.platform = platform; g.completedDate = completedDate; g.rating = rating; g.notes = notes; g.cover = cover; g.dlc = modalCgDlcRows.filter(d => d.title.trim()); }
+    if (g) { g.title = title; g.platform = platform; g.completedDate = completedDate; g.rating = rating; g.notes = notes; g.cover = cover; g.dlc = modalCgDlcRows.filter(d => d.title.trim()); savedCtId = g.id; }
   } else {
-    completedGames.push({ id: completedNextId++, title, platform, completedDate, rating, notes, cover, dlc: modalCgDlcRows.filter(d => d.title.trim()) });
+    savedCtId = completedNextId++;
+    completedGames.push({ id: savedCtId, title, platform, completedDate, rating, notes, cover, dlc: modalCgDlcRows.filter(d => d.title.trim()) });
   }
 
-  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames)); } catch(e) {}
+  if (savedCtId !== undefined && cover) CoverStore.set('ct_' + savedCtId, cover).catch(e => console.warn('[CoverStore] set failed:', e));
+
+  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   closeCompletedModal();
   scheduleSync();
   populatePlatformFilter('completedPlatformFilter', completedGames);
@@ -9308,7 +9372,7 @@ function saveCompleted() {
 function deleteCompleted(id) {
   if (!confirm('Remove this completion log?')) return;
   completedGames = completedGames.filter(g => g.id !== id);
-  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames)); } catch(e) {}
+  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   scheduleSync();
   populatePlatformFilter('completedPlatformFilter', completedGames);
   renderCompletedYearTabs();
@@ -9816,7 +9880,7 @@ function importSeedCompleted() {
     added++;
   });
 
-  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames)); } catch(e) {}
+  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   completedNextId = Math.max(1, ...([0, ...completedGames.map(g => g.id + 1)]));
   populatePlatformFilter('completedPlatformFilter', completedGames);
   renderCompletedYearTabs();
@@ -9962,7 +10026,7 @@ function renderCompletedTable() {
     if (g.notes) card.title = g.notes;
     card.innerHTML = `
       <div class="ct-card-num">#${displayNum}</div>
-      <div class="ct-card-cover" style="width:${coverShapeForConsole(g.platform) === 'wide' ? '70px' : coverShapeForConsole(g.platform) === 'square' ? '60px' : '54px'}">${g.cover ? `<img src="${g.cover}" class="ct-cover" alt="cover" onerror="this.parentElement.style.display='none'">` : ''}</div>
+      <div class="ct-card-cover" style="width:${coverShapeForConsole(g.platform) === 'wide' ? '70px' : coverShapeForConsole(g.platform) === 'square' ? '60px' : '54px'}">${g.cover ? `<img src="${g.cover}" class="ct-cover" style="width:${coverShapeForConsole(g.platform) === 'wide' ? '70px' : coverShapeForConsole(g.platform) === 'square' ? '60px' : '54px'}" alt="cover" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ct-card-body">
         <div class="ct-card-logo">${logoHtml}</div>
         <div class="ct-card-content">
@@ -10153,6 +10217,8 @@ document.addEventListener('click', e => {
 
 render();
 applyLegendSettings();
+// Load covers from IndexedDB into memory (async, re-renders when done)
+initCovers();
 try {
   const t = localStorage.getItem('retro_tab');
   if (t && t !== 'dashboard') switchTab(t);
