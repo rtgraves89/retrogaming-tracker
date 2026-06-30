@@ -2149,6 +2149,8 @@ body {
 .app-body {
   display: flex;
   align-items: flex-start;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Month nav now lives above the calendar, not as a left column */
@@ -2162,6 +2164,7 @@ body {
 .calendar-wrap {
   flex: 1;
   min-width: 0;
+  width: 100%;
   padding: 24px;
 }
 
@@ -2775,7 +2778,18 @@ textarea { resize: vertical; min-height: 72px; }
 }
 
 @media (max-width: 900px) {
-  .month-nav { display: none !important; }
+  .month-nav {
+    display: flex !important;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 10px;
+    gap: 2px;
+    top: 88px;
+  }
+  .month-nav::-webkit-scrollbar { display: none; }
+  .month-tab { font-size: 9px; padding: 3px 8px; flex-shrink: 0; }
   .cal-grid { grid-template-columns: repeat(7, 1fr); }
   .cal-cell { min-height: 80px; }
   .tile-title { font-size: 9px; }
@@ -3288,7 +3302,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.1</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.3</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -4057,11 +4071,28 @@ function savePosts() {
 }
 
 function loadMonthIdx() {
-  try { return parseInt(localStorage.getItem('retro_month') || '0'); } catch(e) { return 0; }
+  try {
+    const s = localStorage.getItem('retro_month_v2');
+    if (s) {
+      const { idx, year } = JSON.parse(s);
+      const found = MONTHS.findIndex(m => m.idx === idx && m.year === year);
+      if (found >= 0) return found;
+    }
+    // Legacy: old storage was a raw array index — migrate it
+    const legacy = parseInt(localStorage.getItem('retro_month') || '0');
+    // Default to the closest month to today if the legacy index is out of range
+    const today = new Date();
+    const todayIdx = MONTHS.findIndex(m => m.idx === today.getMonth() && m.year === today.getFullYear());
+    return (legacy >= 0 && legacy < MONTHS.length) ? legacy : (todayIdx >= 0 ? todayIdx : 0);
+  } catch(e) { return 0; }
 }
 
 function saveMonthIdx() {
-  try { localStorage.setItem('retro_month', currentMonthIdx); } catch(e) {}
+  try {
+    const m = MONTHS[currentMonthIdx];
+    if (m) localStorage.setItem('retro_month_v2', JSON.stringify({ idx: m.idx, year: m.year }));
+    localStorage.setItem('retro_month', currentMonthIdx); // keep legacy in sync
+  } catch(e) {}
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
