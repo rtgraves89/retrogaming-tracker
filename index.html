@@ -936,6 +936,61 @@ body {
   flex-wrap: wrap;
 }
 
+.gt-shape-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.gt-shape-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.gt-shape-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.gt-shape-btn:hover { color: var(--text); border-color: var(--border-strong); }
+.gt-shape-btn.active {
+  background: var(--text);
+  color: var(--surface);
+  border-color: var(--text);
+}
+
+.gt-settings-group { margin-bottom: 14px; }
+.gt-settings-group-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+.gt-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+}
+.gt-settings-console-name {
+  font-size: 12px;
+  color: var(--text);
+}
+
 /* Two-level console picker — stretches to fill toolbar */
 .gt-console-tabs {
   display: flex;
@@ -1016,8 +1071,8 @@ body {
 .gt-console-tab-logo { height: 28px; width: auto; max-width: 72px; object-fit: contain; display: block; opacity: 0.6; transition: opacity 0.12s; }
 .gt-console-tab:hover .gt-console-tab-logo,
 .gt-console-tab.active .gt-console-tab-logo { opacity: 1; }
-.gt-console-tab-name { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.04em; line-height: 1; }
-.gt-console-tab-year { font-weight: 400; opacity: 0.55; font-size: 8px; margin-left: 3px; }
+.gt-console-tab-name { display: block; font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.04em; line-height: 1; white-space: nowrap; }
+.gt-console-tab-year { display: block; font-weight: 400; opacity: 0.55; font-size: 8px; margin-top: 2px; white-space: nowrap; }
 
 .gt-columns {
   display: grid;
@@ -1025,6 +1080,220 @@ body {
   gap: 0;
   padding: 16px 24px 24px;
   min-height: 400px;
+}
+
+/* ── AMIIBO SERIES VIEW ── */
+.amiibo-view {
+  padding: 16px 24px 24px;
+}
+
+.amiibo-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.amiibo-toolbar .tracking-search { width: 200px; }
+
+.amiibo-summary {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.amiibo-add-series-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--franchise-bg);
+  color: var(--franchise);
+  border: 1px solid var(--franchise-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.amiibo-add-series-btn:hover { filter: brightness(1.1); }
+
+.amiibo-series {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.amiibo-series-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--surface2);
+}
+
+.amiibo-series-header:hover { background: var(--franchise-bg); }
+
+.amiibo-series.complete .amiibo-series-count { color: var(--franchise); }
+
+.amiibo-series-header.amiibo-drop-target { background: var(--franchise-bg); outline: 2px dashed var(--franchise); outline-offset: -2px; }
+
+.amiibo-series-caret {
+  font-size: 10px;
+  color: var(--muted);
+  transition: transform 0.12s;
+  flex-shrink: 0;
+}
+
+.amiibo-series.collapsed .amiibo-series-caret { transform: rotate(-90deg); }
+
+.amiibo-series-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  flex: 1;
+}
+
+.amiibo-series-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.amiibo-series-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.amiibo-mini-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px 7px;
+  cursor: pointer;
+}
+.amiibo-mini-btn:hover { color: var(--text); background: var(--surface2); }
+.amiibo-mini-btn.del:hover { color: #e05a5a; border-color: #e05a5a; }
+
+.amiibo-series-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0;
+  min-height: 4px;
+}
+
+.amiibo-series.collapsed .amiibo-series-body { display: none; }
+
+.amiibo-series-body.amiibo-drop-target { background: var(--franchise-bg); }
+
+.amiibo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.amiibo-item:hover { background: var(--surface2); }
+.amiibo-item:hover .amiibo-item-actions { opacity: 1; }
+
+.amiibo-item.amiibo-dragging { opacity: 0.35; }
+
+.amiibo-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  accent-color: var(--franchise);
+  cursor: pointer;
+}
+
+.amiibo-item-img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.amiibo-item-img-wrap {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.amiibo-img-warn {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d9822b;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 12px;
+  text-align: center;
+  border: 1px solid var(--surface);
+  cursor: pointer;
+}
+
+.amiibo-item-img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+.amiibo-item-img-placeholder:hover { color: var(--franchise); border-color: var(--franchise); }
+
+.amiibo-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.amiibo-item.owned .amiibo-item-name {
+  color: var(--text);
+}
+
+.amiibo-item:not(.owned) .amiibo-item-name {
+  color: var(--muted);
+}
+
+.amiibo-item-actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.amiibo-link-btn.active {
+  background: var(--release-bg);
+  border-color: var(--release-border);
+  color: var(--release);
+  opacity: 1;
 }
 
 .gt-column {
@@ -1125,6 +1394,19 @@ body {
 .gt-action-btn:hover { color: var(--text); border-color: var(--text); }
 .gt-action-btn.move { color: var(--release); border-color: var(--release-border); }
 .gt-action-btn.del:hover { color: var(--maker); border-color: var(--maker-border); }
+
+.gt-drag-handle {
+  flex-shrink: 0;
+  cursor: grab;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 2px;
+}
+.gt-drag-handle:hover { color: var(--text); }
+.gt-game-row-wrap.dragging { opacity: 0.4; }
+.gt-game-row-wrap { cursor: default; }
+.gt-col-body.drag-over { background: var(--surface2); outline: 2px dashed var(--border-strong); outline-offset: -2px; }
 
 .gt-wiki-btn {
   text-decoration: none;
@@ -1602,6 +1884,144 @@ body {
   font-family: var(--mono);
   font-weight: 700;
 }
+
+.gt-cover-thumb {
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface2);
+}
+.gt-cover-placeholder {
+  border-radius: 3px;
+  border: 1px dashed var(--border);
+  flex-shrink: 0;
+  background: var(--surface2);
+}
+
+/* Portrait — standard modern case shape (Switch, PS4/5, Xbox, Wii/Wii U, handhelds...) */
+.gt-cover-thumb.shape-tall, .gt-cover-placeholder.shape-tall { width: 22px; height: 30px; }
+/* Landscape — classic wide cartridge-era boxes (NES, SNES, N64, Mega Drive...) */
+.gt-cover-thumb.shape-wide, .gt-cover-placeholder.shape-wide { width: 36px; height: 24px; }
+/* Square — disc-case or jewel-case shapes (GameCube, Saturn, Virtual Boy, PC...) */
+.gt-cover-thumb.shape-square, .gt-cover-placeholder.shape-square { width: 28px; height: 28px; }
+
+.gt-case-badge {
+  background: var(--maker-bg);
+  border: 1px solid var(--maker-border);
+  color: var(--maker);
+  border-radius: 3px;
+  padding: 0px 5px;
+  font-size: 8px;
+  font-family: var(--mono);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gt-case-badge.off {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+}
+.gt-case-badge:hover { border-color: var(--maker); }
+
+.gt-posted-badge {
+  background: var(--franchise-bg);
+  border: 1px solid var(--franchise-border);
+  color: var(--franchise);
+  border-radius: 3px;
+  padding: 0px 5px;
+  font-size: 8px;
+  font-family: var(--mono);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gt-posted-badge.off {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+}
+.gt-posted-badge:hover { border-color: var(--franchise); }
+
+.gt-related-badge {
+  background: var(--release-bg);
+  border: 1px solid var(--release-border);
+  color: var(--release);
+  border-radius: 3px;
+  padding: 0px 5px;
+  font-size: 8px;
+  font-family: var(--mono);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.suggestion-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.suggestion-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.suggestion-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 4px 3px 8px;
+  font-size: 10px;
+}
+.suggestion-chip-strong { border-left: 3px solid var(--franchise); }
+.suggestion-chip-strong .suggestion-chip-label { font-weight: 700; }
+.suggestion-chip-text { display: flex; flex-direction: column; line-height: 1.3; }
+.suggestion-chip-label { color: var(--text); }
+.suggestion-chip-reason {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.suggestion-chip-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 3px;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.suggestion-chip-accept { background: var(--franchise-bg); color: var(--franchise); }
+.suggestion-chip-accept:hover { background: var(--franchise); color: var(--surface); }
+.suggestion-chip-ignore { background: transparent; color: var(--muted); }
+.suggestion-chip-ignore:hover { color: var(--maker); }
+
+.gt-compilation-badge {
+  background: var(--anniversary-bg);
+  border: 1px solid var(--anniversary-border);
+  color: var(--anniversary);
+  border-radius: 3px;
+  padding: 0px 5px;
+  font-size: 8px;
+  font-family: var(--mono);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: default;
+}
+
 .dlc-list {
   margin-top: 6px;
   display: flex;
@@ -1723,8 +2143,6 @@ body {
 .app-body {
   display: flex;
   align-items: flex-start;
-  max-width: 1700px;
-  margin: 0 auto;
 }
 
 /* Month nav now lives above the calendar, not as a left column */
@@ -1970,7 +2388,11 @@ body {
   padding: 28px;
   width: 480px;
   max-width: calc(100vw - 32px);
+  max-height: 88vh;
+  overflow-y: auto;
   box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal h2 {
@@ -1996,6 +2418,54 @@ body {
 }
 
 .form-group.full { grid-column: 1 / -1; }
+
+.modal-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin: 18px 0 12px;
+}
+
+.linked-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.linked-box-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.linked-box-subtitle {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.linked-box-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.linked-subsection {
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
+  padding-top: 10px;
+}
 
 label {
   font-family: var(--mono);
@@ -2028,6 +2498,18 @@ textarea { resize: vertical; min-height: 72px; }
   gap: 8px;
   justify-content: flex-end;
   margin-top: 20px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  position: sticky;
+  bottom: -28px;
+  margin-bottom: -28px;
+  margin-left: -28px;
+  margin-right: -28px;
+  padding-left: 28px;
+  padding-right: 28px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 10px 10px;
 }
 
 .btn-cancel {
@@ -2097,16 +2579,16 @@ textarea { resize: vertical; min-height: 72px; }
 .sidebar-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
 .sidebar-title {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--muted);
+  letter-spacing: 0.02em;
+  color: var(--text);
 }
 
 .sidebar-settings-btn {
@@ -2146,6 +2628,23 @@ textarea { resize: vertical; min-height: 72px; }
 }
 .sidebar-fetch-btn:hover { opacity: 0.82; }
 .sidebar-fetch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.sidebar-secondary-btn {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 9px;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.1s;
+}
+.sidebar-secondary-btn:hover { background: var(--surface2); }
 
 .sidebar-cache-note {
   font-family: var(--mono);
@@ -2535,6 +3034,7 @@ textarea { resize: vertical; min-height: 72px; }
   /* Modals */
   .modal { padding: 18px 16px; border-radius: 12px; }
   .modal h2 { font-size: 12px; margin-bottom: 14px; }
+  .modal-actions { bottom: -18px; margin-bottom: -18px; margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; border-radius: 0; }
   .form-row { grid-template-columns: 1fr; gap: 8px; }
   .ig-modal { width: 100%; max-height: 90vh; border-radius: 12px 12px 0 0; }
 
@@ -2597,6 +3097,41 @@ textarea { resize: vertical; min-height: 72px; }
   .post-tile { -webkit-tap-highlight-color: transparent; }
 }
 
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 760px) { .dash-grid { grid-template-columns: 1fr; } }
+.dash-section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+  background: var(--panel, transparent);
+}
+.dash-section-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted2, var(--muted));
+  margin-bottom: 10px;
+}
+.dash-row {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 12px;
+}
+.dash-row:last-child { border-bottom: none; }
+.dash-row:hover { color: var(--text); }
+.dash-row-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
 </style>
 </head>
 <body>
@@ -2616,21 +3151,24 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">@retrogamer1601 <span>/ H2 2026</span></div>
+    <div class="app-title">Retro Collection Tracker</div>
     <div class="header-actions">
-      <button class="btn-add" id="btnAddPost" onclick="openModal()">+ Add post</button>
+      <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
       <button class="btn-add" id="btnAddSeries" onclick="openAddSeriesModal()" style="display:none">+ Add series</button>
       <button class="btn-add" id="btnAddCompleted" onclick="openCompletedModal()" style="display:none">+ Log completion</button>
       <button class="btn-add" id="btnCheckUpdates" onclick="importSeedGames()" style="display:none" title="Import any new titles added to the seed list">⬇ Check for updates</button>
+      <span id="seedImportResult" style="font-family:var(--mono); font-size:9px; color:var(--muted); display:none; margin-left:6px;"></span>
       <button class="btn-add" id="btnCheckCompletedUpdates" onclick="importSeedCompleted()" style="display:none" title="Import any new titles added to the completion seed list">⬇ Check for updates</button>
+      <span id="ct-seed-result" style="font-family:var(--mono); font-size:9px; color:var(--muted); display:none; margin-left:6px;"></span>
     </div>
   </div>
   <div class="header-right">
     <div class="month-tabs" id="monthTabs" style="display:none"></div>
     <div class="app-tabs" id="appTabs">
       <div class="app-tab-slider" id="appTabSlider"></div>
-      <button class="app-tab active" id="tab-calendar" onclick="switchTab('calendar')">Calendar</button>
+      <button class="app-tab active" id="tab-dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="app-tab" id="tab-calendar" onclick="switchTab('calendar')">Calendar</button>
       <button class="app-tab" id="tab-owned" onclick="switchTab('owned')">Game Tracking</button>
       <button class="app-tab" id="tab-completed" onclick="switchTab('completed')">Completion Tracking</button>
       <button class="app-tab" id="tab-series" onclick="switchTab('series')">Series Tracking</button>
@@ -2639,6 +3177,10 @@ textarea { resize: vertical; min-height: 72px; }
 </header>
 
 <!-- LEGEND -->
+<div class="tracking-view" id="viewDashboard">
+  <div class="dash-grid" id="dashboardBody"></div>
+</div>
+
 <div class="legend-bar" id="legendBar">
   <div class="legend-item" onclick="openLegendEditor('anniversary', event)"><div class="legend-pip" id="pip-anniversary" style="background:var(--anniversary)"></div><span id="label-anniversary">ANNIVERSARY</span></div>
   <div class="legend-item" onclick="openLegendEditor('release', event)"><div class="legend-pip" id="pip-release" style="background:var(--release)"></div><span id="label-release">NEW RELEASE</span></div>
@@ -2672,7 +3214,7 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="tracking-view" id="viewOwned" style="display:none">
   <div class="gt-toolbar">
     <div class="gt-console-tabs" id="gtConsoleTabs"></div>
-    <span id="seedImportResult" style="font-family:var(--mono); font-size:9px; color:var(--muted); display:none;"></span>
+    <button class="btn-add" id="btnGTSettings" onclick="openGTSettingsModal()" title="Game Tracking settings" style="flex-shrink:0">⚙ Settings</button>
   </div>
   <div class="gt-columns" id="gtColumns">
     <div class="gt-column">
@@ -2691,6 +3233,21 @@ textarea { resize: vertical; min-height: 72px; }
       <button class="gt-add-row-btn" onclick="openGTModal('nicetohave')">+ Add</button>
     </div>
   </div>
+  <div class="amiibo-view" id="amiiboView" style="display:none">
+    <div class="amiibo-toolbar">
+      <input type="text" class="tracking-search" id="amiiboSearch" placeholder="Search amiibo..." oninput="renderAmiiboView()">
+      <select class="tracking-filter" id="amiiboFilter" onchange="renderAmiiboView()">
+        <option value="all">Show all</option>
+        <option value="owned">Owned only</option>
+        <option value="missing">Missing only</option>
+      </select>
+      <button class="amiibo-mini-btn" id="amiiboCollapseCompleteBtn" onclick="collapseCompleteAmiiboSeries()">Collapse completed series</button>
+      <button class="amiibo-mini-btn" id="amiiboResaveBtn" onclick="resaveAllAmiiboImages()">Save all pictures permanently</button>
+      <button class="amiibo-mini-btn" onclick="exportAmiiboData()">Export backup</button>
+    </div>
+    <div class="amiibo-summary" id="amiiboSummary"></div>
+    <div id="amiiboSeriesList"></div>
+  </div>
 </div>
 
 <!-- SERIES TRACKING VIEW -->
@@ -2704,6 +3261,7 @@ textarea { resize: vertical; min-height: 72px; }
       <button class="ct-sort-btn" id="series-sort-missing" onclick="setSeriesSort('missing')">Most missing</button>
     </div>
     <span class="tracking-count" id="seriesCount"></span>
+    <button class="btn-add" id="btnSeriesSettings" onclick="openSeriesSettingsModal()" title="Series Tracking settings" style="margin-left:auto">⚙ Settings</button>
   </div>
   <div class="series-global-legend">
     <div class="series-legend-item"><div class="series-status-dot owned"></div>OWNED</div>
@@ -2741,9 +3299,9 @@ textarea { resize: vertical; min-height: 72px; }
       <button class="ct-sort-btn" data-col="platform">Platform</button>
     </div>
     <span class="tracking-count" id="completedCount"></span>
+    <button class="btn-add" id="btnCompletedSettings" onclick="openCompletedSettingsModal()" title="Completion Tracking settings" style="margin-left:auto">⚙ Settings</button>
   </div>
   <div class="ct-grid" id="completedBody"></div>
-  <div id="ct-seed-result" style="display:none; margin:12px 24px; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; font-size:12px; font-family:var(--mono); color:var(--muted);"></div>
 </div>
 
 <!-- GAME TRACKING MODAL -->
@@ -2753,7 +3311,7 @@ textarea { resize: vertical; min-height: 72px; }
     <input type="hidden" id="og-column" value="owned">
     <div class="form-group">
       <label>Game title</label>
-      <input type="text" id="og-title" placeholder="e.g. Metal Gear Solid">
+      <input type="text" id="og-title" placeholder="e.g. Metal Gear Solid" oninput="renderRelatedSuggestions()">
     </div>
     <div class="form-group" id="og-platforms-group">
       <label>Platform releases</label>
@@ -2769,16 +3327,133 @@ textarea { resize: vertical; min-height: 72px; }
       <input type="text" id="og-wiki" placeholder="https://en.wikipedia.org/wiki/...">
     </div>
     <div class="form-group">
-      <label>DLC</label>
+      <label>Cover art URL (optional)</label>
+      <input type="url" id="og-cover" placeholder="https://...">
+      <button type="button" class="btn-cancel" id="og-cover-fetch-btn" style="margin-top:6px;padding:5px 10px;font-size:10px" onclick="fetchCoverForModal('og')">🔍 Auto-fetch cover</button>
+      <span id="og-cover-fetch-status" style="font-family:var(--mono); font-size:9px; color:var(--muted); margin-left:6px"></span>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Last posted to Instagram (optional)</label>
+        <input type="date" id="og-posted">
+      </div>
+      <div class="form-group" id="og-case-group">
+        <label>&nbsp;</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;">
+          <input type="checkbox" id="og-case-made" style="width:auto"> Bespoke case made
+        </label>
+      </div>
+    </div>
+    <div class="modal-section-label">LINKED CONTENT</div>
+
+    <div class="linked-box">
+      <div class="linked-box-title">DLC</div>
       <div class="dlc-list" id="og-dlc-list"></div>
       <div class="dlc-add-row" style="margin-top:6px">
         <input class="dlc-add-input" type="text" id="og-dlc-input" placeholder="Add DLC title..." onkeydown="if(event.key==='Enter'){event.preventDefault();addModalDlc('og')}">
         <button class="dlc-add-btn" onclick="addModalDlc('og')">+ Add</button>
       </div>
     </div>
+
+    <div class="linked-box">
+      <div class="linked-box-title">Related items</div>
+      <div class="linked-box-subtitle">Peripherals, eReader cards, owned Amiibo, or other games from your collection</div>
+      <div class="dlc-list" id="og-related-list"></div>
+      <div class="dlc-add-row" style="margin-top:6px">
+        <input class="dlc-add-input" type="text" id="og-related-input" list="og-related-options" placeholder="Search your collection..." onkeydown="if(event.key==='Enter'){event.preventDefault();addModalRelatedItem()}">
+        <datalist id="og-related-options"></datalist>
+        <button class="dlc-add-btn" onclick="addModalRelatedItem()">+ Add</button>
+      </div>
+      <div id="og-related-suggestions"></div>
+    </div>
+
+    <div class="linked-box">
+      <label class="linked-box-toggle">
+        <input type="checkbox" id="og-is-compilation" style="width:auto" onchange="toggleCompilationGroup()">
+        <span class="linked-box-title" style="margin:0">This is a compilation</span>
+      </label>
+      <div id="og-compilation-group" class="linked-subsection" style="display:none">
+        <div class="linked-box-subtitle">Included games — pick from your collection where possible, or type a title and Add if it isn't tracked yet</div>
+        <div class="dlc-list" id="og-compilation-list"></div>
+        <div class="dlc-add-row" style="margin-top:6px">
+          <input class="dlc-add-input" type="text" id="og-compilation-input" list="og-compilation-options" placeholder="Search your collection or type a title..." onkeydown="if(event.key==='Enter'){event.preventDefault();addModalCompilationItem()}">
+          <datalist id="og-compilation-options"></datalist>
+          <button class="dlc-add-btn" onclick="addModalCompilationItem()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeGTModal()">Cancel</button>
       <button class="btn-save" id="owned-save-btn" onclick="saveGTGame()">Add game</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME TRACKING SETTINGS MODAL -->
+<div class="modal-overlay" id="gtSettingsModalOverlay">
+  <div class="modal" style="width:480px">
+    <h2>GAME TRACKING SETTINGS</h2>
+    <div class="linked-box-subtitle" style="margin-bottom:10px">Set the box-art shape used for cover thumbnails on each console. Defaults to Tall until set.</div>
+    <div id="gtSettingsConsoleList"></div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeGTSettingsModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR SETTINGS MODAL -->
+<div class="modal-overlay" id="calendarSettingsModalOverlay">
+  <div class="modal" style="width:480px">
+    <h2>CALENDAR SETTINGS</h2>
+    <div class="linked-box">
+      <div class="linked-box-title">Cloud sync</div>
+      <div id="syncStatus" style="font-family:var(--mono); font-size:10px; color:var(--muted); line-height:1.5; min-height:14px;">Auto-syncing…</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeCalendarSettingsModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION TRACKING SETTINGS MODAL -->
+<div class="modal-overlay" id="completedSettingsModalOverlay">
+  <div class="modal" style="width:480px">
+    <h2>COMPLETION TRACKING SETTINGS</h2>
+    <div class="gt-empty" style="padding:20px 0">No settings here yet — check back as more options get added.</div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeCompletedSettingsModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERIES TRACKING SETTINGS MODAL -->
+<div class="modal-overlay" id="seriesSettingsModalOverlay">
+  <div class="modal" style="width:480px">
+    <h2>SERIES TRACKING SETTINGS</h2>
+    <div class="gt-empty" style="padding:20px 0">No settings here yet — check back as more options get added.</div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeSeriesSettingsModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- AMIIBO RELATED GAMES MODAL -->
+<div class="modal-overlay" id="amiiboRelatedModalOverlay">
+  <div class="modal">
+    <h2 id="amiiboRelatedModalTitle">RELATED GAMES</h2>
+    <div class="linked-box">
+      <div class="linked-box-subtitle">Link the games this Amiibo unlocks content for or appears alongside, picked from your collection.</div>
+      <div class="dlc-list" id="amiibo-related-list"></div>
+      <div class="dlc-add-row" style="margin-top:6px">
+        <input class="dlc-add-input" type="text" id="amiibo-related-input" list="amiibo-related-options" placeholder="Search your collection..." onkeydown="if(event.key==='Enter'){event.preventDefault();addAmiiboRelatedGame()}">
+        <datalist id="amiibo-related-options"></datalist>
+        <button class="dlc-add-btn" onclick="addAmiiboRelatedGame()">+ Add</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAmiiboRelatedModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAmiiboRelatedGames()">Save changes</button>
     </div>
   </div>
 </div>
@@ -2814,6 +3489,8 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="form-group">
       <label>Cover art URL (optional)</label>
       <input type="url" id="cg-cover" placeholder="https://...">
+      <button type="button" class="btn-cancel" id="cg-cover-fetch-btn" style="margin-top:6px;padding:5px 10px;font-size:10px" onclick="fetchCoverForModal('cg')">🔍 Auto-fetch cover</button>
+      <span id="cg-cover-fetch-status" style="font-family:var(--mono); font-size:9px; color:var(--muted); margin-left:6px"></span>
     </div>
     <div class="form-group">
       <label>Notes (optional)</label>
@@ -2880,45 +3557,12 @@ textarea { resize: vertical; min-height: 72px; }
   <!-- SUGGESTIONS SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <span class="sidebar-title">SUGGESTED POSTS</span>
-      <button class="sidebar-settings-btn" onclick="toggleSidebarSettings()" title="Settings">⚙</button>
+      <span class="sidebar-title">Plan a Post</span>
     </div>
 
-    <!-- Settings panel (collapsed by default) -->
-    <div class="sidebar-settings" id="sidebarSettings" style="display:none">
-      <div class="form-group" style="margin-bottom:8px">
-        <label>Anthropic API Key</label>
-        <input type="password" id="s-anthropic-key" placeholder="sk-ant-api03-..." oninput="saveApiKey()">
-      </div>
-      <div style="font-family:var(--mono); font-size:9px; color:var(--muted); line-height:1.5;">
-        Key stored locally only. Never sent anywhere except the Anthropic API via your Worker.
-      </div>
-      <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
-        <div style="font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.06em; color:var(--muted); margin-bottom:8px;">CLOUD SYNC</div>
-        <div id="syncStatus" style="font-family:var(--mono); font-size:9px; color:var(--muted); line-height:1.5; min-height:14px;">Auto-syncing…</div>
-      </div>
-    </div>
-
-    <button class="sidebar-fetch-btn" id="sidebarFetchBtn" onclick="fetchSuggestions()">
-      <span id="sidebarFetchLabel">Find suggestions</span>
-    </button>
-
-    <div class="sidebar-cache-note" id="sidebarCacheNote" style="display:none"></div>
-
-    <div class="sidebar-results" id="sidebarResults">
-      <div class="sidebar-empty">Click "Find suggestions" to check for upcoming game releases you haven't covered yet.</div>
-    </div>
-
-    <!-- ON THIS DAY SECTION -->
-    <div class="otd-section">
-      <div class="otd-header">
-        <span class="otd-title">ON THIS DAY</span>
-      </div>
-      <div id="otdResults">
-        <div class="otd-empty">Check GameFAQs for today's gaming anniversaries and releases.</div>
-        <a href="https://gamefaqs.gamespot.com/games/thisdayingaming" target="_blank" rel="noopener" class="otd-link-btn">Open This Day in Gaming ↗</a>
-      </div>
-    </div>
+    <button class="sidebar-fetch-btn" onclick="openModal()">+ Add post</button>
+    <button class="sidebar-secondary-btn" onclick="openIdeaModal()">💡 I need a new post</button>
+    <a href="https://gamefaqs.gamespot.com/games/thisdayingaming" target="_blank" rel="noopener" class="sidebar-secondary-btn" style="display:block; text-align:center; text-decoration:none; box-sizing:border-box; margin-bottom:0;">On This Day in Gaming ↗</a>
   </aside>
 </div>
 
@@ -2983,9 +3627,50 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="form-group">
       <label>Shoot notes (optional)</label>
       <input type="text" id="f-shoot" placeholder="e.g. IMG_4821 — shelf close-up, still to shoot">
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="f-published" style="width:auto" checked> Already published to Instagram</label>
+    </div>
+    <div class="form-group">
+      <label>Performance (optional — fill in once you've checked Instagram Insights, roughly 2 weeks after posting)</label>
+      <div class="form-row">
+        <input type="number" id="f-views" min="0" placeholder="Views">
+        <input type="number" id="f-likes" min="0" placeholder="Likes">
+        <input type="number" id="f-shares" min="0" placeholder="Shares">
+        <input type="number" id="f-saves" min="0" placeholder="Saves">
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" id="modal-save-btn" onclick="savePost()">Add to calendar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW POST IDEA MODAL -->
+<div class="modal-overlay" id="ideaModalOverlay">
+  <div class="modal" style="width:560px">
+    <h2>NEW POST IDEAS</h2>
+    <div class="linked-box">
+      <div class="linked-box-subtitle">Search for a specific game, or shuffle for random ideas from your owned collection that haven't been posted in a while.</div>
+      <div class="dlc-add-row">
+        <input type="text" id="idea-search-input" list="idea-search-options" placeholder="e.g. Metal Gear..." onkeydown="if(event.key==='Enter'){event.preventDefault();searchIdeaByTitle()}">
+        <datalist id="idea-search-options"></datalist>
+        <button class="dlc-add-btn" onclick="searchIdeaByTitle()">Search</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin:4px 0 14px">
+      <button class="btn-cancel" onclick="rollNewPostIdeas()">🎲 Shuffle two random ideas</button>
+    </div>
+    <div class="linked-box-subtitle" style="margin:4px 0 8px" id="idea-rotation-label">From your collection rotation:</div>
+    <div id="idea-results"></div>
+    <div id="idea-completed-section" style="display:none">
+      <div style="border-top:1px solid var(--border); margin:16px 0 14px"></div>
+      <div class="linked-box-subtitle" style="margin:4px 0 8px">Completed in the last 2 weeks, not yet posted:</div>
+      <div id="idea-completed-results"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeIdeaModal()">Close</button>
     </div>
   </div>
 </div>
@@ -3031,6 +3716,7 @@ async function doSyncPush() {
       legend:    JSON.parse(localStorage.getItem('retro_legend')    || 'null'),
       series:    JSON.parse(localStorage.getItem('retro_series')    || 'null'),
       seriesLogos: JSON.parse(localStorage.getItem('retro_series_logos') || 'null'),
+      amiiboData: JSON.parse(localStorage.getItem('retro_amiibo_data') || 'null'),
     };
     const res = await fetch(`${SYNC_WORKER}/sync`, {
       method: 'PUT',
@@ -3073,6 +3759,7 @@ async function initSync() {
       if (data.legend)      { localStorage.setItem('retro_legend',      JSON.stringify(data.legend));      legendSettings = data.legend; applyLegendSettings(); }
       if (data.series)      { localStorage.setItem('retro_series',      JSON.stringify(data.series));      seriesData = data.series; }
       if (data.seriesLogos) { localStorage.setItem('retro_series_logos',JSON.stringify(data.seriesLogos)); seriesLogos = data.seriesLogos; }
+      if (data.amiiboData) { localStorage.setItem('retro_amiibo_data',JSON.stringify(data.amiiboData)); amiiboData = data.amiiboData; }
       localStorage.setItem('retro_sync_ts', cloudTime.toString());
 
       // Re-render active tab
@@ -3412,6 +4099,84 @@ function makeTile(post) {
   return tile;
 }
 
+// ── COVER ART AUTO-FETCH ────────────────────────────────────────────────────────
+// Best-effort lookup using Wikipedia's public API (no key required). Not a proper
+// games database, so it won't find everything — obscure or unreleased-in-the-UK
+// titles especially — but it's free and saves manually hunting URLs for the common
+// case. Downloads the image into a permanent saved copy rather than storing a live
+// link, same approach already used for amiibo pictures, so it can't go dead later.
+async function downloadImageAsDataUrl(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('fetch failed: ' + res.status);
+  const blob = await res.blob();
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function fetchCoverArtForTitle(title) {
+  if (!title) return null;
+  const q = encodeURIComponent(title + ' video game');
+  const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=5&format=json&origin=*`;
+  console.log('[cover-fetch] searching:', searchUrl);
+
+  const searchRes = await fetch(searchUrl);
+  if (!searchRes.ok) throw new Error('search request failed: ' + searchRes.status);
+  const searchData = await searchRes.json();
+  const candidates = (searchData && searchData.query && searchData.query.search) || [];
+  console.log('[cover-fetch] candidates:', candidates.map(c => c.title));
+  if (!candidates.length) return null;
+
+  // Try each candidate in order until one has a usable thumbnail — the first
+  // search hit is sometimes a disambiguation or franchise-overview page with
+  // no infobox image, so don't give up after just one.
+  for (const page of candidates) {
+    const pageTitle = encodeURIComponent(page.title);
+    const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&pithumbsize=600&format=json&origin=*`;
+    const imgRes = await fetch(imgUrl);
+    if (!imgRes.ok) { console.warn('[cover-fetch] image lookup failed for', page.title, imgRes.status); continue; }
+    const imgData = await imgRes.json();
+    const pages = (imgData && imgData.query && imgData.query.pages) || {};
+    const first = Object.values(pages)[0];
+    const thumb = first && first.thumbnail && first.thumbnail.source;
+    console.log('[cover-fetch]', page.title, '→', thumb || 'no thumbnail');
+    if (thumb) return await downloadImageAsDataUrl(thumb);
+  }
+  return null;
+}
+
+async function fetchCoverForModal(prefix) {
+  const titleEl = document.getElementById(prefix + '-title');
+  const coverEl = document.getElementById(prefix + '-cover');
+  const btn = document.getElementById(prefix + '-cover-fetch-btn');
+  const status = document.getElementById(prefix + '-cover-fetch-status');
+  const title = titleEl ? titleEl.value.trim() : '';
+  if (!title) { alert('Enter a title first.'); return; }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Fetching…';
+  status.textContent = '';
+  try {
+    const dataUrl = await fetchCoverArtForTitle(title);
+    if (dataUrl) {
+      coverEl.value = dataUrl;
+      status.textContent = 'Found and saved a permanent copy.';
+    } else {
+      status.textContent = 'No usable image found on Wikipedia — paste a URL instead.';
+    }
+  } catch (e) {
+    console.error('[cover-fetch] failed:', e);
+    status.textContent = 'Fetch failed (' + (e.message || 'see console') + ') — paste a URL instead.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
 function escHtml(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -3491,6 +4256,12 @@ function openModal(post) {
   document.getElementById('f-tags').value = isNew ? '' : (post.tags || '');
   document.getElementById('f-planner').value = isNew ? '' : (post.plannerTag || '');
   document.getElementById('f-shoot').value = isNew ? '' : (post.shootNotes || '');
+  document.getElementById('f-published').checked = isNew ? true : (post.published !== false);
+  const m = (!isNew && post.metrics) ? post.metrics : {};
+  document.getElementById('f-views').value = m.views != null ? m.views : '';
+  document.getElementById('f-likes').value = m.likes != null ? m.likes : '';
+  document.getElementById('f-shares').value = m.shares != null ? m.shares : '';
+  document.getElementById('f-saves').value = m.saves != null ? m.saves : '';
 
   document.getElementById('modalOverlay').classList.add('open');
 }
@@ -3541,7 +4312,19 @@ function populateDayDropdown(targetDay) {
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
-  ['f-title','f-caption','f-tags','f-planner','f-shoot'].forEach(id => document.getElementById(id).value = '');
+  ['f-title','f-caption','f-tags','f-planner','f-shoot','f-views','f-likes','f-shares','f-saves'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-published').checked = true;
+}
+
+function readMetricsFromForm() {
+  const ids = { views: 'f-views', likes: 'f-likes', shares: 'f-shares', saves: 'f-saves' };
+  const metrics = {};
+  let any = false;
+  Object.entries(ids).forEach(([key, id]) => {
+    const raw = document.getElementById(id).value.trim();
+    if (raw !== '') { metrics[key] = parseInt(raw, 10) || 0; any = true; }
+  });
+  return any ? metrics : null;
 }
 
 function savePost() {
@@ -3554,6 +4337,8 @@ function savePost() {
   let plannerTag = document.getElementById('f-planner').value.trim();
   if (plannerTag && !plannerTag.startsWith('#')) plannerTag = '#' + plannerTag;
   const shootNotes = document.getElementById('f-shoot').value.trim();
+  const published = document.getElementById('f-published').checked;
+  const formMetrics = readMetricsFromForm();
 
   if (!title) { alert('Please enter a post title.'); return; }
 
@@ -3566,9 +4351,13 @@ function savePost() {
       post.title = title; post.caption = caption;
       post.tags = tags; post.plannerTag = plannerTag || '';
       post.shootNotes = shootNotes;
+      post.published = published;
+      if (formMetrics) { post.metrics = formMetrics; post.metricsLoggedAt = new Date().toISOString().slice(0,10); }
     }
   } else {
-    posts.push({ id: nextId++, month, year, day, type, title, caption, tags, plannerTag: plannerTag || '', shootNotes });
+    const newPost = { id: nextId++, month, year, day, type, title, caption, tags, plannerTag: plannerTag || '', shootNotes, published };
+    if (formMetrics) { newPost.metrics = formMetrics; newPost.metricsLoggedAt = new Date().toISOString().slice(0,10); }
+    posts.push(newPost);
   }
 
   savePosts();
@@ -3585,6 +4374,277 @@ function savePost() {
 // Close modal on overlay click
 document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
+});
+
+// ── NEW POST IDEA ENGINE ────────────────────────────────────────────────────────
+// Builds a list of suggested items to include in a photo for a given game, by
+// looking at its own related items / compilation contents, and also checking
+// the reverse direction (other games, compilations, or Amiibo that point back at it).
+function getSuggestionsForGame(game) {
+  const items = [];
+  const seen = new Set();
+  const add = (type, label) => {
+    const key = type + ':' + label;
+    if (seen.has(key)) return;
+    seen.add(key);
+    items.push({ type, label });
+  };
+
+  (game.relatedItems || []).forEach(ref => {
+    const r = resolveRelatedRef(ref);
+    if (r) add((typeof ref === 'string' && ref.startsWith('amiibo:')) ? 'amiibo' : 'related', r.label);
+  });
+
+  if (game.isCompilation) {
+    (game.compilationItems || []).forEach(ref => {
+      const r = resolveCompilationRef(ref);
+      add('compilation', r.label);
+    });
+  }
+
+  ownedGames.forEach(og => {
+    if (og.id === game.id) return;
+    if (og.relatedItems && og.relatedItems.includes(`game:${game.id}`)) {
+      add('related', relatedItemLabel(og));
+    }
+    if (og.isCompilation && (og.compilationItems || []).includes(`game:${game.id}`)) {
+      add('compilation', relatedItemLabel(og));
+    }
+  });
+
+  amiiboData.forEach(series => {
+    series.items.forEach(it => {
+      if (it.owned && (it.relatedGames || []).includes(`game:${game.id}`)) {
+        add('amiibo', relatedAmiiboLabel(it, series.name));
+      }
+    });
+  });
+
+  return items;
+}
+
+function isCompletedUnposted(c) {
+  if (c.postedAsContent) return false;
+  if (!c.completedDate) return true; // no date logged — can't tell age, show it
+  const d = new Date(c.completedDate);
+  if (isNaN(d)) return true;
+  const daysSince = (new Date() - d) / (1000 * 60 * 60 * 24);
+  return daysSince <= 14;
+}
+
+function renderCompletedIdeaCard(c) {
+  return `
+    <div class="linked-box">
+      <div class="linked-box-title">${escHtml(c.title)} <span style="font-weight:400;color:var(--muted)">(${escHtml(c.platform || '')})</span></div>
+      <div class="linked-box-subtitle">Completed ${escHtml(c.completedDate || 'date unknown')}${c.rating ? ` — ${c.rating}★` : ''}</div>
+      ${c.notes ? `<div class="gt-empty" style="padding:4px 0">${escHtml(c.notes)}</div>` : ''}
+      <div style="margin-top:8px;text-align:right">
+        <button class="btn-save" style="padding:6px 14px;font-size:11px" onclick="useCompletedIdeaForPost(${c.id})">Use this</button>
+      </div>
+    </div>`;
+}
+
+function renderCompletedIdeaSection() {
+  const section = document.getElementById('idea-completed-section');
+  const resultsEl = document.getElementById('idea-completed-results');
+  const unposted = completedGames.filter(isCompletedUnposted).sort((a, b) => (b.completedDate || '').localeCompare(a.completedDate || ''));
+  if (!unposted.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  resultsEl.innerHTML = unposted.map(renderCompletedIdeaCard).join('');
+}
+
+function useCompletedIdeaForPost(completedId) {
+  const c = completedGames.find(g => g.id === completedId);
+  if (!c) return;
+  c.postedAsContent = true;
+  try { localStorage.setItem('retro_completed', JSON.stringify(completedGames)); } catch(e) {}
+  scheduleSync();
+
+  closeIdeaModal();
+  openModal();
+  document.getElementById('f-title').value = `${c.title} — Completed`;
+  document.getElementById('f-type').value = 'collection';
+  document.getElementById('f-caption').value = c.notes || '';
+  document.getElementById('f-shoot').value = `Just completed: ${c.title} (${c.platform || ''})${c.rating ? ` — rated ${c.rating}★` : ''}`;
+}
+
+function ideaTypeIcon(type) {
+
+
+  return type === 'amiibo' ? '🧸' : type === 'compilation' ? '📀' : '🔗';
+}
+
+function monthsSinceDate(dateStr) {
+  const last = new Date(dateStr);
+  if (isNaN(last)) return Infinity;
+  const now = new Date();
+  return (now - last) / (1000 * 60 * 60 * 24 * 30.44);
+}
+
+// Find which franchise (from Series Tracking data) a given game title belongs to,
+// so the idea generator can apply the 4-week same-series spacing rule. Reuses the
+// same series groupings shown in the Series Tracking tab, rather than guessing
+// from keywords, so it stays consistent with how series are actually grouped.
+function franchiseForTitle(title) {
+  if (!title) return null;
+  const lower = title.toLowerCase();
+  for (const series of seriesData) {
+    if ((series.games || []).some(sg => sg.title.toLowerCase() === lower)) return series.name;
+  }
+  return null;
+}
+
+// Turn a calendar post's month/day/year into a real Date for comparisons.
+// Posts from the original seed data don't carry a year field at all (the whole
+// calendar predates multi-year support), so this defaults to 2026 the same way
+// the existing calendar renderer already does, rather than producing Invalid Date.
+function postDateObj(post) {
+  return new Date(post.year || 2026, post.month, post.day);
+}
+
+// Has any post for this franchise gone out on the calendar within the last N weeks?
+// Looks at calendar posts directly (not just the Owned game's lastPosted field),
+// since a franchise post could be about a different game in the same series.
+function franchisePostedWithinWeeks(franchiseName, weeks) {
+  if (!franchiseName) return false;
+  const now = new Date();
+  return posts.some(p => {
+    if (franchiseForTitle(p.title) !== franchiseName) return false;
+    const d = postDateObj(p);
+    if (isNaN(d)) return false;
+    const diffWeeks = (now - d) / (1000 * 60 * 60 * 24 * 7);
+    return diffWeeks >= 0 && diffWeeks < weeks;
+  });
+}
+
+// ── PERFORMANCE TRACKING ────────────────────────────────────────────────────────
+function postNeedsMetricsUpdate(p) {
+  if (p.published === false) return false; // not published yet, nothing to log
+  if (p.metricsLoggedAt) return false; // already logged — one snapshot only
+  const d = postDateObj(p);
+  if (isNaN(d)) return false;
+  const daysSince = (new Date() - d) / (1000 * 60 * 60 * 24);
+  return daysSince >= 14;
+}
+
+function postsNeedingMetrics() {
+  return posts.filter(postNeedsMetricsUpdate).sort((a, b) => postDateObj(a) - postDateObj(b));
+}
+
+function topPerformingPosts(metric, sinceDays) {
+  const now = new Date();
+  return posts
+    .filter(p => p.metricsLoggedAt && p.metrics && (p.metrics[metric] || 0) > 0)
+    .filter(p => { const d = postDateObj(p); return !isNaN(d) && (now - d) / (1000*60*60*24) <= sinceDays; })
+    .sort((a, b) => (b.metrics[metric] || 0) - (a.metrics[metric] || 0));
+}
+
+function isPostIdeaEligible(g) {
+  if (g.column !== 'owned') return false;
+  const cooledDown = !g.lastPosted || monthsSinceDate(g.lastPosted) >= 12;
+  if (!cooledDown) return false;
+  // 4-week same-series spacing rule. This only applies to the auto-generated
+  // "roll new ideas" / search results — it deliberately does NOT apply to
+  // countdowns or completions, since those are planned manually and you make
+  // that call yourself.
+  const franchise = franchiseForTitle(g.title);
+  if (franchise && franchisePostedWithinWeeks(franchise, 4)) return false;
+  return true;
+}
+
+function postedStatusText(g) {
+  if (!g.lastPosted) return 'Never posted';
+  const months = Math.round(monthsSinceDate(g.lastPosted));
+  return `Last posted ${escHtml(g.lastPosted)} (about ${months} month${months !== 1 ? 's' : ''} ago)`;
+}
+
+function renderIdeaCard(game) {
+  const suggestions = getSuggestionsForGame(game);
+  const listHtml = suggestions.length
+    ? `<div class="dlc-list">${suggestions.map(s => `<div class="dlc-item"><span class="dlc-item-title">${ideaTypeIcon(s.type)} ${escHtml(s.label)}</span></div>`).join('')}</div>`
+    : `<div class="gt-empty" style="padding:4px 0">No related items, compilations, or Amiibo linked to this one yet</div>`;
+
+  return `
+    <div class="linked-box">
+      <div class="linked-box-title">${escHtml(game.title)} <span style="font-weight:400;color:var(--muted)">(${escHtml(game.console)})</span></div>
+      <div class="linked-box-subtitle">${postedStatusText(game)}</div>
+      ${listHtml}
+      <div style="margin-top:8px;text-align:right">
+        <button class="btn-save" style="padding:6px 14px;font-size:11px" onclick="useIdeaForPost(${game.id})">Use this</button>
+      </div>
+    </div>`;
+}
+
+function rollNewPostIdeas() {
+  try {
+    const eligible = ownedGames.filter(isPostIdeaEligible);
+    const resultsEl = document.getElementById('idea-results');
+    if (eligible.length === 0) {
+      resultsEl.innerHTML = `<div class="gt-empty" style="padding:10px 0">No eligible games right now — every owned game has either been posted in the last 12 months, would breach the 4-week same-series spacing rule, or you don't have any games in the Owned column yet.</div>`;
+      return;
+    }
+    const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+    const picks = shuffled.slice(0, Math.min(2, shuffled.length));
+    resultsEl.innerHTML = picks.map(renderIdeaCard).join('');
+  } catch (e) {
+    console.error('rollNewPostIdeas failed:', e);
+    document.getElementById('idea-results').innerHTML = `<div class="gt-empty" style="padding:10px 0">Something went wrong generating ideas: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function searchIdeaByTitle() {
+  try {
+    const input = document.getElementById('idea-search-input');
+    const value = input.value.trim().toLowerCase();
+    const resultsEl = document.getElementById('idea-results');
+    if (!value) return;
+
+    const matches = ownedGames.filter(g => g.column === 'owned' && g.title.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      resultsEl.innerHTML = `<div class="gt-empty" style="padding:10px 0">No owned games matched that title.</div>`;
+      return;
+    }
+    resultsEl.innerHTML = matches.slice(0, 6).map(renderIdeaCard).join('');
+  } catch (e) {
+    console.error('searchIdeaByTitle failed:', e);
+    document.getElementById('idea-results').innerHTML = `<div class="gt-empty" style="padding:10px 0">Something went wrong searching: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function useIdeaForPost(gameId) {
+  const game = ownedGames.find(g => g.id === gameId);
+  if (!game) return;
+  const suggestions = getSuggestionsForGame(game);
+  const checklist = `Gather: ${game.title} (${game.console})` + (suggestions.length ? ' • ' + suggestions.map(s => s.label).join(' • ') : '');
+
+  closeIdeaModal();
+  openModal();
+  document.getElementById('f-title').value = game.title;
+  document.getElementById('f-type').value = 'collection';
+  document.getElementById('f-shoot').value = checklist;
+}
+
+function openIdeaModal() {
+  try {
+    const dl = document.getElementById('idea-search-options');
+    dl.innerHTML = ownedGames.filter(g => g.column === 'owned').map(g => `<option value="${escHtml(g.title)}"></option>`).join('');
+    document.getElementById('idea-search-input').value = '';
+    document.getElementById('idea-results').innerHTML = '';
+    renderCompletedIdeaSection();
+    document.getElementById('ideaModalOverlay').classList.add('open');
+    rollNewPostIdeas();
+  } catch (e) {
+    console.error('openIdeaModal failed:', e);
+    alert('Something went wrong opening the new post ideas panel: ' + e.message + '\n\nCheck the browser console for details.');
+  }
+}
+
+function closeIdeaModal() {
+  document.getElementById('ideaModalOverlay').classList.remove('open');
+}
+
+document.getElementById('ideaModalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeIdeaModal();
 });
 
 // ── INSTAGRAM PREP MODAL ─────────────────────────────────────────────────────
@@ -3761,146 +4821,11 @@ document.addEventListener('click', e => {
   }
 });
 
-// ── SIDEBAR / SUGGESTIONS ─────────────────────────────────────────────────────
-const WORKER_URL = 'https://gaming-suggestions.rtgraves.workers.dev';
-
-function loadApiKey() {
-  try { return localStorage.getItem('retro_anthropic_key') || ''; } catch(e) { return ''; }
-}
-
-function saveApiKey() {
-  try {
-    const val = document.getElementById('s-anthropic-key').value.trim();
-    localStorage.setItem('retro_anthropic_key', val);
-  } catch(e) {}
-}
-
-function toggleSidebarSettings() {
-  const panel = document.getElementById('sidebarSettings');
-  const isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  if (!isOpen) {
-    // Populate key field when opening
-    document.getElementById('s-anthropic-key').value = loadApiKey();
-  }
-}
-
-function loadSidebarCache() {
-  try {
-    const cached = localStorage.getItem('retro_suggestions_cache');
-    if (cached) return JSON.parse(cached);
-  } catch(e) {}
-  return null;
-}
-
-function saveSidebarCache(data) {
-  try { localStorage.setItem('retro_suggestions_cache', JSON.stringify(data)); } catch(e) {}
-}
-
-function renderSidebar(data) {
-  const results = document.getElementById('sidebarResults');
-  const cacheNote = document.getElementById('sidebarCacheNote');
-
-  if (data.fetchedAt) {
-    const d = new Date(data.fetchedAt);
-    cacheNote.textContent = `Last checked: ${d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })} at ${d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`;
-    cacheNote.style.display = 'block';
-  }
-
-  if (!data.suggestions || data.suggestions.length === 0) {
-    results.innerHTML = '<div class="sidebar-empty">No new suggestions found — your calendar is well covered for the next 90 days.</div>';
-    return;
-  }
-
-  results.innerHTML = '';
-  data.suggestions.forEach((s, i) => {
-    const card = document.createElement('div');
-    card.className = 'suggestion-card';
-    card.id = `sug-card-${i}`;
-
-    const releaseDate = s.releaseDate ? new Date(s.releaseDate + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }) : '';
-
-    card.innerHTML = `
-      <div class="suggestion-date">${releaseDate}</div>
-      <div class="suggestion-title">${escHtml(s.title)}</div>
-      <div class="suggestion-reason">${escHtml(s.reason)}</div>
-      <button class="suggestion-add-btn" onclick="addSuggestionToCalendar(${i})">+ Add to calendar</button>
-    `;
-    results.appendChild(card);
-  });
-}
-
-function addSuggestionToCalendar(idx) {
-  const cache = loadSidebarCache();
-  if (!cache || !cache.suggestions[idx]) return;
-  const s = cache.suggestions[idx];
-
-  // Pre-populate modal with suggestion data
-  openModal({
-    month: s.month,
-    day: s.day,
-    type: s.type || 'release',
-    title: s.title,
-    caption: s.caption || '',
-    tags: s.tags || '',
-    plannerTag: '',
-    shootNotes: '',
-  });
-
-  // Mark card as added
-  const btn = document.querySelector(`#sug-card-${idx} .suggestion-add-btn`);
-  if (btn) { btn.textContent = 'Added ✓'; btn.classList.add('added'); btn.disabled = true; }
-}
-
-async function fetchSuggestions() {
-  const anthropicKey = loadApiKey();
-  if (!anthropicKey) {
-    document.getElementById('sidebarSettings').style.display = 'block';
-    document.getElementById('s-anthropic-key').value = '';
-    document.getElementById('s-anthropic-key').focus();
-    document.getElementById('sidebarResults').innerHTML = '<div class="sidebar-error">Please enter your Anthropic API key in settings (⚙) first.</div>';
-    return;
-  }
-
-  const btn = document.getElementById('sidebarFetchBtn');
-  const label = document.getElementById('sidebarFetchLabel');
-  btn.disabled = true;
-  label.textContent = 'Checking releases...';
-  document.getElementById('sidebarResults').innerHTML = '<div class="sidebar-empty">Fetching upcoming releases and drafting suggestions…</div>';
-
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ existingPosts: posts, anthropicKey }),
-    });
-
-    const data = await res.json();
-
-    if (data.error) {
-      document.getElementById('sidebarResults').innerHTML = `<div class="sidebar-error">Error: ${escHtml(data.error)}${data.detail ? '<br><small>' + escHtml(data.detail.slice(0, 200)) + '</small>' : ''}</div>`;
-      return;
-    }
-
-    saveSidebarCache(data);
-    renderSidebar(data);
-
-  } catch(err) {
-    document.getElementById('sidebarResults').innerHTML = `<div class="sidebar-error">Could not reach the suggestions worker. Check your internet connection.<br><small>${escHtml(err.message)}</small></div>`;
-  } finally {
-    btn.disabled = false;
-    label.textContent = 'Refresh suggestions';
-  }
-}
-
-// Load cached suggestions on init
-function initSidebar() {
-  const cached = loadSidebarCache();
-  if (cached) renderSidebar(cached);
-}
+// ── (Old AI-suggestions sidebar feature removed — code cleared out since it
+// referenced DOM elements that no longer exist after the sidebar redesign) ──
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-let currentTab = 'calendar';
+let currentTab = 'dashboard';
 
 function updateTabSlider(tab) {
   const activeBtn = document.getElementById('tab-' + tab);
@@ -3920,11 +4845,13 @@ function switchTab(tab) {
   document.querySelectorAll('.app-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
 
+  const isDashboard = tab === 'dashboard';
   const isCalendar = tab === 'calendar';
   const isOwned = tab === 'owned';
   const isCompleted = tab === 'completed';
   const isSeries = tab === 'series';
 
+  document.getElementById('viewDashboard').style.display = isDashboard ? 'block' : 'none';
   document.getElementById('legendBar').style.display = isCalendar ? '' : 'none';
   document.querySelector('.app-body').style.display = isCalendar ? 'flex' : 'none';
   document.getElementById('viewOwned').style.display = isOwned ? 'block' : 'none';
@@ -3933,13 +4860,14 @@ function switchTab(tab) {
 
   document.getElementById('monthTabs').style.display = 'none'; // always hidden in header now
   document.getElementById('monthNav').classList.toggle('hidden', !isCalendar);
-  document.getElementById('btnAddPost').style.display = isCalendar ? '' : 'none';
+  document.getElementById('btnCalendarSettings').style.display = isCalendar ? '' : 'none';
   document.getElementById('btnAddOwned').style.display = isOwned ? '' : 'none';
   document.getElementById('btnAddSeries').style.display = isSeries ? '' : 'none';
   document.getElementById('btnAddCompleted').style.display = isCompleted ? '' : 'none';
   document.getElementById('btnCheckUpdates').style.display = isOwned ? '' : 'none';
   document.getElementById('btnCheckCompletedUpdates').style.display = isCompleted ? '' : 'none';
 
+  if (isDashboard) { renderDashboard(); }
   if (isOwned) {
     try { currentConsole = localStorage.getItem('retro_console') || GT_CONSOLES[0]; } catch(e) {}
     renderGTConsoleTabs();
@@ -3951,7 +4879,84 @@ function switchTab(tab) {
   updateTabSlider(tab);
 }
 
-// ── GAME TRACKING — PLATFORM CHECKBOX MODEL ───────────────────────────────────
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+function dashJumpToPost(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+  switchTab('calendar');
+  const mi = MONTHS.findIndex(m => m.idx === post.month && m.year === (post.year || 2026));
+  if (mi >= 0) { currentMonthIdx = mi; saveMonthIdx(); showMonth(mi); }
+  openModal(post);
+}
+
+function dashPostRow(p) {
+  const yr = p.year || 2026;
+  const monthData = MONTHS.find(m => m.idx === p.month && m.year === yr);
+  const monthLabel = monthData ? monthData.name.slice(0, 3) : '';
+  return `<div class="dash-row" onclick="dashJumpToPost(${p.id})">
+    ${escHtml(p.title)}
+    <div class="dash-row-meta">${monthLabel} ${p.day}, ${yr} · ${escHtml(TYPE_LABELS[p.type] || p.type)}</div>
+  </div>`;
+}
+
+function dashCompletedRow(c) {
+  return `<div class="dash-row" onclick="openIdeaModal()">
+    ${escHtml(c.title)}
+    <div class="dash-row-meta">Completed ${escHtml(c.completedDate || '')}${c.rating ? ` · ${c.rating}★` : ''}</div>
+  </div>`;
+}
+
+function dashMetricRow(p, metric) {
+  const monthData = MONTHS.find(m => m.idx === p.month && m.year === (p.year || 2026));
+  const monthLabel = monthData ? monthData.name.slice(0, 3) : '';
+  return `<div class="dash-row" onclick="dashJumpToPost(${p.id})">
+    ${escHtml(p.title)}
+    <div class="dash-row-meta">${(p.metrics[metric] || 0).toLocaleString()} ${metric} · ${monthLabel} ${p.day}</div>
+  </div>`;
+}
+
+function renderDashboard() {
+  const el = document.getElementById('dashboardBody');
+  if (!el) return;
+
+  const today = new Date();
+  const todayStr = today.toDateString();
+  const todayPosts = posts.filter(p => { const d = postDateObj(p); return !isNaN(d) && d.toDateString() === todayStr; });
+  const weekPosts = posts.filter(p => {
+    const d = postDateObj(p);
+    if (isNaN(d)) return false;
+    const diffDays = (d - today) / (1000 * 60 * 60 * 24);
+    return diffDays > 0 && diffDays < 7;
+  }).sort((a, b) => postDateObj(a) - postDateObj(b));
+
+  const best = topPerformingPosts('likes', 30).slice(0, 5);
+  const needsMetrics = postsNeedingMetrics();
+  const unpostedCompletions = completedGames.filter(isCompletedUnposted)
+    .sort((a, b) => (b.completedDate || '').localeCompare(a.completedDate || ''));
+
+  el.innerHTML = `
+    <div class="dash-section">
+      <div class="dash-section-title">TODAY</div>
+      ${todayPosts.length ? todayPosts.map(dashPostRow).join('') : `<div class="gt-empty">Nothing planned for today.</div>`}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">UPCOMING WEEK</div>
+      ${weekPosts.length ? weekPosts.map(dashPostRow).join('') : `<div class="gt-empty">Nothing planned in the next 7 days.</div>`}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">BEST POSTS — LAST 30 DAYS</div>
+      ${best.length ? best.map(p => dashMetricRow(p, 'likes')).join('') : `<div class="gt-empty">Not enough performance data logged yet for the last month. Log numbers on a post once you've checked Instagram Insights.</div>`}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">NEEDS ATTENTION</div>
+      ${needsMetrics.length ? `<div class="linked-box-subtitle" style="margin-bottom:4px">${needsMetrics.length} published post${needsMetrics.length !== 1 ? 's' : ''} from 2+ weeks ago still need${needsMetrics.length === 1 ? 's' : ''} performance logged:</div>${needsMetrics.map(dashPostRow).join('')}` : ''}
+      ${unpostedCompletions.length ? `<div class="linked-box-subtitle" style="margin:${needsMetrics.length ? '12px' : '0'} 0 4px">${unpostedCompletions.length} completed game${unpostedCompletions.length !== 1 ? 's' : ''} not yet turned into a post:</div>${unpostedCompletions.map(dashCompletedRow).join('')}` : ''}
+      ${(!needsMetrics.length && !unpostedCompletions.length) ? `<div class="gt-empty">All caught up.</div>` : ''}
+    </div>
+  `;
+}
+
+
 
 const GT_CONSOLES = [
   'NES', 'SNES', 'Nintendo 64', 'GameCube', 'Wii', 'Wii U',
@@ -3968,6 +4973,644 @@ const GT_CONSOLES = [
 // Data model: each game = { id, console, column, title, notes, wikiUrl,
 //   platforms: [{ name, owned, pal, ntsc, jap }] }
 
+const AMIIBO_SEED = [
+  { series: 'Smash Bros. Amiibo', items: [
+    'Mario','Peach','Yoshi','Donkey Kong','Link','Fox','Samus','Wii Fit Trainer','Villager','Pikachu',
+    'Kirby','Marth','Zelda','Diddy Kong','Luigi','Little Mac','Pit','Captain Falcon','Rosalina','Bowser',
+    'Lucario','Toon Link','Sheik','Ike','Shulk','Sonic','Mega Man','King Dedede','Meta Knight','Robin',
+    'Lucina','Wario','Charizard','Ness','Pac-Man','Greninja','Jigglypuff','Palutena','Dark Pit','Zero Suit Samus',
+    'Ganondorf','Dr. Mario','Bowser Jr.','Olimar','Mr Game & Watch','ROB','Duck Hunt','Mii Brawler','Mii Swordfighter','Mii Gunner',
+    'Mewtwo','Falco','Lucas','ROB (Famicom)','Roy','Ryu','Cloud','Cloud - Player 2','Corrin','Corrin - Player 2',
+    'Bayonetta','Bayonetta - Player 2','Wolf','Inkling','Ridley','Piranha Plant','King K. Rool','Ice Climbers','Ken','Young Link',
+    'Daisy','Pichu','Isabelle','Pokémon Trainer','Snake','Ivysaur','Squirtle','Simon','Incineroar','Chrom',
+    'Dark Samus','Richter','Joker','Hero','Banjo Kazooie','Terry','Byleth','Min Min','Steve','Alex',
+    'Sephiroth','Kazuya','Pyra','Mythra','Sora'
+  ]},
+  { series: 'Super Mario Amiibo', items: [
+    'Mario','Mario - Gold','Mario - Silver','Luigi','Peach','Yoshi','Bowser','Toad','Wario','Waluigi',
+    'Rosalina','Daisy','Boo','Donkey Kong','Diddy Kong','Goomba','Koopa Troopa','Mario (Wedding)','Peach (Wedding)','Bowser (Wedding)',
+    'Cat Mario','Cat Peach','Elephant Mario','Captain Toad & Talking Flower','Poplin & Prince Florian','Rosalina & Lumas','Mario & Luma'
+  ]},
+  { series: 'Metroid Series', items: [
+    'Samus Aran','Metroid','Samus (Dread)','E.M.M.I','Samus (Metroid Prime 4: Beyond)','Samus & Vi-O-La','Sylux'
+  ]},
+  { series: 'Kirby Series Amiibo', items: [
+    'Kirby','Meta Knight','King Dedede','Waddle Dee','Kirby & Warp Star','Bandana Waddle Dee & Winged Star',
+    'Meta Knight & Shadow Star','King Dedede & Tank Star','Sword Kirby & Dragoon','Chef Kawasaki & Hop Star'
+  ]},
+  { series: 'Fire Emblem Amiibo', items: [
+    'Alim','Celica','Chrom','Tiki'
+  ]},
+  { series: "Yoshi's Wooly World", items: [
+    'Green Yarn Yoshi','Light Blue Yarn Yoshi','Pink Yarn Yoshi','Mega Yarn Yoshi','Poochy'
+  ]},
+  { series: 'Super Mario Maker Amiibo', items: [
+    '8-bit Classic Mario','8-bit Modern Mario'
+  ]},
+  { series: 'My Mario Wood Blocks', items: [
+    'Mario','Luigi','Peach','Yoshi'
+  ]},
+  { series: 'The Legend of Zelda', items: [
+    'Wolf Link','Link (Ocarina of Time)','Link (The Legend of Zelda)','Toon Link (The Wind Waker)','Zelda (The Wind Waker)',
+    'Bokoblin','Guardian','Link (Archer)','Link (Rider)','Zelda (Breath of the Wild)',
+    "Link (Majora's Mask)",'Link (Skyward Sword)','Link (Twilight Princess)','Daruk','Mipha',
+    'Revali','Urbosa',"Link (Link's Awakening)",'Zelda & Loftwing','Zelda (Tears of the Kingdom)',
+    'Ganondorf (Tears of the Kingdom)','Sidon','Riju','Tulin','Yunobo','Mineru\'s Construct'
+  ]},
+  { series: 'Other Amiibo', items: [
+    'Shadow Mewtwo (Pokken)','Pikmin (Pikmin)','Detective Pikachu (Detective Pikachu)','Diana (Pragmata)',
+    'Leon (Resident Evil)','Ashley (Resident Evil)','Ratha (Monster Hunter)','Ratha V (Monster Hunter)'
+  ]},
+  { series: 'Animal Crossing Amiibo', items: [
+    'Isabelle (Amiibo Festival)','KK Slider (Amiibo Festival)','Lottie (Amiibo Festival)','Reese','Cyrus',
+    'Tom Nook (Amiibo Festival)','Mabel','Digby','Resetti','Blathers',
+    'Kicks','Celeste','Timmy & Tommy','Rover',"Kapp'n",'Summertime Isabelle'
+  ]},
+  { series: 'Splatoon Amiibo', items: [
+    'Inkling Boy','Inkling Girl','Inkling Squid','Callie','Marie',
+    'Inkling Boy (Purple)','Inkling Girl (Lime Green)','Inkling Squid (Orange)','Inkling Boy (Splatoon 2 - Lime Green)','Inkling Girl (Splatoon 2 - Neon Pink)',
+    'Inkling Squid (Splatoon 2 - Neon Purple)','Pearl','Marina','Octoling Boy','Octoling Girl',
+    'Octoling Octopus','Inkling (Yellow)','Octoling (Blue)','Smallfry','Shiver',
+    'Big Man','Frye','Callie (Splatoon 3)','Marie (Splatoon 3)','Pearl (Splatoon 3)','Marina (Splatoon 3)'
+  ]},
+  { series: 'Xenoblade Amiibo', items: [
+    'Noah','Mio'
+  ]}
+];
+
+let amiiboNextId = 1;
+function buildAmiiboSeed() {
+  return AMIIBO_SEED.map((group, gi) => ({
+    id: 'series-' + (gi + 1),
+    name: group.series,
+    items: group.items.map(name => ({ id: 'item-' + (amiiboNextId++), name, owned: false, image: '' }))
+  }));
+}
+
+function loadAmiiboData() {
+  try {
+    const s = localStorage.getItem('retro_amiibo_data');
+    if (s) {
+      const parsed = JSON.parse(s);
+      // figure out next id from existing data so new items never collide
+      let maxId = 0;
+      parsed.forEach(g => g.items.forEach(it => {
+        const n = parseInt(String(it.id).replace('item-',''));
+        if (!isNaN(n) && n > maxId) maxId = n;
+      }));
+      amiiboNextId = maxId + 1;
+      return parsed;
+    }
+  } catch(e) {}
+  return buildAmiiboSeed();
+}
+
+function saveAmiiboData() {
+  try { localStorage.setItem('retro_amiibo_data', JSON.stringify(amiiboData)); } catch(e) {}
+  scheduleSync();
+}
+
+let amiiboData = loadAmiiboData(); // [{ id, name, items: [{ id, name, owned, image }] }]
+
+function loadAmiiboCollapsed() {
+  try { const s = localStorage.getItem('retro_amiibo_collapsed'); if (s) return JSON.parse(s); } catch(e) {}
+  return {};
+}
+function saveAmiiboCollapsed() {
+  try { localStorage.setItem('retro_amiibo_collapsed', JSON.stringify(amiiboCollapsed)); } catch(e) {}
+}
+let amiiboCollapsed = loadAmiiboCollapsed(); // { seriesId: true }
+
+let amiiboDragItem = null; // { itemId, fromSeriesId }
+
+function findAmiiboSeries(seriesId) { return amiiboData.find(g => g.id === seriesId); }
+function findAmiiboItem(itemId) {
+  for (const g of amiiboData) {
+    const item = g.items.find(it => it.id === itemId);
+    if (item) return { item, series: g };
+  }
+  return null;
+}
+
+function toggleAmiiboSeries(seriesId) {
+  amiiboCollapsed[seriesId] = !amiiboCollapsed[seriesId];
+  saveAmiiboCollapsed();
+  renderAmiiboView();
+}
+
+function toggleAmiiboItem(itemId) {
+  const found = findAmiiboItem(itemId);
+  if (!found) return;
+  found.item.owned = !found.item.owned;
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function addAmiiboSeries() {
+  const name = prompt('Name for the new series/set:');
+  if (!name || !name.trim()) return;
+  amiiboData.push({ id: 'series-' + Date.now(), name: name.trim(), items: [] });
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function renameAmiiboSeries(seriesId) {
+  const g = findAmiiboSeries(seriesId);
+  if (!g) return;
+  const name = prompt('Rename series:', g.name);
+  if (!name || !name.trim()) return;
+  g.name = name.trim();
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function deleteAmiiboSeries(seriesId) {
+  const g = findAmiiboSeries(seriesId);
+  if (!g) return;
+  const itemCount = g.items.length;
+  const msg = itemCount > 0
+    ? `Delete "${g.name}" and all ${itemCount} amiibo inside it? This can't be undone.`
+    : `Delete "${g.name}"?`;
+  if (!confirm(msg)) return;
+  amiiboData = amiiboData.filter(x => x.id !== seriesId);
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function addAmiiboItem(seriesId) {
+  const g = findAmiiboSeries(seriesId);
+  if (!g) return;
+  const name = prompt('Amiibo name:');
+  if (!name || !name.trim()) return;
+  g.items.push({ id: 'item-' + (amiiboNextId++), name: name.trim(), owned: false, image: '' });
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function renameAmiiboItem(itemId) {
+  const found = findAmiiboItem(itemId);
+  if (!found) return;
+  const name = prompt('Rename amiibo:', found.item.name);
+  if (!name || !name.trim()) return;
+  found.item.name = name.trim();
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function deleteAmiiboItem(itemId) {
+  const found = findAmiiboItem(itemId);
+  if (!found) return;
+  if (!confirm(`Remove "${found.item.name}"? This can't be undone.`)) return;
+  found.series.items = found.series.items.filter(it => it.id !== itemId);
+  const ref = `amiibo:${itemId}`;
+  ownedGames.forEach(g => {
+    if (g.relatedItems && g.relatedItems.includes(ref)) {
+      g.relatedItems = g.relatedItems.filter(r => r !== ref);
+    }
+  });
+  persistOwned();
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+// ── AMIIBO RELATED GAMES MODAL ─────────────────────────────────────────────────
+let amiiboRelatedEditingItemId = null;
+let modalAmiiboRelatedRows = []; // "game:<id>" refs
+
+function openAmiiboRelatedModal(itemId) {
+  const found = findAmiiboItem(itemId);
+  if (!found) return;
+  amiiboRelatedEditingItemId = itemId;
+  document.getElementById('amiiboRelatedModalTitle').textContent = `RELATED GAMES — ${found.item.name.toUpperCase()}`;
+  modalAmiiboRelatedRows = [...(found.item.relatedGames || [])];
+
+  const dl = document.getElementById('amiibo-related-options');
+  dl.innerHTML = ownedGames.map(g => `<option value="${escHtml(relatedItemLabel(g))}"></option>`).join('');
+
+  renderAmiiboRelatedList();
+  document.getElementById('amiiboRelatedModalOverlay').classList.add('open');
+}
+
+function renderAmiiboRelatedList() {
+  const list = document.getElementById('amiibo-related-list');
+  if (!list) return;
+  if (modalAmiiboRelatedRows.length === 0) {
+    list.innerHTML = `<div class="gt-empty" style="padding:4px 0">No related games linked yet</div>`;
+    return;
+  }
+  list.innerHTML = modalAmiiboRelatedRows.map((ref, i) => {
+    const resolved = resolveRelatedRef(ref);
+    const label = resolved ? resolved.label : 'Unknown item';
+    return `
+    <div class="dlc-item">
+      <span class="dlc-item-title">${escHtml(label)}</span>
+      <button class="dlc-item-del" onclick="removeAmiiboRelatedGame(${i})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addAmiiboRelatedGame() {
+  const input = document.getElementById('amiibo-related-input');
+  const value = input.value.trim();
+  if (!value) return;
+
+  let match = ownedGames.find(g => relatedItemLabel(g) === value);
+  if (!match) {
+    const candidates = ownedGames.filter(g => g.title.toLowerCase() === value.toLowerCase());
+    if (candidates.length === 1) match = candidates[0];
+  }
+  if (!match) {
+    alert('No matching game found in your collection. Pick one from the suggestions as you type.');
+    return;
+  }
+  const ref = `game:${match.id}`;
+  if (modalAmiiboRelatedRows.includes(ref)) {
+    alert('That game is already linked.');
+    return;
+  }
+  modalAmiiboRelatedRows.push(ref);
+  input.value = '';
+  renderAmiiboRelatedList();
+}
+
+function removeAmiiboRelatedGame(idx) {
+  modalAmiiboRelatedRows.splice(idx, 1);
+  renderAmiiboRelatedList();
+}
+
+function saveAmiiboRelatedGames() {
+  // Catch anything still typed/selected but not explicitly added
+  if (document.getElementById('amiibo-related-input').value.trim()) addAmiiboRelatedGame();
+
+  const found = findAmiiboItem(amiiboRelatedEditingItemId);
+  if (found) {
+    const oldRefs = [...(found.item.relatedGames || [])];
+    const newRefs = [...modalAmiiboRelatedRows];
+    found.item.relatedGames = newRefs;
+    syncRelatedGamesForAmiibo(amiiboRelatedEditingItemId, oldRefs, newRefs);
+    saveAmiiboData();
+    renderAmiiboView();
+  }
+  closeAmiiboRelatedModal();
+}
+
+function syncRelatedGamesForAmiibo(itemId, oldRefs, newRefs) {
+  const added = newRefs.filter(r => !oldRefs.includes(r));
+  const removed = oldRefs.filter(r => !newRefs.includes(r));
+  const backRef = `amiibo:${itemId}`;
+  let ownedChanged = false;
+
+  added.forEach(ref => {
+    if (typeof ref !== 'string' || !ref.startsWith('game:')) return;
+    const target = ownedGames.find(g => g.id === Number(ref.slice(5)));
+    if (target) {
+      target.relatedItems = target.relatedItems || [];
+      if (!target.relatedItems.includes(backRef)) { target.relatedItems.push(backRef); ownedChanged = true; }
+    }
+  });
+
+  removed.forEach(ref => {
+    if (typeof ref !== 'string' || !ref.startsWith('game:')) return;
+    const target = ownedGames.find(g => g.id === Number(ref.slice(5)));
+    if (target && target.relatedItems) {
+      const before = target.relatedItems.length;
+      target.relatedItems = target.relatedItems.filter(r => r !== backRef);
+      if (target.relatedItems.length !== before) ownedChanged = true;
+    }
+  });
+
+  if (ownedChanged) persistOwned();
+}
+
+function closeAmiiboRelatedModal() {
+  document.getElementById('amiiboRelatedModalOverlay').classList.remove('open');
+  document.getElementById('amiibo-related-input').value = '';
+  modalAmiiboRelatedRows = [];
+  amiiboRelatedEditingItemId = null;
+}
+
+document.getElementById('amiiboRelatedModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeAmiiboRelatedModal(); });
+
+async function setAmiiboItemImageUrl(itemId, url) {
+  const found = findAmiiboItem(itemId);
+  if (!found) return;
+  const trimmedUrl = url ? url.trim() : '';
+  if (!trimmedUrl) {
+    found.item.image = '';
+    found.item.imageIsSaved = false;
+    saveAmiiboData();
+    renderAmiiboView();
+    return;
+  }
+
+  // A local repo path (e.g. "amiibo/samus-aran.png") isn't a remote link to download —
+  // it's already a permanent file you've put in the repo yourself, so treat it as saved.
+  const isLocalPath = !/^(https?:|data:)/i.test(trimmedUrl);
+  if (isLocalPath) {
+    found.item.image = trimmedUrl;
+    found.item.imageIsSaved = true;
+    saveAmiiboData();
+    renderAmiiboView();
+    return;
+  }
+
+  // Show the pasted URL immediately so there's no blank wait, then try to save a permanent copy
+  found.item.image = trimmedUrl;
+  found.item.imageIsSaved = false;
+  saveAmiiboData();
+  renderAmiiboView();
+
+  try {
+    const res = await fetch(trimmedUrl);
+    if (!res.ok) throw new Error('fetch failed');
+    const blob = await res.blob();
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    const stillFound = findAmiiboItem(itemId);
+    if (stillFound) {
+      stillFound.item.image = dataUrl;
+      stillFound.item.imageIsSaved = true;
+      saveAmiiboData();
+      renderAmiiboView();
+    }
+  } catch (e) {
+    // Could not download the image (site blocks it, broken link, etc).
+    // Keep the pasted URL as a fallback so the picture still shows for now.
+    const stillFound = findAmiiboItem(itemId);
+    if (stillFound) {
+      stillFound.item.imageIsSaved = false;
+      saveAmiiboData();
+      renderAmiiboView();
+    }
+  }
+}
+
+function uploadAmiiboItemImage(itemId, file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const found = findAmiiboItem(itemId);
+    if (!found) return;
+    found.item.image = ev.target.result;
+    found.item.imageIsSaved = true;
+    saveAmiiboData();
+    renderAmiiboView();
+  };
+  reader.readAsDataURL(file);
+}
+
+function moveAmiiboItem(itemId, toSeriesId) {
+  const found = findAmiiboItem(itemId);
+  const dest = findAmiiboSeries(toSeriesId);
+  if (!found || !dest || found.series.id === toSeriesId) return;
+  found.series.items = found.series.items.filter(it => it.id !== itemId);
+  dest.items.push(found.item);
+  saveAmiiboData();
+  renderAmiiboView();
+}
+
+function renderAmiiboView() {
+  try {
+    renderAmiiboViewInner();
+  } catch (e) {
+    console.error('renderAmiiboView failed:', e);
+    const listEl = document.getElementById('amiiboSeriesList');
+    if (listEl) {
+      listEl.innerHTML = `<div class="gt-empty" style="padding:20px;color:var(--maker)">Something went wrong showing your Amiibo collection: ${escHtml(e.message)}. Check the browser console for details and let Claude know — this shouldn't happen.</div>`;
+    }
+  }
+}
+
+function renderAmiiboViewInner() {
+  const listEl = document.getElementById('amiiboSeriesList');
+  const summaryEl = document.getElementById('amiiboSummary');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  const searchEl = document.getElementById('amiiboSearch');
+  const filterEl = document.getElementById('amiiboFilter');
+  const query = (searchEl?.value || '').trim().toLowerCase();
+  const filterMode = filterEl?.value || 'all';
+
+  let totalOwned = 0, totalItems = 0;
+
+  amiiboData.forEach(group => {
+    const ownedCount = group.items.filter(it => it.owned).length;
+    totalOwned += ownedCount;
+    totalItems += group.items.length;
+    const isComplete = group.items.length > 0 && ownedCount === group.items.length;
+
+    // Apply search + owned/missing filter to decide which items show
+    let visibleItems = group.items.filter(it => {
+      if (query && !it.name.toLowerCase().includes(query)) return false;
+      if (filterMode === 'owned' && !it.owned) return false;
+      if (filterMode === 'missing' && it.owned) return false;
+      return true;
+    });
+
+    // If searching/filtering and this series has nothing matching, skip the whole series
+    if ((query || filterMode !== 'all') && visibleItems.length === 0) return;
+
+    // Keep original spreadsheet order — no re-sorting
+
+    const isCollapsed = !!amiiboCollapsed[group.id];
+
+    const seriesEl = document.createElement('div');
+    seriesEl.className = 'amiibo-series' + (isCollapsed ? ' collapsed' : '') + (isComplete ? ' complete' : '');
+    seriesEl.dataset.seriesId = group.id;
+
+    const header = document.createElement('div');
+    header.className = 'amiibo-series-header';
+    header.innerHTML = `
+      <span class="amiibo-series-caret">▾</span>
+      <span class="amiibo-series-title">${escHtml(group.name)}</span>
+      <span class="amiibo-series-count">${ownedCount}/${group.items.length}${isComplete ? ' ✓' : ''}</span>
+      <span class="amiibo-series-actions">
+        <button class="amiibo-mini-btn" title="Add amiibo to this series">+ Add</button>
+        <button class="amiibo-mini-btn" title="Rename series">Rename</button>
+        <button class="amiibo-mini-btn del" title="Delete series">✕</button>
+      </span>
+    `;
+    const [, , , actionsEl] = header.children;
+    header.onclick = (e) => { if (!actionsEl.contains(e.target)) toggleAmiiboSeries(group.id); };
+    const [addBtn, renameBtn, delBtn] = actionsEl.children;
+    addBtn.onclick = (e) => { e.stopPropagation(); addAmiiboItem(group.id); };
+    renameBtn.onclick = (e) => { e.stopPropagation(); renameAmiiboSeries(group.id); };
+    delBtn.onclick = (e) => { e.stopPropagation(); deleteAmiiboSeries(group.id); };
+    seriesEl.appendChild(header);
+
+    // Drag-over target so items can be dropped onto this series
+    header.addEventListener('dragover', e => { e.preventDefault(); header.classList.add('amiibo-drop-target'); });
+    header.addEventListener('dragleave', () => header.classList.remove('amiibo-drop-target'));
+    header.addEventListener('drop', e => {
+      e.preventDefault();
+      header.classList.remove('amiibo-drop-target');
+      if (amiiboDragItem) { moveAmiiboItem(amiiboDragItem.itemId, group.id); amiiboDragItem = null; }
+    });
+
+    const body = document.createElement('div');
+    body.className = 'amiibo-series-body';
+    body.addEventListener('dragover', e => { e.preventDefault(); body.classList.add('amiibo-drop-target'); });
+    body.addEventListener('dragleave', () => body.classList.remove('amiibo-drop-target'));
+    body.addEventListener('drop', e => {
+      e.preventDefault();
+      body.classList.remove('amiibo-drop-target');
+      if (amiiboDragItem) { moveAmiiboItem(amiiboDragItem.itemId, group.id); amiiboDragItem = null; }
+    });
+
+    visibleItems.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'amiibo-item' + (item.owned ? ' owned' : '');
+      row.draggable = true;
+      row.dataset.itemId = item.id;
+
+      const isUnsavedLink = item.image && item.imageIsSaved === false && !item.image.startsWith('data:');
+      const unsavedTitle = isUnsavedLink ? ' — link only, not saved permanently' : '';
+      const warnTitle = 'This site won\'t let us save the picture automatically. Click to open it in a new tab, right-click → Save Image, then come back and click the picture here to upload that saved file.';
+      const imgHtml = item.image
+        ? `<span class="amiibo-item-img-wrap${isUnsavedLink ? ' amiibo-img-unsaved' : ''}"><img class="amiibo-item-img" src="${item.image}" alt="${escHtml(item.name)}" title="${escHtml(item.name)}${unsavedTitle}">${isUnsavedLink ? `<span class="amiibo-img-warn" title="${escHtml(warnTitle)}">!</span>` : ''}</span>`
+        : `<span class="amiibo-item-img amiibo-item-img-placeholder" title="Add picture">＋</span>`;
+
+      const relatedCount = (item.relatedGames || []).length;
+      row.innerHTML = `
+        <input type="checkbox" ${item.owned ? 'checked' : ''}>
+        ${imgHtml}
+        <span class="amiibo-item-name" title="${escHtml(item.name)}">${escHtml(item.name)}</span>
+        <span class="amiibo-item-actions">
+          <button class="amiibo-mini-btn" title="Rename">Rename</button>
+          <button class="amiibo-mini-btn amiibo-link-btn${relatedCount ? ' active' : ''}" title="Link related games">🔗${relatedCount ? ` ${relatedCount}` : ''}</button>
+          <button class="amiibo-mini-btn del" title="Delete">✕</button>
+        </span>
+        <input type="file" accept="image/*" class="amiibo-file-input" style="display:none">
+      `;
+
+      const checkbox = row.querySelector('input[type=checkbox]');
+      const imgEl = row.querySelector('.amiibo-item-img');
+      const warnEl = row.querySelector('.amiibo-img-warn');
+      const [renameBtn2, linkBtn, delItemBtn] = row.querySelectorAll('.amiibo-mini-btn');
+      const fileInput = row.querySelector('.amiibo-file-input');
+
+      checkbox.onclick = (e) => { e.stopPropagation(); toggleAmiiboItem(item.id); };
+      renameBtn2.onclick = (e) => { e.stopPropagation(); renameAmiiboItem(item.id); };
+      linkBtn.onclick = (e) => { e.stopPropagation(); openAmiiboRelatedModal(item.id); };
+      delItemBtn.onclick = (e) => { e.stopPropagation(); deleteAmiiboItem(item.id); };
+
+      if (warnEl) {
+        warnEl.onclick = (e) => {
+          e.stopPropagation();
+          window.open(item.image, '_blank', 'noopener');
+        };
+      }
+
+      imgEl.onclick = (e) => {
+        e.stopPropagation();
+        const choice = prompt('Paste an image URL, or leave blank and press OK to upload a file instead:');
+        if (choice === null) return;
+        if (choice.trim()) { setAmiiboItemImageUrl(item.id, choice.trim()); }
+        else { fileInput.click(); }
+      };
+      fileInput.onchange = (e) => { uploadAmiiboItemImage(item.id, e.target.files[0]); };
+
+      row.onclick = (e) => {
+        if (e.target.closest('.amiibo-item-actions') || e.target.closest('.amiibo-item-img') || e.target.tagName === 'INPUT') return;
+        toggleAmiiboItem(item.id);
+      };
+
+      row.addEventListener('dragstart', () => {
+        amiiboDragItem = { itemId: item.id, fromSeriesId: group.id };
+        setTimeout(() => row.classList.add('amiibo-dragging'), 0);
+      });
+      row.addEventListener('dragend', () => row.classList.remove('amiibo-dragging'));
+
+      body.appendChild(row);
+    });
+
+    seriesEl.appendChild(body);
+    listEl.appendChild(seriesEl);
+  });
+
+  summaryEl.innerHTML = `<span>${totalOwned} / ${totalItems} OWNED</span> <button class="amiibo-add-series-btn" onclick="addAmiiboSeries()">+ New Series</button>`;
+}
+
+function collapseCompleteAmiiboSeries() {
+  let changed = false;
+  amiiboData.forEach(group => {
+    const isComplete = group.items.length > 0 && group.items.every(it => it.owned);
+    if (isComplete && !amiiboCollapsed[group.id]) { amiiboCollapsed[group.id] = true; changed = true; }
+  });
+  if (changed) { saveAmiiboCollapsed(); renderAmiiboView(); }
+  else alert('No fully completed series to collapse right now.');
+}
+
+function exportAmiiboData() {
+  const blob = new Blob([JSON.stringify(amiiboData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `amiibo-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function resaveAllAmiiboImages() {
+  // Find every item with a real remote picture that isn't already a saved copy
+  // (local repo paths like "amiibo/x.png" are already permanent — skip those)
+  const targets = [];
+  amiiboData.forEach(group => {
+    group.items.forEach(item => {
+      if (item.image && /^https?:/i.test(item.image)) targets.push(item);
+    });
+  });
+
+  if (targets.length === 0) {
+    alert('Every picture is already saved permanently — nothing to do.');
+    return;
+  }
+
+  const btn = document.getElementById('amiiboResaveBtn');
+  const originalLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = `Saving 0/${targets.length}…`; }
+
+  let succeeded = 0, failed = 0;
+
+  for (let i = 0; i < targets.length; i++) {
+    const item = targets[i];
+    try {
+      const res = await fetch(item.image);
+      if (!res.ok) throw new Error('fetch failed');
+      const blob = await res.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      item.image = dataUrl;
+      item.imageIsSaved = true;
+      succeeded++;
+    } catch (e) {
+      item.imageIsSaved = false;
+      failed++;
+    }
+    if (btn) btn.textContent = `Saving ${i + 1}/${targets.length}…`;
+  }
+
+  saveAmiiboData();
+  renderAmiiboView();
+
+  if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
+
+  alert(`Done. ${succeeded} picture${succeeded === 1 ? '' : 's'} saved permanently.` +
+        (failed > 0 ? ` ${failed} couldn't be downloaded automatically (the website blocks it, often Nintendo.com). Click the orange ! on those pictures to open the image and save it yourself, then upload it.` : ''));
+}
+
 let ownedGames = loadOwned();
 let ownedNextId = Math.max(1, ...([0, ...ownedGames.map(g => g.id + 1)]));
 let ownedEditingId = null;
@@ -3975,6 +5618,8 @@ let currentConsole = GT_CONSOLES[0];
 let expandedGames = new Set(); // ids of expanded rows
 let modalPlatformRows = []; // platform rows being edited in modal
 let modalOgDlcRows = [];   // DLC rows for the GT modal
+let modalRelatedRows = []; // Related item refs for the GT modal
+let modalCompilationRows = []; // Included-game refs/free text for the GT modal
 let modalCgDlcRows = [];   // DLC rows for the Completion modal
 
 // ── COLLECTION SEED DATA ──────────────────────────────────────────────────────
@@ -4992,6 +6637,876 @@ const COLLECTION_SEED = [
       'Yo-kai Watch Blasters: Red Cat Corps',
       'Young Justice: Legacy','Zero Time Dilemma',
   ].map(title => ({ console: 'Nintendo 3DS', column: 'nicetohave', title, platforms: [{ name: 'Nintendo 3DS', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // ── Imported from user's spreadsheet export ──────────────────────────────
+
+  // Game Boy Advance — To Buy
+  ...[
+      '007: Nightfire', 'Banjo-Pilot', 'Classic NES Series: Bomberman',
+      'Classic NES Series: Castlevania', 'Classic NES Series: Donkey Kong',
+      'Classic NES Series: Excitebike', 'Classic NES Series: Ice Climber',
+      'Classic NES Series: Super Mario Bros', 'Disney\'s Aladdin',
+      'DK: King of Swing', 'Donkey Kong Country', 'Donkey Kong Country 2',
+      'Donkey Kong Country 3', 'Dr. Mario & Puzzle League', 'F-Zero: Climax',
+      'F-Zero: GP Legend', 'Fire Emblem: The Binding Blade',
+      'Kirby & the Amazing Mirror', 'Kirby: Nightmare in Dream Land',
+      'Mario Golf: Advance Tour', 'Mario Pinball Land', 'Mario Tennis: Power Tour',
+      'Mario vs. Donkey Kong', 'Pokémon Pinball: Ruby and Sapphire',
+      'Sonic Advance 2', 'Sonic Advance 3', 'Sonic Battle', 'Sonic Pinball Party',
+      'Sonic the Hedgehog Genesis', 'Super Mario Advance 4: Super Mario Bros. 3',
+      'WarioWare, Inc.: Mega Microgame$!', 'WarioWare: Twisted!',
+  ].map(title => ({ console: 'Game Boy Advance', column: 'tobuy', title, platforms: [{ name: 'Game Boy Advance', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Wii — To Buy
+  ...[
+      'Boogie Superstar', 'Conduit 2', 'Dragon Ball Z: Budokai Tenkaichi 2',
+      'Dragon Ball Z: Budokai Tenkaichi 3', 'Dragon Ball: Revenge of King Piccolo',
+      'Final Fantasy Crystal Chronicles: Echoes of Time',
+      'Final Fantasy Crystal Chronicles: The Crystal Bearers',
+      'Final Fantasy Fables: Chocobo’s Dungeon',
+      'Green Lantern: Rise of the Manhunters', 'Guitar Hero 5',
+      'Guitar Hero Smash Hits', 'Guitar Hero: Warriors of Rock',
+      'Harry Potter and the Deathly Hallows: Part I',
+      'Harry Potter and the Deathly Hallows: Part II',
+      'Harry Potter and the Half-Blood Prince',
+      'Harry Potter and the Order of the Phoenix', 'Harvest Moon: Animal Parade',
+      'Harvest Moon: Magical Melody', 'Harvest Moon: Tree of Tranquility',
+      'Indiana Jones and the Staff of Kings',
+      'No More Heroes 2: Desperate Struggle',
+      'Resident Evil Archives: Resident Evil',
+      'Resident Evil: The Darkside Chronicles', 'Sonic and the Black Knight',
+      'Sonic Colors', 'Sonic Riders: Zero Gravity',
+      'Star Wars: The Clone Wars - Republic Heroes',
+      'Star Wars: The Force Unleashed', 'Star Wars: The Force Unleashed II',
+      'The Incredible Hulk',
+  ].map(title => ({ console: 'Wii', column: 'tobuy', title, platforms: [{ name: 'Wii', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation — Owned
+  ...[
+      '007: The World Is Not Enough', '007: Tomorrow Never Dies',
+      'Action Man: Mission Xtreme', 'Croc 2', 'Croc: Legend of the Gobbos',
+      'Disney\'s Aladdin in Nasira\'s Revenge', 'Disney\'s Tarzan',
+      'Dragon Ball GT: Final Bout', 'Final Fantasy IV', 'Final Fantasy IX',
+      'Final Fantasy Origins', 'Final Fantasy V', 'Final Fantasy VI',
+      'Final Fantasy VII', 'Final Fantasy VIII',
+      'Harry Potter and the Philosopher\'s Stone',
+      'Jeff Wayne\'s The War of the Worlds', 'Metal Gear Solid',
+      'Metal Gear Solid: Integral', 'Metal Gear Solid: Special Missions',
+      'Mission: Impossible', 'Resident Evil', 'Resident Evil 3: Nemesis',
+      'Star Wars Episode I: Jedi Power Battles',
+      'Star Wars Episode I: The Phantom Menace', 'Time Crisis', 'Tomb Raider',
+      'Tomb Raider II', 'Tomb Raider III: Adventures of Lara Croft',
+      'Vagrant Story',
+  ].map(title => ({ console: 'PlayStation', column: 'owned', title, platforms: [{ name: 'PlayStation', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation — To Buy
+  ...[
+      '007 Racing', 'A Bug\'s Life', 'Ape Escape', 'Atlantis: The Lost Empire',
+      'Austin Powers Pinball', 'Batman & Robin',
+      'Batman of the Future: Return of the Joker', 'Buzz Lightyear of Star Command',
+      'Crash Bandicoot', 'Crash Bandicoot 2: Cortex Strikes Back',
+      'Crash Bandicoot: Warped', 'Dexter\'s Laboratory: Mandark\'s Lab?',
+      'Disney\'s Action Game featuring Hercules', 'Disney\'s Story Studio - Mulan',
+      'Dragon Ball Z: Ultimate Battle 22', 'Dragon Beat: Legend of Pinball',
+      'Dragon Quest IV', 'Dragon Quest Monsters 1 & 2', 'Dragon Quest VII',
+      'Final Fantasy Tactics', 'Hunchback of Notre Dame', 'Legend of Mana',
+      'Mickey\'s Wild Adventure', 'Oddworld: Abe\'s Exoddus',
+      'Oddworld: Abe\'s Oddysee', 'Persona', 'Persona 2: Eternal Punishment',
+      'Persona 2: Innocent Sin', 'Rayman 2: The Great Escape', 'Resident Evil 2',
+      'Resident Evil Survivor', 'Resident Evil: Director\'s Cut', 'Silent Hill',
+      'Spider-Man', 'Spider-Man 2: Enter Electro', 'Spyro 2: Gateway to Glimmer',
+      'Spyro The Dragon', 'Spyro: Year of the Dragon',
+      'Star Ocean: The Second Story', 'Suikoden', 'Suikoden II', 'Tales of Destiny',
+      'The Emperor\'s New Groove', 'The Legend of Dragoon',
+      'The Legend of Heroes III: Shiroki Majo',
+      'The Lion King: Simba\'s Mighty Adventure', 'Time Crisis: Project Titan',
+      'Tomb Raider Chronicles', 'Tomb Raider: The Last Revelation',
+      'Tony Hawk\'s Skateboarding', 'Toy Story 2: Buzz Lightyear to the Rescue',
+      'Valkyrie Profile', 'Xenogears',
+  ].map(title => ({ console: 'PlayStation', column: 'tobuy', title, platforms: [{ name: 'PlayStation', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation — Nice to Have
+  ...[
+      '101 Dalmatians II: Patch\'s London Adventure',
+      '102 Dalmatians: Puppies to the Rescue', '40 Winks',
+      'Action Man: Destruction X', 'Alien Trilogy', 'Alien: Resurrection',
+      'Alone in the Dark: Jack is Back', 'Alone in the Dark: The New Nightmare',
+      'Anastasia', 'Animaniacs: Ten Pin Alley', 'Arthur! Ready to Race',
+      'Asteroids', 'Batman Forever: The Arcade Game', 'Batman: Gotham City Racer',
+      'Blade', 'Blood Omen: Legacy of Kain', 'Bugs Bunny & Taz: Time Busters',
+      'Bugs Bunny: Lost in Time', 'Casper', 'Chicken Run', 'Chocobo Racing',
+      'Civilization', 'Civilization II',
+      'Command & Conquer Red Alert: Retaliation (Expansion)',
+      'Command & Conquer: Red Alert', 'Crash Bash', 'Crash Team Racing',
+      'Dancing Stage Disney Mix', 'Dead or Alive', 'Diablo', 'Die Hard Trilogy',
+      'Die Hard Trilogy 2: Viva Las Vegas', 'Digimon Digital Card Battle',
+      'Digimon Park', 'Digimon Rumble Arena', 'Digimon Tamers: Pocket Culumon',
+      'Digimon World', 'Digimon World 2', 'Digimon World 2003', 'Digimon World 3',
+      'Digimon World: Digital Card Battle', 'Dino Crisis', 'Dino Crisis 2',
+      'Discworld', 'Discworld II', 'Disney\'s Dinosaur', 'Disney\'s Lilo & Stitch',
+      'Disney\'s The Little Mermaid II', 'Doom', 'Driver', 'Driver 2',
+      'Driver: You Are the Wheelman', 'Dynasty Warriors',
+      'E.T.: Interplanetary Mission', 'Fantastic Four', 'Gex',
+      'Gex 3: Deep Cover Gecko', 'Gex: Enter the Gecko', 'Ghost in the Shell',
+      'Ghoul Panic', 'Goofy\'s Fun House', 'Gran Turismo', 'Gran Turismo 2',
+      'Grand Theft Auto', 'Grand Theft Auto 2',
+      'Grand Theft Auto: London 1969 (Expansion)', 'Guilty Gear',
+      'Gundam 0079: The War for Earth', 'Gundam: Battle Assault',
+      'Gundam: Battle Assault 2', 'Gundam: Char\'s Counterattack',
+      'Gundam: The Battle Master', 'Harry Potter and the Chamber of Secrets',
+      'Harry Potter and the Philosopher\'s Stone', 'Harvest Moon: Back To Nature',
+      'Hellboy: Asylum Seeker', 'Independence Day',
+      'Inspector Gadget: Gadget\'s Crazy Maze',
+      'Iron Man and X-O Manowar in Heavy Metal', 'James Pond 2: Codename: Robocod',
+      'JoJo\'s Bizarre Adventure', 'Judge Dredd', 'Killing Zone',
+      'Legacy of Kain: Soul Reaver', 'Legend of Mulan', 'Legend of Pocahontas',
+      'Lego Island 2: The Brickster\'s Revenge', 'Lego Racers',
+      'Lilo & Stitch: Trouble in Paradise', 'Magic: The Gathering: BattleMage',
+      'Marvel Super Heroes', 'Marvel Super Heroes vs. Street Fighter',
+      'Marvel vs. Capcom: Clash of Super Heroes', 'Medal of Honor',
+      'Medal of Honor: Underground', 'MediEvil', 'MediEvil 2',
+      'Men in Black: The Game', 'Men in Black: The Series – Crashdown',
+      'Mobile Suit Gundam', 'Mobile Suit Gundam: Perfect One Year War',
+      'Mobile Suit Z-Gundam', 'Monopoly', 'Murder on the Eurasia Express', 'Myst',
+      'Necronomicon: The Dawning of Darkness', 'Need for Speed II',
+      'Need for Speed III: Hot Pursuit', 'Need for Speed: Porsche',
+      'Need for Speed: Road Challenge', 'PaRappa the Rapper', 'Planet of the Apes',
+      'Pocket Digimon World',
+      'Pocket Digimon World: Cool & Nature Battle Disc (Expansion)',
+      'Pocket Digimon World: Wind Battle Disc (Expansion)', 'Quake II', 'Risk',
+      'Robin Hood: The Siege', 'RPG Maker', 'SaGa Frontier', 'SaGa Frontier 2',
+      'SD Gundam Eiyuden: Daikessen!! Shiki vs Musha', 'SD Gundam G Generation',
+      'SD Gundam G Generation F.I.F.', 'SD Gundam G Generation Zero',
+      'SD Gundam G Generation-F', 'SD Gundam: G Century',
+      'SD Gundam: Over Galaxian', 'Shin Megami Tensei', 'Shin Megami Tensei If...',
+      'Shin Megami Tensei II',
+      'Shin Megami Tensei: Devil Children - Black Book / Red Book',
+      'Shin Megami Tensei: Devil Summoner: Soul Hackers',
+      'Silent Mobius: Case Titanic', 'SimCity 2000', 'SimTown', 'South Park',
+      'South Park Rally', 'South Park: Chef\'s Luv Shack', 'Soviet Strike',
+      'Space Jam', 'Star Trek: Invasion', 'Star Wars: Dark Forces',
+      'Star Wars: Demolition', 'Star Wars: Masters of Teräs Käsi',
+      'Star Wars: Rebel Assault II: The Hidden Empire',
+      'Suikoden: Tenmei no Chikai', 'Tekken', 'Tekken 2', 'Tekken 3', 'Tetris Plus',
+      'Tetris with Cardcaptor Sakura: Eternal Heart', 'Tetris X',
+      'The Fifth Element', 'The Game of Life', 'The Grinch',
+      'The Incredible Hulk: The Pantheon Saga', 'The Italian Job',
+      'The Lost World: Jurassic Park', 'The Simpsons Wrestling', 'The Smurfs',
+      'The Tetris', 'The X-Files', 'Theme Park', 'Time Commando',
+      'Tiny Toon Adventures: Buster And The Beanstalk',
+      'Tiny Toon Adventures: Plucky\'s Big Adventure',
+      'Tiny Toon Adventures: Toonenstein -- Dare to Scare',
+      'Tom and Jerry in House Trap', 'Tom Clancy\'s Rainbow Six',
+      'Tom Clancy\'s Rainbow Six: Lone Wolf',
+      'Tom Clancy\'s Rainbow Six: Rogue Spear', 'Tony Hawk\'s Pro Skater 2',
+      'Tony Hawk\'s Pro Skater 3', 'Tony Hawk\'s Pro Skater 4',
+      'Top Gun: Fire At Will', 'Toy Story Racer',
+      'Transformers: Beast Wars Transmetals', 'Treasure Planet',
+      'UFO: A Day in the Life', 'Uno', 'Vandal Hearts', 'Vandal Hearts II',
+      'Who Wants to Be a Millionaire?',
+      'Who Wants to Be a Millionaire? 2nd Edition',
+      'Who Wants to Be a Millionaire? 2nd Edition (Europe)',
+      'Who Wants to Be a Millionaire? 3rd Edition', 'Winnie the Pooh: Kindergarten',
+      'Winnie the Pooh: Preschool', 'Worms', 'Worms Armageddon',
+      'X-Men vs. Street Fighter', 'X-Men: Children of the Atom',
+      'X-Men: Mutant Academy', 'X-Men: Mutant Academy 2', 'Xena: Warrior Princess',
+      'Yu-Gi-Oh! Monster Capsule: Breed & Battle',
+  ].map(title => ({ console: 'PlayStation', column: 'nicetohave', title, platforms: [{ name: 'PlayStation', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 2 — Owned
+  ...[
+      'Crash Twinsanity', 'Dirge of Cerberus: Final Fantasy VII', 'Eragon',
+      'Final Fantasy X', 'Final Fantasy X-2', 'Final Fantasy XII',
+      'Gladiator: Sword of Vengeance', 'God of War II', 'Kingdom Hearts',
+      'Kingdom Hearts II', 'Max Payne', 'Metal Gear Solid 2: Sons of Liberty',
+      'Scooby-Doo! Night of 100 Frights', 'Sonic Heroes', 'Soulcalibur II',
+      'Star Ocean: Till the End of Time', 'The Golden Compass',
+      'Transformers: The Game', 'Unlimited SaGa',
+  ].map(title => ({ console: 'PlayStation 2', column: 'owned', title, platforms: [{ name: 'PlayStation 2', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 3 — Owned
+  ...[
+      'Assassin\'s Creed II', 'Assassin\'s Creed III',
+      'Assassin\'s Creed IV: Black Flag', 'Assassin\'s Creed: Brotherhood',
+      'Assassin\'s Creed: Liberation HD', 'Assassin\'s Creed: Revelations',
+      'Batman: Arkham Asylum', 'Batman: Arkham City', 'Devil May Cry',
+      'Dragon Age II', 'Final Fantasy X/X-2 HD Remaster', 'Final Fantasy XIII',
+      'Final Fantasy XIII-2', 'Final Fantasy XIV: A Realm Reborn', 'God of War III',
+      'Heavenly Sword', 'inFAMOUS', 'James Bond 007: Blood Stone',
+      'Kingdom Hearts HD 1.5 Remix', 'Lightning Returns: Final Fantasy XIII',
+      'LittleBigPlanet', 'Lost: Via Domus', 'Metal Gear Online',
+      'Metal Gear Solid 4: Guns of the Patriots',
+      'Ni no Kuni: Wrath of the White Witch',
+      'Ratchet & Clank Future: Tools of Destruction', 'SingStar (2014)',
+      'SingStar Vol. 2', 'The Elder Scrolls V: Skyrim',
+      'Uncharted 2: Among Thieves', 'Uncharted 3: Drake\'s Deception',
+      'Uncharted: Drake\'s Fortune', 'Ratchet & Clank HD', 'Assassin\'s Creed',
+  ].map(title => ({ console: 'PlayStation 3', column: 'owned', title, platforms: [{ name: 'PlayStation 3', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 3 — To Buy
+  ...[
+      '007 Legends', '007: Quantum of Solace', 'Assassin\'s Creed Rogue',
+      'Batman: Arkham Origins', 'Batman: Arkham Origins Blackgate – Deluxe Edition',
+      'Batman: The Telltale Series', 'Beyond Good & Evil HD', 'Beyond: Two Souls',
+      'BioShock', 'BioShock 2', 'BioShock Infinite',
+      'Castle of Illusion Starring Mickey Mouse', 'Command & Conquer: Red Alert 3',
+      'Dead Space', 'Dead Space 2', 'Dead Space 3', 'Devil May Cry HD Collection',
+      'Doctor Who: The Eternity Clock', 'Dragon Age: Inquisition',
+      'Dragon Age: Origins', 'Dragon Age: Origins – Awakening (expansion)',
+      'Enslaved: Odyssey to the West', 'Epic Mickey',
+      'Epic Mickey 2: The Power of Two', 'Family Guy: Back to the Multiverse',
+      'Geometry Wars 3: Dimensions', 'God of War HD', 'God of War II HD',
+      'God of War: Ascension', 'God of War: Chains of Olympus',
+      'God of War: Ghost of Sparta', 'Godzilla (2014 video game)',
+      'GoldenEye 007: Reloaded', 'Grand Theft Auto IV', 'Grand Theft Auto V',
+      'Grand Theft Auto: Episodes from Liberty City',
+      'Grand Theft Auto: San Andreas', 'Heavy Rain', 'inFAMOUS 2',
+      'Infamous: Festival of Blood', 'Jak 3 HD',
+      'Jak and Daxter: The Precursor Legacy HD', 'Jak II HD',
+      'Kingdom Hearts HD 2.5 Remix', 'LittleBigPlanet 2',
+      'LittleBigPlanet 2: Special Edition', 'LittleBigPlanet 3',
+      'LittleBigPlanet Hub', 'LittleBigPlanet Karting', 'Mass Effect',
+      'Mass Effect 2', 'Mass Effect 3', 'Max Payne 3',
+      'Metal Gear Rising: Revengeance', 'Metal Gear Solid HD Edition',
+      'Metal Gear Solid V: Ground Zeroes', 'Metal Gear Solid V: The Phantom Pain',
+      'Metal Gear Solid: Peace Walker HD Edition',
+      'Metal Gear Solid: The Legacy Collection', 'Mirror\'s Edge', 'Nier',
+      'Nier Replicant', 'Oddworld: Munch\'s Oddysee HD',
+      'Oddworld: New \'n\' Tasty!', 'Oddworld: Stranger\'s Wrath HD', 'Overlord II',
+      'Persona 4 Arena Ultimax', 'Persona 4: Arena', 'Persona 5',
+      'Pirates of the Caribbean: At World\'s End',
+      'PlayStation All-Stars Battle Royale', 'PlayStation Home (app)',
+      'Playstation Move: Ape Escape', 'Prince of Persia',
+      'Prince of Persia Classic', 'Prince of Persia: The Forgotten Sands',
+      'Prince of Persia: The Sands of Time', 'Prince of Persia: The Two Thrones',
+      'Prince of Persia: Warrior Within', 'Ratchet & Clank Future: A Crack in Time',
+      'Ratchet & Clank Future: Quest for Booty', 'Ratchet & Clank: All 4 One',
+      'Ratchet & Clank: Going Commando', 'Ratchet & Clank: Into the Nexus',
+      'Ratchet & Clank: Up Your Arsenal', 'Ratchet and Clank: Q-Force',
+      'Ratchet: Deadlocked', 'Red Dead Redemption', 'Remember Me',
+      'Resident Evil – Code: Veronica X HD', 'Resident Evil 0: HD Remaster',
+      'Resident Evil 4 HD', 'Resident Evil 5', 'Resident Evil 6',
+      'Resident Evil 6 Anthology Edition', 'Resident Evil: HD Remaster',
+      'Resident Evil: Operation Raccoon City', 'Resident Evil: Revelations',
+      'Resident Evil: Revelations 2', 'Resident Evil: The Darkside Chronicles',
+      'Resident Evil: The Umbrella Chronicles', 'Risk',
+      'Scott Pilgrim vs. the World: The Game', 'Shadow of the Colossus',
+      'Shrek Forever After', 'Silent Hill HD Collection', 'Silent Hill: Homecoming',
+      'SingStar Vol. 3: Party Edition', 'Sonic & All-Stars Racing Transformed',
+      'Sonic & Sega All-Stars Racing', 'Sonic Adventure', 'Sonic Adventure 2',
+      'Sonic CD', 'Sonic Generations', 'Sonic the Fighters', 'Sonic the Hedgehog',
+      'Sonic the Hedgehog (Genesis)', 'Sonic the Hedgehog 2',
+      'Sonic the Hedgehog 4: Episode I', 'Sonic the Hedgehog 4: Episode II',
+      'Sonic Unleashed', 'Sonic\'s Ultimate Genesis Collection', 'Spider-Man 3',
+      'Spider-Man: Edge of Time', 'Spider-Man: Friend or Foe',
+      'Spider-Man: Shattered Dimensions', 'Spider-Man: Web of Shadows',
+      'Star Ocean: The Last Hope International',
+      'Star Wars: The Clone Wars – Republic Heroes',
+      'Star Wars: The Force Unleashed', 'Star Wars: The Force Unleashed II',
+      'Tales of Berseria', 'Tales of Graces ƒ', 'Tales of Symphonia',
+      'Tales of Symphonia: Dawn of the New World', 'Tales of Vesperia',
+      'Tales of Xillia', 'Tales of Xillia 2', 'Tales of Zestiria',
+      'The Amazing Spider-Man', 'The Amazing Spider-Man 2',
+      'The Elder Scrolls IV: Oblivion', 'The Last Guardian', 'The Last of Us',
+      'The Last Remnant', 'The Legend of Spyro: Dawn of the Dragon',
+      'The Lord of the Rings: Aragorn\'s Quest', 'The Lord of the Rings: Conquest',
+      'The Lord of the Rings: War in the North', 'The Tomb Raider Trilogy',
+      'Time Crisis 4', 'Time Crisis: Razing Storm', 'Tomb Raider',
+      'Tomb Raider: Underworld', 'Transformers Animated: The Game',
+      'Transformers: Dark of the Moon', 'Transformers: Devastation',
+      'Transformers: Fall of Cybertron', 'Transformers: Revenge of the Fallen',
+      'Transformers: Rise of the Dark Spark', 'Transformers: The Game',
+      'Transformers: War for Cybertron',
+  ].map(title => ({ console: 'PlayStation 3', column: 'tobuy', title, platforms: [{ name: 'PlayStation 3', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 3 — Nice to Have
+  ...[
+      'Alien: Isolation', 'Aliens vs. Predator', 'Aliens: Colonial Marines',
+      'American McGee\'s Alice', 'Angry Birds Star Wars', 'Angry Birds Trilogy',
+      'Attack on Titan', 'Avatar: The Game', 'Back to the Future: The Game',
+      'Badland: Game of the Year Edition', 'Band Hero', 'Battle: Los Angeles',
+      'Bayonetta', 'Bejeweled 2', 'Bejeweled 3', 'Bolt', 'Borderlands',
+      'Borderlands 2', 'Borderlands: The Pre-Sequel!',
+      'Brothers: A Tale of Two Sons', 'Captain America: Super Soldier', 'Catan',
+      'Clash of the Titans', 'Crysis', 'Crysis 2', 'Crysis 3',
+      'Dance Dance Revolution New Moves', 'Dance on Broadway', 'DanceStar Party',
+      'DanceStar Party Hits', 'Dead Space Extraction HD', 'Dead Space Ignition',
+      'Deadpool', 'Defiance', 'Destiny', 'Destroy All Humans! Path of the Furon',
+      'Deus Ex: Human Revolution', 'Deus Ex: Human Revolution Director\'s Cut',
+      'Devil May Cry 4', 'Diablo III', 'Digimon All-Star Rumble', 'Dishonored',
+      'Disney Infinity', 'Disney Infinity 2.0 Edition', 'Disney Infinity 3.0',
+      'Disney Sing It', 'Disney Sing It: Family Hits', 'Disney Sing It: Party Hits',
+      'Disney Sing It: Pop Hits',
+      'Disney Sing It! – High School Musical 3: Senior Year', 'DmC: Devil May Cry',
+      'Dragon Ball XenoVerse', 'Dragon Ball Z Budokai HD Collection',
+      'Dragon Ball Z: Battle of Z', 'Dragon Ball Z: Burst Limit',
+      'Dragon Ball Z: Ultimate Tenkaichi', 'Dragon Ball: Raging Blast',
+      'Dragon Ball: Raging Blast 2', 'Dragon Fantasy Book I',
+      'Dragon Fantasy Book II', 'Dragon Quest Builders', 'Dragon Quest Heroes II',
+      'DuckTales: Remastered', 'Dying Light', 'Eternal Sonata',
+      'Fantastic Four: Rise of the Silver Surfer', 'Far Cry 2', 'Far Cry 3',
+      'Far Cry 3: Blood Dragon', 'Far Cry 4', 'Far Cry Classic',
+      'Final Fantasy XIV', 'G.I. Joe: The Rise of Cobra', 'Game of Thrones',
+      'Game of Thrones', 'Ghostbusters: Sanctum of Slime',
+      'Ghostbusters: The Video Game', 'Green Day: Rock Band',
+      'Green Lantern: Rise of the Manhunters', 'Guitar Hero 5',
+      'Guitar Hero III: Legends of Rock', 'Guitar Hero Smash Hits',
+      'Guitar Hero World Tour', 'Guitar Hero: Aerosmith', 'Guitar Hero: Live',
+      'Guitar Hero: Metallica', 'Guitar Hero: Van Halen',
+      'Guitar Hero: Warriors of Rock',
+      'Harry Potter and the Deathly Hallows: Part I',
+      'Harry Potter and the Deathly Hallows: Part II',
+      'Harry Potter and the Half-Blood Prince',
+      'Harry Potter and the Order of the Phoenix', 'Hellboy: The Science of Evil',
+      'Hitman 2: Silent Assassin HD', 'Hitman: Absolution',
+      'Hitman: Blood Money HD', 'Hitman: Contracts HD', 'Hitman: Sniper Challenge',
+      'How to Train Your Dragon', 'How to Train Your Dragon 2',
+      'Ice Age: Continental Drift – Arctic Games', 'Ice Age: Dawn of the Dinosaurs',
+      'Injustice: Gods Among Us', 'Iron Man', 'Iron Man 2',
+      'Jurassic Park: The Game', 'Just Cause 2', 'Just Dance 2014',
+      'Just Dance 2015', 'Just Dance 2016', 'Just Dance 2017', 'Just Dance 2018',
+      'Just Dance 3', 'Just Dance 4', 'Just Dance Kids 2', 'Karaoke Revolution',
+      'Karaoke Revolution Presents: American Idol Encore',
+      'Karaoke Revolution Presents: American Idol Encore 2', 'Kick-Ass 2: The Game',
+      'Kick-Ass: The Game', 'Killzone 2', 'Killzone 3', 'Killzone HD',
+      'Kung Fu Panda', 'Kung Fu Panda 2',
+      'Kung Fu Panda: Showdown of Legendary Legends', 'L.A. Noire',
+      'Lara Croft and the Guardian of Light', 'Legacy of Kain: Dead Sun',
+      'Legend of the Guardians: The Owls of Ga\'Hoole',
+      'Lego Batman 2: DC Super Heroes', 'Lego Batman 3: Beyond Gotham',
+      'Lego Batman: The Videogame', 'Lego Dimensions Starter Pack',
+      'Lego Harry Potter: Years 1–4', 'Lego Harry Potter: Years 5-7',
+      'Lego Indiana Jones 2: The Adventure Continues',
+      'Lego Indiana Jones: The Original Adventures', 'Lego Jurassic World',
+      'Lego Lord Of The Rings', 'Lego Marvel Super Heroes',
+      'Lego Marvel\'s Avengers', 'Lego Pirates of the Caribbean: The Video Game',
+      'Lego Rock Band', 'Lego Star Wars III: The Clone Wars',
+      'Lego Star Wars: The Complete Saga', 'Lego Star Wars: The Force Awakens',
+      'Lego The Hobbit', 'Life Is Strange', 'Limbo', 'Lost Planet 2',
+      'Lost Planet 3', 'Lost Planet: Extreme Condition', 'Mafia II',
+      'Metro: Last Light', 'Middle-earth: Shadow of Mordor',
+      'Monkey Island Special Edition Collection', 'NCIS', 'Need for Speed: Carbon',
+      'Need for Speed: Hot Pursuit', 'Need for Speed: Most Wanted',
+      'Need for Speed: ProStreet', 'Need for Speed: Rivals',
+      'Need for Speed: Shift', 'Need for Speed: The Run',
+      'Need for Speed: Undercover', 'Nights into Dreams...', 'Nioh',
+      'No More Heroes: Heroes\' Paradise', 'Pacific Rim: The Video Game', 'Peggle',
+      'Rayman 3 HD', 'Rayman Legends', 'Rayman Origins',
+      'Rise of the Guardians: The Video Game', 'Risk: Factions',
+      'Risk: Urban Assault', 'Rock Band', 'Rock Band 2', 'Rock Band 3',
+      'Rock Band Blitz', 'Rock Band Classic Rock Track Pack',
+      'Rock Band Country Track Pack', 'Rock Band Country Track Pack 2',
+      'Rock Band Metal Track Pack', 'Rock Band Track Pack Volume 2',
+      'Rock Band: Japan', 'Sackboy\'s Prehistoric Moves', 'Saw', 'Saw II',
+      'Scene It? Bright Lights! Big Screen!', 'Scene It? Movie Night',
+      'Shaun the Sheep', 'Sherlock Holmes: Crimes & Punishments', 'Sine Mora',
+      'SingStar ABBA', 'SingStar Apres-Ski Party 2', 'SingStar Back to the 80s',
+      'SingStar Chart Hits', 'SingStar Chartbreaker', 'SingStar Dance',
+      'SingStar Danish Hits', 'SingStar Digital', 'SingStar Finnish Hits',
+      'SingStar Frozen', 'SingStar Fussballhits', 'SingStar Grandes Éxitos',
+      'SingStar Guitar', 'SingStar Hits', 'SingStar Hits 2', 'SingStar Kent',
+      'SingStar Latino', 'Singstar Made in Germany', 'SingStar Mallorca Party',
+      'SingStar Mecano', 'SingStar Motown', 'SingStar Patito Feo',
+      'SingStar Pop Edition', 'SingStar Portugal Hits', 'SingStar Queen',
+      'SingStar Studio 100', 'SingStar SuomiHuiput', 'SingStar Take That',
+      'SingStar Ultimate Party', 'SingStar Vasco', 'SingStar: Morangos com Acucar',
+      'SingStar: Polskie Hity', 'SingStar: The Wiggles', 'Slender: The Arrival',
+      'Soulcalibur II HD Online', 'Soulcalibur IV', 'Soulcalibur V',
+      'Soulcalibur: Lost Swords', 'South Park: The Stick of Truth', 'Star Trek',
+      'Star Trek DAC', 'The Book of Unwritten Tales 2',
+      'The Chronicles of Narnia: Prince Caspian',
+      'The Chronicles of Narnia: The Voyage of the Dawn Treader',
+      'The Chronicles of Riddick: Assault on Dark Athena', 'The Evil Within',
+      'The House of the Dead 4', 'The House of the Dead III',
+      'The House of the Dead: Overkill', 'The Incredible Hulk',
+      'The Legend of Heroes: Akatsuki no Kiseki',
+      'The Legend of Heroes: Trails in the Sky Kai HD Edition',
+      'The Legend of Heroes: Trails in the Sky SC Kai HD Edition',
+      'The Legend of Heroes: Trails in the Sky the 3rd Kai HD Edition',
+      'The Legend of Heroes: Trails of Cold Steel',
+      'The Legend of Heroes: Trails of Cold Steel II', 'The Lego Movie Videogame',
+      'The Simpsons Game', 'The Sims 3', 'The Sims 3: Pets', 'The Walking Dead',
+      'The Walking Dead: Season Two', 'The Walking Dead: Survival Instinct',
+      'The Wolf Among Us', 'Thief', 'Thor: God of Thunder',
+      'Tom Clancy\'s Splinter Cell HD', 'Tom Clancy\'s Splinter Cell: Blacklist',
+      'Tom Clancy\'s Splinter Cell: Chaos Theory HD',
+      'Tom Clancy\'s Splinter Cell: Double Agent',
+      'Tom Clancy\'s Splinter Cell: Pandora Tomorrow HD', 'Toy Story 3',
+      'Toy Story Mania', 'Turok', 'Up', 'WALL-E', 'Watch Dogs',
+      'Who Wants to Be a Millionaire?',
+      'Who Wants to Be a Millionaire? Special Editions', 'Wipeout HD', 'X-Men',
+      'X-Men Origins: Wolverine', 'X-Men: Destiny', 'XCOM: Enemy Unknown',
+      'XCOM: Enemy Within', 'Zone of the Enders: HD Collection',
+  ].map(title => ({ console: 'PlayStation 3', column: 'nicetohave', title, platforms: [{ name: 'PlayStation 3', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 4 — Owned
+  ...[
+      'Assassin\'s Creed III Remastered', 'Assassin\'s Creed IV: Black Flag',
+      'Assassin\'s Creed Odyssey', 'Assassin\'s Creed Syndicate',
+      'Assassin\'s Creed Unity', 'BioShock: The Collection', 'Control', 'Destiny',
+      'Destiny 2', 'Dragon Quest Heroes', 'Dragon Quest Heroes II',
+      'Dragon Quest XI',
+      'Dragon Quest XI S: Echoes of an Elusive Age - Definitive Edition',
+      'Final Fantasy VII Remake', 'Final Fantasy VIII Remastered',
+      'Final Fantasy X/X-2 HD Remaster', 'Final Fantasy XII: The Zodiac Age',
+      'Final Fantasy XIV: A Realm Reborn', 'Final Fantasy XIV: Heavensward',
+      'Final Fantasy XIV: Shadowbringers', 'Final Fantasy XIV: Stormblood',
+      'Final Fantasy XV', 'Infamous Second Son', 'It Takes Two',
+      'Kingdom Hearts HD 1.5 + 2.5 Remix',
+      'Kingdom Hearts HD 2.8 Final Chapter Prologue', 'Kingdom Hearts III',
+      'Kingdom Hearts: Melody of Memory', 'Knack', 'Little Nightmares',
+      'Marvel\'s Guardians of the Galaxy', 'Marvel\'s Spider-Man',
+      'Mass Effect: Andromeda', 'Metal Gear Solid V: Ground Zeroes',
+      'Metal Gear Solid V: The Phantom Pain', 'Ratchet & Clank', 'Resident Evil 5',
+      'Rise of the Tomb Raider', 'Secret of Mana', 'Shadow of the Tomb Raider',
+      'Spyro Reignited Trilogy', 'Star Ocean: Integrity and Faithlessness',
+      'Star Wars Battlefront II', 'The Last of Us Remastered',
+      'The Last of Us: Left Behind', 'The Order: 1886', 'Tomb Raider',
+      'Uncharted: The Nathan Drake Collection', 'Until Dawn',
+      'Resident Evil HD Remaster', 'Resident Evil Zero HD Remaster',
+  ].map(title => ({ console: 'PlayStation 4', column: 'owned', title, platforms: [{ name: 'PlayStation 4', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 4 — To Buy
+  ...[
+      'Alien: Isolation', 'A Plague Tale: Innocence', 'The Amazing Spider-Man 2',
+      'Assassin\'s Creed Chronicles: China', 'Assassin\'s Creed Chronicles: India',
+      'Assassin\'s Creed Chronicles: Russia',
+      'Assassin\'s Creed: The Ezio Collection', 'Assassin\'s Creed: Origins',
+      'Assassin\'s Creed Rogue Remastered', 'Marvel\'s Avengers',
+      'Batman: Arkham Knight', 'Batman: Return to Arkham',
+      'Batman: The Enemy Within', 'Batman: The Telltale Series',
+      'Beyond: Two Souls', 'Crash Bandicoot 4: It\'s About Time',
+      'Crash Bandicoot N. Sane Trilogy', 'Crash Team Racing Nitro-Fueled',
+      'Crysis Remastered', 'Crysis 2 Remastered', 'Crysis 3 Remastered',
+      'The Dark Pictures Anthology: House of Ashes',
+      'The Dark Pictures Anthology: Little Hope',
+      'The Dark Pictures Anthology: Man of Medan', 'Days Gone',
+      'Detroit: Become Human', 'Dissidia Final Fantasy NT',
+      'Dragon Age: Inquisition', 'Dragon Ball FighterZ', 'Dragon Ball Xenoverse',
+      'Dragon Ball Xenoverse 2', 'Dragon Quest Builders', 'Dragon Quest Builders 2',
+      'Fallout 4', 'God of War', 'God of War Ragnarök', 'Gravity Rush Remastered',
+      'Gravity Rush 2', 'The Elder Scrolls V: Skyrim – Special Edition',
+      'Infamous First Light', 'Kena: Bridge of Spirits',
+      'Final Fantasy: Crystal Chronicles Remastered', 'Final Fantasy Type-0 HD',
+      'F.I.S.T.: Forged In Shadow Torch', 'Game of Thrones',
+      'Granblue Fantasy: Relink', 'Granblue Fantasy Versus',
+      'Granblue Fantasy Versus: Rising', 'Ni no Kuni: Wrath of the White Witch',
+      'Ni no Kuni II: Revenant Kingdom', 'Ghostbusters: The Video Game Remastered',
+      'The Great Ace Attorney Chronicles', 'Gris', 'Guitar Hero Live', 'Heavy Rain',
+      'Hellblade: Senua\'s Sacrifice', 'Hollow Knight', 'Knack 2',
+      'The Last Campfire', 'The Last Guardian', 'The Last Remnant Remastered',
+      'The Last of Us Part II', 'Legend of Mana', 'Limbo', 'LittleBigPlanet 3',
+      'Mass Effect Legendary Edition', 'MediEvil', 'Metal Gear Survive',
+      'Mirror\'s Edge Catalyst', 'Nier: Automata',
+      'Nier Replicant ver.1.22474487139...', 'Night in the Woods',
+      'Oddworld: New \'n\' Tasty!', 'Persona 3: Dancing in Moonlight',
+      'Persona 3 Portable', 'Persona 4 Arena Ultimax',
+      'Persona 4: Dancing All Night', 'Persona 4 Golden', 'Persona 5',
+      'Persona 5: Dancing Star Night', 'Persona 5 Strikers', 'Persona 5 Tactica',
+      'Phoenix Wright: Ace Attorney Trilogy', 'Prey',
+      'Prince of Persia: The Lost Crown', 'Red Dead Redemption',
+      'Red Dead Redemption 2', 'Resident Evil 4', 'Resident Evil 6',
+      'Resident Evil 7: Biohazard', 'Resident Evil: Revelations',
+      'Resident Evil: Revelations 2', 'Resident Evil Village', 'Scarlet Nexus',
+      'Shadow of the Colossus', 'The Sinking City', 'Sonic Colors: Ultimate',
+      'Sonic Forces', 'Sonic Frontiers', 'Sonic Mania', 'Sonic Mania Plus',
+      'Sonic Origins', 'Star Wars Battlefront', 'Team Sonic Racing',
+      'Tales of Berseria', 'Tales of Vesperia: Definitive Edition',
+      'Tales of Zestiria', 'Tearaway Unfolded', 'Two Point Hospital', 'Unravel',
+      'Unravel Two', 'Visions of Mana', 'The Witcher 3: Wild Hunt',
+      'The Wonderful 101: Remastered', 'World of Final Fantasy', 'XIII',
+      'Yooka-Laylee', 'Yooka-Laylee and the Impossible Lair',
+      'Ys: Memories of Celceta', 'Ys Origin',
+  ].map(title => ({ console: 'PlayStation 4', column: 'tobuy', title, platforms: [{ name: 'PlayStation 4', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation 4 — Nice to Have
+  ...[
+      'Agatha Christie – Hercule Poirot: The First Cases',
+      'Agatha Christie: The ABC Murders', 'Angry Birds Star Wars',
+      'Arise: A Simple Story', 'Ark: Survival Evolved', 'Axiom Verge',
+      'Back to the Future: The Game – 30th Anniversary Edition', 'Baldo',
+      'Baldur\'s Gate: Dark Alliance', 'Baldur\'s Gate: Enhanced Edition',
+      'Baldur\'s Gate II: Enhanced Edition', 'Baldur\'s Gate: Siege of Dragonspear',
+      'Bayonetta', 'Blair Witch', 'Bloodborne', 'Borderlands 3',
+      'Borderlands: Game of the Year Edition',
+      'Borderlands: The Handsome Collection', 'Bugsnax',
+      'Call of Cthulhu: The Official Video Game', 'Celeste', 'Cities: Skylines',
+      'Civilization VI', 'Cris Tales', 'Cuphead', 'Cyberpunk 2077',
+      'Dark Souls Remastered', 'Dark Souls II', 'Dark Souls III',
+      'Deus Ex: Mankind Divided', 'Devil May Cry HD Collection',
+      'Devil May Cry 4: Special Edition', 'Devil May Cry 5',
+      'Diablo II: Resurrected', 'Diablo III', 'Diablo IV',
+      'Digimon Story: Cyber Sleuth',
+      'Digimon Story: Cyber Sleuth – Hacker\'s Memory', 'Digimon Survive',
+      'Digimon World: Next Order',
+      'Disney Classic Games: Aladdin and The Lion King',
+      'Disney Infinity: Marvel Super Heroes', 'Disney Infinity 3.0',
+      'Divinity: Original Sin', 'Divinity: Original Sin II',
+      'DmC: Devil May Cry Definitive Edition', 'Doom', 'Doom', 'Doom II', 'Doom 3',
+      'Doom 64', 'Doom Eternal', 'Dragon Quest X', 'Dragon Quest X Offline',
+      'Grand Theft Auto: The Trilogy – The Definitive Edition',
+      'Grand Theft Auto V', 'Kingdom Hearts: The Story So Far',
+      'Dragon Ball: The Breakers', 'Dragon\'s Dogma: Dark Arisen', 'Dying Light',
+      'Dying Light 2: Stay Human', 'The Elder Scrolls Online', 'The Evil Within 2',
+      'Fallout 76', 'The Gardens Between', 'Ghosts \'n Goblins Resurrection',
+      'Ghostrunner', 'Goat Simulator', 'God Eater Resurrection',
+      'God Eater 2: Rage Burst', 'God Eater 3', 'Godzilla: The Game',
+      'Guardians of the Galaxy: The Telltale Series', 'Human: Fall Flat',
+      'Kingdom Come: Deliverance', 'The Legend of Heroes: Kai no Kiseki',
+      'The Legend of Heroes: Trails from Zero',
+      'The Legend of Heroes: Trails into Reverie',
+      'The Legend of Heroes: Trails of Cold Steel',
+      'The Legend of Heroes: Trails of Cold Steel II',
+      'The Legend of Heroes: Trails of Cold Steel III',
+      'The Legend of Heroes: Trails of Cold Steel IV',
+      'The Legend of Heroes: Trails Through Daybreak',
+      'The Legend of Heroes: Trails Through Daybreak II',
+      'The Legend of Heroes: Trails to Azure', 'Lego Batman 3: Beyond Gotham',
+      'Lego DC Super-Villains', 'Life Is Strange', 'Life Is Strange 2',
+      'Life Is Strange: Before the Storm', 'Life Is Strange: True Colors',
+      'Little Big Workshop', 'Little Town Hero', 'Max: The Curse of Brotherhood',
+      'The Lost Child', 'Lost Ember', 'Lovecraft\'s Untold Stories',
+      'Marvel: Ultimate Alliance', 'Marvel: Ultimate Alliance 2',
+      'Monster Hunter: World', 'Monster Hunter Rise', 'Munchkin: Quacked Quest',
+      'Need for Speed', 'Need for Speed: Heat',
+      'Need for Speed: Hot Pursuit Remastered', 'Need for Speed: Payback',
+      'Need for Speed: Rivals', 'Neo: The World Ends with You',
+      'New Super Lucky\'s Tale', 'Nights of Azure',
+      'Nights of Azure 2: Bride of the New Moon', 'Nioh', 'Nioh 2', 'No Man\'s Sky',
+      'No More Heroes III', 'Oceanhorn: Monster of Uncharted Seas', 'Ōkami HD',
+      'Outer Wilds', 'The Outer Worlds', 'Peggle 2', 'The Pillars of the Earth',
+      'Plague Inc: Evolved', 'Rabbids Invasion', 'Rayman Legends',
+      'Return of the Obra Dinn', 'Ronin', 'SaGa: Scarlet Grace - Ambitions',
+      'SaGa Frontier Remastered', 'Samurai Jack: Battle Through Time',
+      'Scott Pilgrim vs. the World: The Game - Complete Edition',
+      'Sega Genesis Classics', 'Sekiro: Shadows Die Twice', 'Shenmue I & II',
+      'Shenmue III', 'Sherlock Holmes: The Awakened',
+      'Sherlock Holmes: Chapter One', 'Sherlock Holmes: Crimes & Punishments',
+      'Sherlock Holmes: The Devil\'s Daughter',
+      'Shin Megami Tensei III: Nocturne HD Remaster', 'Sifu', 'Skull & Bones',
+      'Slender: The Arrival', 'Soul Axiom', 'Soulcalibur VI',
+      'South Park: The Fractured but Whole', 'South Park: The Stick of Truth',
+      'Spiritfarer', 'Star Wars Episode I: Racer', 'Star Wars Jedi: Fallen Order',
+      'Star Wars Jedi Knight: Jedi Academy',
+      'Star Wars Jedi Knight II: Jedi Outcast',
+      'Star Wars: Battlefront Classic Collection[c]',
+      'Star Wars: Republic Commando', 'Star Wars: Squadrons', 'SteamWorld Dig',
+      'SteamWorld Dig 2', 'SteamWorld Heist', 'Superhot',
+      'Superhot: Mind Control Delete', 'Super Monkey Ball: Banana Blitz',
+      'Super Monkey Ball: Banana Mania', 'Super Motherload', 'Super Star Wars',
+      'System Shock', 'Thief', 'Ticket to Ride', 'Tony Hawk\'s Pro Skater 1+2',
+      'Tony Hawk\'s Pro Skater 5', 'Transformers: Devastation',
+      'Transformers: Fall of Cybertron', 'Transformers: Rise of the Dark Spark',
+      'Tropico 5', 'Tropico 6', 'Untitled Goose Game', 'Unturned', 'Watch Dogs',
+      'Watch Dogs 2', 'Watch Dogs: Legion', 'Wolfenstein: The New Order',
+      'Wolfenstein: The Old Blood', 'Wolfenstein: Youngblood',
+      'Wolfenstein II: The New Colossus',
+  ].map(title => ({ console: 'PlayStation 4', column: 'nicetohave', title, platforms: [{ name: 'PlayStation 4', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Portable — Owned
+  ...[
+      'Alien Syndrome', 'Assassin\'s Creed: Bloodlines',
+      'Crisis Core Final Fantasy VII', 'Dissidia Final Fantasy', 'Final Fantasy',
+      'Final Fantasy II', 'Final Fantasy Tactics: The War of the Lions',
+      'Final Fantasy IV: The Complete Collection', 'God of War: Chains of Olympus',
+      'Kingdom Hearts Birth by Sleep', 'LittleBigPlanet', 'Metal Gear Ac!d',
+      'Metal Gear Solid: Portable Ops', 'Phantasy Star Portable',
+      'Phantasy Star Portable 2', 'Ratchet & Clank: Size Matters',
+      'Scooby-Doo! Who’s Watching Who?', 'Star Ocean: First Departure',
+      'Star Ocean: Second Evolution',
+  ].map(title => ({ console: 'PlayStation Portable', column: 'owned', title, platforms: [{ name: 'PlayStation Portable', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Portable — To Buy
+  ...[
+      'Dragon Ball Z Shin Budokai', 'Dragon Ball Z: Shin Budokai Another Road',
+      'God of War: Ghost of Sparta', 'Jak and Daxter: The Lost Frontier',
+      'Lara Croft Tomb Raider: Legend', 'Metal Gear Ac!d 2',
+      'Metal Gear Solid: Digital Graphic Novel', 'Metal Gear Solid: Peace Walker',
+      'Metal Gear Solid: Portable Ops Plus',
+      'Pirates of the Caribbean: Dead Man\'s Chest', 'Tomb Raider: Anniversary',
+      'Star Wars Battlefront: Elite Squadron',
+      'Star Wars Battlefront: Renegade Squadron',
+      'Star Wars The Clone Wars: Republic Heroes', 'Star Wars: Battlefront II',
+      'Star Wars: The Force Unleashed',
+  ].map(title => ({ console: 'PlayStation Portable', column: 'tobuy', title, platforms: [{ name: 'PlayStation Portable', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Portable — Nice to Have
+  ...[
+      'Army of Two: The 40th Day', 'Avatar: The Last Airbender',
+      'Breath of Fire III', 'Burnout Legends', 'Crash of the Titans',
+      'G.I. Joe: The Rise of Cobra', 'Ghostbusters: The Video Game',
+      'Gladiator Begins', 'Grand Theft Auto: Chinatown Wars',
+      'Grand Theft Auto: Vice City Stories', 'Impossible Mission',
+      'Indiana Jones and the Staff of Kings', 'Iron Man', 'Iron Man 2',
+      'James Cameron\'s Avatar: The Game', 'Justice League Heroes',
+      'Lego Batman: The Video Game', 'Lego Harry Potter: Years 1-4',
+      'Lego Harry Potter: Years 5-7', 'Lego Indiana Jones: The Original Adventures',
+      'Lego Pirates of the Caribbean: The Video Game',
+      'Lego Star Wars III: The Clone Wars', 'Little Britain',
+      'Lord of the Rings: Aragorn\'s Quest', 'Lord of the Rings: Tactics', 'Myst',
+      'Pirates of the Caribbean: At World\'s End', 'Prince of Persia: Revelations',
+      'Prince of Persia: Rival Swords', 'Prince of Persia: The Forgotten Sands',
+      'Silent Hill: Origins', 'Silent Hill: Shattered Memories', 'Sonic Rivals',
+      'Sonic Rivals 2', 'Soulcalibur: Broken Destiny',
+      'Star Trek: Tactical Assault', 'Super Monkey Ball Adventure',
+      'Ys: The Ark of Napishtim',
+  ].map(title => ({ console: 'PlayStation Portable', column: 'nicetohave', title, platforms: [{ name: 'PlayStation Portable', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Vita — Owned
+  ...[
+      'Assassin\'s Creed III: Liberation', 'Final Fantasy X HD',
+      'Final Fantasy X-2 HD', 'Gravity Rush', 'Hue',
+      'Metal Gear Solid 2: Sons of Liberty HD Edition',
+      'Metal Gear Solid 3: Snake Eater HD Edition', 'Tearaway',
+      'Uncharted: Golden Abyss', 'Lego Batman 2: DC Super Heroes',
+      'Lego The Lord of the Rings', 'Uncharted: Fight for Fortune',
+      'Ratchet & Clank', 'Ratchet & Clank 2', 'Ratchet & Clank 3',
+      'Ratchet & Clank: Full Frontal Assault', 'World of Final Fantasy',
+  ].map(title => ({ console: 'PlayStation Vita', column: 'owned', title, platforms: [{ name: 'PlayStation Vita', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Vita — To Buy
+  ...[
+      'The Amazing Spider-Man', 'Assassin\'s Creed Chronicles Trilogy Pack',
+      'Batman: Arkham Origins Blackgate', 'Child of Light',
+      'Doctor Who: The Eternity Clock', 'Dragon Ball Z: Battle of Z',
+      'Dragon Quest Builders', 'Dragon Quest Heroes II',
+      'Epic Mickey 2: The Power of Two', 'God of War Collection',
+      'Jak and Daxter: The Precursor Legacy HD', 'Jak II HD', 'Jak 3 HD',
+      'LittleBigPlanet PS Vita', 'The Muppets Movie Adventures',
+      'Persona 3: Dancing Moon Night', 'Persona 4: Dancing All Night',
+      'Persona 4 Golden', 'Persona 5: Dancing Star Night', 'Tales of Hearts R',
+      'Tales of Innocence R', 'Ys: Memories of Celceta', 'Ys Origin',
+      'Ys VIII: Lacrimosa of Dana',
+  ].map(title => ({ console: 'PlayStation Vita', column: 'tobuy', title, platforms: [{ name: 'PlayStation Vita', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // PlayStation Vita — Nice to Have
+  ...[
+      'Adventure Time: The Secret of the Nameless Kingdom', 'Angry Birds Star Wars',
+      'Angry Birds Trilogy', 'Attack on Titan', 'Attack on Titan 2', 'Axiom Verge',
+      'Borderlands 2', 'Call of Duty: Black Ops: Declassified',
+      'Civilization Revolution 2 Plus', 'Crypt of the NecroDancer',
+      'Digimon Story: Cyber Sleuth',
+      'Digimon Story: Cyber Sleuth – Hacker\'s Memory', 'Digimon World: Next Order',
+      'Disney Infinity: Marvel Super Heroes', 'Dragon\'s Dogma Quest',
+      'Grand Theft Auto: iFruit', 'Injustice: Gods Among Us Ultimate Edition',
+      'Killzone: Mercenary', 'Lara Croft Go',
+      'The Legend of Heroes: Trails of Cold Steel',
+      'The Legend of Heroes: Trails of Cold Steel II',
+      'Lego Batman 3: Beyond Gotham', 'Lego Harry Potter: Years 5–7',
+      'Lego Jurassic World', 'Lego Legends of Chima: Laval\'s Journey',
+      'Lego The Hobbit', 'Lego Marvel\'s Avengers',
+      'Lego Marvel Super Heroes: Universe in Peril', 'The Lego Movie Videogame',
+      'Lego Star Wars: The Force Awakens', 'Lemmings Touch', 'Limbo',
+      'Looney Tunes Galactic Sports', 'Lumo', 'Michael Jackson: The Experience',
+      'Mobile Suit Gundam: Extreme VS-Force', 'Need for Speed: Most Wanted',
+      'Nights of Azure', 'Nights of Azure 2', 'Oddworld: Munch\'s Oddysee HD',
+      'Oddworld: New \'n\' Tasty!', 'Oddworld: Stranger\'s Wrath HD',
+      'Phantasy Star Nova', 'Phantasy Star Online 2', 'Plants vs. Zombies',
+      'PlayStation All-Stars Battle Royale', 'PlayStation Vita Pets',
+      'Rayman Legends', 'Rayman Origins', 'Resident Evil: Revelations 2',
+      'Shovel Knight', 'Silent Hill: Book of Memories', 'Sine Mora',
+      'Sonic & All-Stars Racing Transformed', 'Stardew Valley',
+      'Star Ocean: Second Evolution', 'Star Wars Pinball',
+      'Star Wars Pinball: The Force Awakens (Expansion)', 'Super Meat Boy',
+      'Super Monkey Ball: Banana Splitz', 'Super Star Wars', 'Terraria',
+      'Tetris Ultimate', 'The Walking Dead', 'The Walking Dead: Season Two',
+      'Wipeout 2048', 'The Wolf Among Us', 'Worms Revolution Extreme',
+  ].map(title => ({ console: 'PlayStation Vita', column: 'nicetohave', title, platforms: [{ name: 'PlayStation Vita', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // ── Imported from user's spreadsheet export (Xbox / Sega) ────────────────
+
+  // Xbox — Owned
+  ...[
+      'Fable', 'Fable: The Lost Chapters', 'Halo: Combat Evolved', 'Halo 2',
+      'Pirates of the Caribbean',
+  ].map(title => ({ console: 'Xbox', column: 'owned', title, platforms: [{ name: 'Xbox', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // Xbox — To Buy
+  ...[
+      'Area 51', 'Beyond Good & Evil', 'Conker: Live & Reloaded',
+      'Crash Bandicoot: The Wrath of Cortex', 'Gladiator: Sword of Vengeance',
+      'Futurama', 'Galleon', 'Blinx: The Time Sweeper',
+      'Blinx 2: Masters of Time and Space', 'Buffy the Vampire Slayer',
+      'Buffy the Vampire Slayer: Chaos Bleeds', 'Burnout',
+      'Burnout 2: Point of Impact', 'Burnout 3: Takedown', 'Burnout Revenge',
+      'Call of Cthulhu: Dark Corners of the Earth', 'Crash Nitro Kart',
+      'Crash Tag Team Racing', 'Crash Twinsanity', 'Destroy All Humans!',
+      'Destroy All Humans! 2', 'Deus Ex: Invisible War', 'Doom 3',
+      'Doom 3: Resurrection of Evil', 'Driver 3', 'Driver: Parallel Lines',
+      'The Elder Scrolls III: Morrowind', 'Fallout: Brotherhood of Steel',
+      'Family Guy Video Game!', 'Full Spectrum Warrior',
+      'Full Spectrum Warrior: Ten Hammers', 'Half-Life 2',
+      'Indiana Jones and the Emperor\'s Tomb', 'James Bond 007: Agent Under Fire',
+      'James Bond 007: Everything or Nothing',
+      'James Bond 007: From Russia with Love', 'James Bond 007: Nightfire',
+      'Jurassic Park: Operation Genesis', 'The Legend of Spyro: A New Beginning',
+      'Max Payne', 'Max Payne 2: The Fall of Max Payne',
+      'Metal Gear Solid 2: Substance', 'Mission: Impossible – Operation Surma',
+      'Prince of Persia: The Sands of Time', 'Prince of Persia: The Two Thrones',
+      'Prince of Persia: Warrior Within', 'Project Gotham Racing',
+      'Project Gotham Racing 2', 'Oddworld: Munch\'s Oddysee',
+      'Oddworld: Stranger\'s Wrath', 'Phantasy Star Online Episode I & II',
+      'Psychonauts', 'Shadow the Hedgehog', 'Silent Hill 2',
+      'The Simpsons: Hit & Run', 'The Sims', 'The Sims 2', 'The Sims Bustin\' Out',
+      'Sonic Heroes', 'Sonic Mega Collection Plus', 'Sonic Riders',
+      'Soulcalibur II', 'Spider-Man', 'Spider-Man 2', 'Spyro: A Hero\'s Tail',
+      'Star Wars: Battlefront', 'Star Wars: Battlefront II',
+      'Star Wars: The Clone Wars', 'Star Wars: Episode III – Revenge of the Sith',
+      'Star Wars Jedi Knight II: Jedi Outcast',
+      'Star Wars Jedi Knight: Jedi Academy', 'Star Wars: Jedi Starfighter',
+      'Star Wars: Knights of the Old Republic',
+      'Star Wars Knights of the Old Republic II: The Sith Lords',
+      'Star Wars: Obi-Wan', 'Star Wars: Republic Commando',
+      'Scooby-Doo! Mystery Mayhem', 'Scooby-Doo! Unmasked',
+      'Silent Hill 4: The Room', 'Super Monkey Ball Deluxe', 'Superman Returns',
+      'Superman: The Man of Steel', 'TimeSplitters 2',
+      'TimeSplitters: Future Perfect', 'Tom Clancy\'s Splinter Cell',
+      'Tom Clancy\'s Splinter Cell: Chaos Theory',
+      'Tom Clancy\'s Splinter Cell: Double Agent',
+      'Tom Clancy\'s Splinter Cell: Pandora Tomorrow', 'Tomb Raider: Legend',
+      'Turok: Evolution', 'Ty the Tasmanian Tiger',
+      'Ty the Tasmanian Tiger 2: Bush Rescue',
+      'Ty the Tasmanian Tiger 3: Night of the Quinkan', 'Xbox Music Mixer', 'XIII',
+  ].map(title => ({ console: 'Xbox', column: 'tobuy', title, platforms: [{ name: 'Xbox', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Xbox — Nice to Have
+  ...[
+      'Æon Flux', 'Animaniacs: The Great Edgar Hunt', 'Batman Begins',
+      'Batman: Dark Tomorrow', 'Batman: Rise of Sin Tzu', 'Batman: Vengeance',
+      'Bionicle', 'Castlevania: Curse of Darkness', 'Catwoman',
+      'Charlie and the Chocolate Factory', 'Chicken Little',
+      'The Chronicles of Narnia: The Lion, the Witch and the Wardrobe',
+      'The Chronicles of Riddick: Escape from Butcher Bay', 'Constantine',
+      'The Da Vinci Code', 'Dark Summit', 'David Beckham Soccer',
+      'Enter the Matrix', 'Eragon', 'Fantastic Four', 'Far Cry Instincts',
+      'Far Cry Instincts: Evolution', 'Finding Nemo',
+      'Godzilla: Destroy All Monsters Melee', 'Godzilla: Save the Earth',
+      'GoldenEye: Rogue Agent', 'Grabbed by the Ghoulies', 'Grand Theft Auto III',
+      'Grand Theft Auto: San Andreas', 'Grand Theft Auto: Vice City',
+      'The Great Escape', 'Hitman 2: Silent Assassin', 'Hitman: Blood Money',
+      'Hitman: Contracts', 'The Hobbit', 'The House of the Dead III', 'Hulk',
+      'Ice Age 2: The Meltdown', 'The Incredible Hulk: Ultimate Destruction',
+      'The Incredibles', 'The Incredibles: Rise of the Underminer',
+      'The Italian Job', 'Just Cause', 'Justice League Heroes', 'King Arthur',
+      'Legacy of Kain: Defiance', 'Lego Star Wars: The Video Game',
+      'Lego Star Wars II: The Original Trilogy',
+      'Lemony Snicket\'s A Series of Unfortunate Events',
+      'The Lord of the Rings: The Fellowship of the Ring',
+      'The Lord of the Rings: The Return of the King',
+      'The Lord of the Rings: The Third Age',
+      'The Lord of the Rings: The Two Towers',
+      'Magic: The Gathering – Battlegrounds', 'Marvel: Ultimate Alliance',
+      'Marvel Nemesis: Rise of the Imperfects', 'Marvel vs. Capcom 2',
+      'The Matrix: Path of Neo', 'Monopoly Party', 'Myst III: Exile',
+      'The Nightmare Before Christmas: Oogie\'s Revenge', 'The Punisher',
+      'Rayman 3: Hoodlum Havoc', 'Red Dead Revolver', 'Reign of Fire',
+      'Robin Hood: Defender of the Crown', 'RoboCop', 'Serious Sam',
+      'Serious Sam 2', 'Shenmue II', 'Shrek', 'Shrek 2', 'Shrek Super Party',
+      'Shrek SuperSlam', 'Sid Meier\'s Pirates!', 'The Simpsons: Road Rage',
+      'Syberia', 'Syberia II', 'Tetris Worlds', 'Thief: Deadly Shadows',
+      'Ultimate Spider-Man', 'Van Helsing', 'Wallace & Gromit in Project Zoo',
+      'Wallace & Gromit: The Curse of the Were-Rabbit', 'Worms 3D',
+      'Worms 4: Mayhem', 'X-Men Legends', 'X-Men Legends II: Rise of Apocalypse',
+      'X-Men: Next Dimension', 'X-Men: The Official Game',
+      'X2: Wolverine\'s Revenge', 'X-Men 2: Wolverine\'s Revenge (PAL)', 'Zathura',
+  ].map(title => ({ console: 'Xbox', column: 'nicetohave', title, platforms: [{ name: 'Xbox', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Mega Drive — Owned
+  ...[
+      'Aladdin', 'Sonic the Hedgehog', 'Sonic the Hedgehog 2',
+  ].map(title => ({ console: 'Sega Mega Drive', column: 'owned', title, platforms: [{ name: 'Sega Mega Drive', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Mega Drive — To Buy
+  ...[
+      'Animaniacs', 'Castle of Illusion Starring Mickey Mouse',
+      'James Bond 007: The Duel', 'The Lion King', 'Pocahontas',
+      'Sonic 3D Flickies\' Island', 'Sonic & Knuckles', 'Sonic the Hedgehog 3',
+      'Sonic Spinball', 'Ys III: Wanderers from Ys',
+  ].map(title => ({ console: 'Sega Mega Drive', column: 'tobuy', title, platforms: [{ name: 'Sega Mega Drive', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Mega Drive — Nice to Have
+  ...[
+      'The Addams Family', 'Addams Family Values',
+      'The Adventures of Batman & Robin',
+      'The Adventures of Rocky and Bullwinkle and Friends', 'Alien 3',
+      'Ariel the Little Mermaid', 'Back to the Future Part III',
+      'Batman: The Video Game', 'Batman Forever', 'Batman Returns',
+      'Batman: Revenge of the Joker', 'Beauty & The Beast: Belle\'s Quest',
+      'Beauty & The Beast: Roar of the Beast', 'The Story of Thor',
+      'Bram Stoker\'s Dracula', 'Captain America and The Avengers', 'Clue',
+      'The Death and Return of Superman', 'Dragon Ball Z: Buyū Retsuden',
+      'Dune: The Battle For Arrakis', 'Dune II: Battle for Arrakis',
+      'Earthworm Jim', 'Earthworm Jim 2', 'Ecco Jr.', 'Ecco the Dolphin',
+      'Ecco: The Tides of Time', 'Fantasia', 'The Flintstones', 'Frogger',
+      'Ghostbusters', 'Home Alone', 'Home Alone 2: Lost in New York', 'Hook',
+      'The Incredible Hulk', 'Indiana Jones and the Last Crusade',
+      'James Pond: Underwater Agent', 'James Pond II: Codename: RoboCod',
+      'James Pond 3: Operation Starfish', 'Judge Dredd', 'The Jungle Book',
+      'Jurassic Park', 'Jurassic Park: Rampage Edition',
+      'Krusty\'s Super Fun House', 'Lemmings', 'Lemmings 2: The Tribes',
+      'The Lost World: Jurassic Park',
+      'Magic School Bus, (Scholastic\'s) The: Space Exploration Game',
+      'Mary Shelley\'s Frankenstein',
+      'Mickey Mania: The Timeless Adventures of Mickey Mouse',
+      'Mickey\'s Ultimate Challenge', 'Mighty Morphin Power Rangers',
+      'Mighty Morphin Power Rangers: The Movie', 'Monopoly', 'Ms. Pac-Man',
+      'Pac-Panic', 'Pac-Man 2: The New Adventures', 'Pac-Mania',
+      'Phantasy Star Fukkokuban', 'Phantasy Star II',
+      'Phantasy Star III: Generations of Doom',
+      'Phantasy Star IV: The End of the Millennium', 'Pirates! Gold', 'Predator 2',
+      'Prince of Persia', 'Rings of Power', 'Risk', 'Scooby-Doo Mystery',
+      'Shadow of the Beast', 'Shadow of the Beast II',
+      'The Simpsons: Bart vs. the Space Mutants', 'The Simpsons: Bart\'s Nightmare',
+      'Spider-Man', 'Spider-Man vs. The Kingpin',
+      'Spider-Man and Venom: Maximum Carnage',
+      'Spider-Man and the X-Men in Arcade\'s Revenge', 'Stargate',
+      'Superman: The Man of Steel', 'Terminator 2: Judgment Day',
+      'T2: The Arcade Game', 'Taz-Mania', 'Taz in Escape from Mars',
+      'The Terminator', 'Tetris', 'Theme Park',
+      'Venom/Spider-Man: Separation Anxiety', 'Wheel of Fortune',
+      'World of Illusion', 'X-Men', 'X-Men 2: Clone Wars',
+  ].map(title => ({ console: 'Sega Mega Drive', column: 'nicetohave', title, platforms: [{ name: 'Sega Mega Drive', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Game Gear — Owned
+  ...[
+      'Sonic the Hegehog', 'Sonic the Hedgehog 2',
+  ].map(title => ({ console: 'Sega Game Gear', column: 'owned', title, platforms: [{ name: 'Sega Game Gear', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Saturn — Owned
+  ...[
+      'Sega Worldwide Soccer 97', 'Tomb Raider',
+  ].map(title => ({ console: 'Sega Saturn', column: 'owned', title, platforms: [{ name: 'Sega Saturn', owned: true, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Saturn — To Buy
+  ...[
+      'Alien Trilogy', 'Alone in the Dark: Jack is Back',
+      'Batman Forever: The Arcade Game', 'Bug Too!', 'Bug!', 'Casper',
+      'Command & Conquer', 'Croc: Legend of the Gobbos', 'Die Hard Trilogy', 'Doom',
+      'Dragon Ball Z: The Legend', 'Gex', 'Independence Day',
+      'Iron Man and X-O Manowar in Heavy Metal', 'Nights into Dreams', 'Quake',
+      'Rayman', 'Resident Evil', 'SimCity 2000', 'Sonic 3D: Flickies\' Island',
+      'Sonic Jam', 'Sonic R', 'Soviet Strike', 'The House of the Dead',
+      'The Lost World: Jurassic Park', 'The Need for Speed', 'Theme Park',
+      'Virtua Cop', 'Virtua Cop 2', 'Worms', 'X-Men: Children of the Atom',
+  ].map(title => ({ console: 'Sega Saturn', column: 'tobuy', title, platforms: [{ name: 'Sega Saturn', owned: false, pal: false, ntsc: false, jap: false }] })),
+
+  // Sega Saturn — Nice to Have
+  ...[
+      '3D Lemmings', 'Arcade\'s Greatest Hits: The Atari Collection 1', 'Area 51',
+      'Atlantis: The Lost Tales', 'Black Dawn', 'Black Fire',
+      'Bust-A-Move 2: Arcade Edition', 'Bust-A-Move 3', 'Die Hard Arcade',
+      'Digital Pinball', 'Discworld', 'Discworld II: Missing Presumed...!?',
+      'Dragon Force', 'DragonHeart: Fire & Steel', 'Duke Nukem 3D',
+      'Earthworm Jim 2', 'Golden Axe: The Duel', 'Jonah Lomu Rugby',
+      'Marvel Super Heroes', 'Mortal Kombat II', 'Mortal Kombat Trilogy', 'Myst',
+      'Mystaria: The Realms of Lore', 'Panzer Dragoon', 'Panzer Dragoon II Zwei',
+      'Panzer Dragoon Saga', 'Saturn Bomberman', 'Sega Rally Championship',
+      'Sega Touring Car Championship', 'Sega Worldwide Soccer \'98: Club Edition',
+      'Space Hulk: Vengeance of the Blood Angels', 'Space Jam',
+      'Super Puzzle Fighter II Turbo', 'Tetris Plus', 'The Crow: City of Angels',
+      'The Incredible Hulk: The Pantheon Saga', 'The Story of Thor 2', 'Tilt!',
+      'Twinkle Star Sprites', 'UEFA Euro 96 England', 'Warcraft II: The Dark Saga',
+  ].map(title => ({ console: 'Sega Saturn', column: 'nicetohave', title, platforms: [{ name: 'Sega Saturn', owned: false, pal: false, ntsc: false, jap: false }] })),
 ];
 
 function importSeedGames() {
@@ -5038,6 +7553,93 @@ function persistOwned() {
   scheduleSync();
 }
 
+// Box-art shape per console, used to size cover thumbnails appropriately.
+// Entirely user-defined via the picker in the Game Tracking toolbar — defaults
+// to 'tall' until set, no guessing baked in.
+function loadCoverShapes() {
+  try {
+    const s = localStorage.getItem('retro_cover_shapes');
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return {};
+}
+
+let GT_COVER_SHAPES = loadCoverShapes();
+
+function saveCoverShapes() {
+  try { localStorage.setItem('retro_cover_shapes', JSON.stringify(GT_COVER_SHAPES)); } catch(e) {}
+  scheduleSync();
+}
+
+function coverShapeForConsole(console) {
+  return GT_COVER_SHAPES[console] || 'tall';
+}
+
+function setCoverShape(console, shape) {
+  GT_COVER_SHAPES[console] = shape;
+  saveCoverShapes();
+  renderGTSettingsModal();
+  renderGTView();
+}
+
+function openGTSettingsModal() {
+  renderGTSettingsModal();
+  document.getElementById('gtSettingsModalOverlay').classList.add('open');
+}
+
+function closeGTSettingsModal() {
+  document.getElementById('gtSettingsModalOverlay').classList.remove('open');
+}
+
+function openCalendarSettingsModal() {
+  document.getElementById('calendarSettingsModalOverlay').classList.add('open');
+}
+function closeCalendarSettingsModal() {
+  document.getElementById('calendarSettingsModalOverlay').classList.remove('open');
+}
+
+function openCompletedSettingsModal() {
+  document.getElementById('completedSettingsModalOverlay').classList.add('open');
+}
+function closeCompletedSettingsModal() {
+  document.getElementById('completedSettingsModalOverlay').classList.remove('open');
+}
+
+function openSeriesSettingsModal() {
+  document.getElementById('seriesSettingsModalOverlay').classList.add('open');
+}
+function closeSeriesSettingsModal() {
+  document.getElementById('seriesSettingsModalOverlay').classList.remove('open');
+}
+
+document.getElementById('calendarSettingsModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeCalendarSettingsModal(); });
+document.getElementById('completedSettingsModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeCompletedSettingsModal(); });
+document.getElementById('seriesSettingsModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeSeriesSettingsModal(); });
+
+function renderGTSettingsModal() {
+  const el = document.getElementById('gtSettingsConsoleList');
+  if (!el) return;
+  const shapes = [
+    { id: 'tall', label: 'Tall' },
+    { id: 'square', label: 'Square' },
+    { id: 'wide', label: 'Wide' },
+  ];
+  el.innerHTML = GT_GROUPS.map(group => `
+    <div class="gt-settings-group">
+      <div class="gt-settings-group-label">${escHtml(group.label)}</div>
+      ${group.consoles.filter(c => c !== 'Amiibo').map(c => {
+        const current = coverShapeForConsole(c);
+        return `
+        <div class="gt-settings-row">
+          <span class="gt-settings-console-name">${escHtml(consoleDisplayName(c))}</span>
+          <span class="gt-shape-control">
+            ${shapes.map(s => `<button class="gt-shape-btn${s.id === current ? ' active' : ''}" onclick="setCoverShape('${c}','${s.id}')">${s.label}</button>`).join('')}
+          </span>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
 const GT_CONSOLE_YEARS = {
   'NES': 1983, 'SNES': 1990, 'Nintendo 64': 1996, 'GameCube': 2001,
   'Wii': 2006, 'Wii U': 2012, 'Nintendo Switch': 2017, 'Nintendo Switch 2': 2025,
@@ -5048,7 +7650,12 @@ const GT_CONSOLE_YEARS = {
   'PlayStation 4': 2013, 'PlayStation 5': 2020,
   'Xbox': 2001, 'Xbox 360': 2005, 'Xbox One': 2013, 'Xbox Series X': 2020,
   'Sega Mega Drive': 1988, 'Sega Saturn': 1994, 'Sega Dreamcast': 1998,
+  'Sega Master System': 1985, 'Sega Game Gear': 1990,
+  'PlayStation Portable': 2004, 'PlayStation Vita': 2011,
+  'eReader Cards': 2002,
   'PC': null, 'Lego Dimensions': 2015, 'Disney Infinity': 2013,
+  'Nintendo Peripherals': null, 'PlayStation Peripherals': null,
+  'Xbox Peripherals': null, 'Sega Peripherals': null, 'Other Peripherals': null,
 };
 
 const GT_CONSOLE_LOGOS = {
@@ -5065,6 +7672,12 @@ const GT_CONSOLE_LOGOS = {
   'Sega Mega Drive': 'logos/segamegadrive.png', 'Sega Saturn': 'logos/segasaturn.png',
   'Sega Dreamcast': 'logos/segadreamcast.png', 'PC': 'logos/pc.png',
   'Lego Dimensions': 'logos/legodimensions.png', 'Disney Infinity': 'logos/disneyinfinity.png',
+  'PlayStation Portable': 'logos/playstationportable.png', 'PlayStation Vita': 'logos/playstationvita.png',
+  'Sega Master System': 'logos/segamastersystem.png', 'Sega Game Gear': 'logos/segagamegear.png',
+  'eReader Cards': 'logos/ereadercards.png',
+  'Nintendo Peripherals': 'logos/nintendoperipherals.png', 'PlayStation Peripherals': 'logos/playstationperipherals.png',
+  'Xbox Peripherals': 'logos/xboxperipherals.png', 'Sega Peripherals': 'logos/segaperipherals.png',
+  'Other Peripherals': 'logos/otherperipherals.png',
   'NES - Nintendo Classic': 'logos/nes-classics.png',
   'SNES - Nintendo Classic': 'logos/snes-classics.png',
   'N64 - Nintendo Classic': 'logos/n64-classics.png',
@@ -5075,16 +7688,25 @@ const GT_CONSOLE_LOGOS = {
   'GameCube - Nintendo Classic': 'logos/gamecube-classics.png',
 };
 
+// Consoles for which bespoke cases get made
+const CASE_ELIGIBLE_CONSOLES = ['NES', 'SNES', 'Nintendo 64', 'Game Boy', 'Game Boy Color', 'Game Boy Advance', 'Virtual Boy'];
+
 const GT_GROUPS = [
-  { label: 'Nintendo',     consoles: ['NES', 'SNES', 'Nintendo 64', 'GameCube', 'Wii', 'Wii U', 'Nintendo Switch', 'Nintendo Switch 2', 'Virtual Boy', 'Amiibo', 'Amiibo Cards', 'Game Boy', 'Game Boy Color', 'Game Boy Advance', 'Nintendo DS', 'Nintendo 3DS'] },
-  { label: 'PlayStation',  consoles: ['PlayStation', 'PlayStation 2', 'PlayStation 3', 'PlayStation 4', 'PlayStation 5'] },
-  { label: 'Xbox',         consoles: ['Xbox', 'Xbox 360', 'Xbox One', 'Xbox Series X'] },
-  { label: 'Sega',         consoles: ['Sega Mega Drive', 'Sega Saturn', 'Sega Dreamcast'] },
-  { label: 'Other',        consoles: ['PC', 'Lego Dimensions', 'Disney Infinity'] },
+  { label: 'Nintendo',     consoles: ['NES', 'SNES', 'Nintendo 64', 'GameCube', 'Wii', 'Wii U', 'Nintendo Switch', 'Nintendo Switch 2', 'Virtual Boy', 'Amiibo', 'Amiibo Cards', 'Game Boy', 'Game Boy Color', 'Game Boy Advance', 'Nintendo DS', 'Nintendo 3DS', 'eReader Cards', 'Nintendo Peripherals'] },
+  { label: 'PlayStation',  consoles: ['PlayStation', 'PlayStation 2', 'PlayStation 3', 'PlayStation 4', 'PlayStation 5', 'PlayStation Portable', 'PlayStation Vita', 'PlayStation Peripherals'] },
+  { label: 'Xbox',         consoles: ['Xbox', 'Xbox 360', 'Xbox One', 'Xbox Series X', 'Xbox Peripherals'] },
+  { label: 'Sega',         consoles: ['Sega Mega Drive', 'Sega Saturn', 'Sega Dreamcast', 'Sega Master System', 'Sega Game Gear', 'Sega Peripherals'] },
+  { label: 'Other',        consoles: ['PC', 'Lego Dimensions', 'Disney Infinity', 'Other Peripherals'] },
 ];
 
 function currentBrandGroup() {
   return GT_GROUPS.find(g => g.consoles.includes(currentConsole)) || GT_GROUPS[0];
+}
+
+// Shortens internal console keys (which include the brand to keep them unique)
+// down to a friendlier label for display in tabs.
+function consoleDisplayName(c) {
+  return c.endsWith('Peripherals') ? 'Peripherals' : c;
 }
 
 let currentBrand = currentBrandGroup().label;
@@ -5123,17 +7745,26 @@ function renderGTConsoleTabs() {
   consoleRow.className = 'gt-console-row';
 
   const activeGroup = GT_GROUPS.find(g => g.label === currentBrand) || GT_GROUPS[0];
-  activeGroup.consoles.forEach(c => {
+  const sortedConsoles = [...activeGroup.consoles].sort((a, b) => {
+    const aPeripheral = a.endsWith('Peripherals');
+    const bPeripheral = b.endsWith('Peripherals');
+    if (aPeripheral !== bPeripheral) return aPeripheral ? 1 : -1;
+    const aYear = GT_CONSOLE_YEARS[a] ?? Infinity;
+    const bYear = GT_CONSOLE_YEARS[b] ?? Infinity;
+    return aYear - bYear;
+  });
+  sortedConsoles.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'gt-console-tab' + (c === currentConsole ? ' active' : '');
     const year = GT_CONSOLE_YEARS[c];
     const logo = GT_CONSOLE_LOGOS[c];
+    const displayName = consoleDisplayName(c);
     const yearSpan = year ? `<span class="gt-console-tab-year">(${year})</span>` : '';
     if (logo) {
       btn.classList.add('gt-console-tab--has-logo');
-      btn.innerHTML = `<img src="${logo}" class="gt-console-tab-logo" alt="${c}" onerror="this.style.display='none'"><span class="gt-console-tab-name">${c}${yearSpan}</span>`;
+      btn.innerHTML = `<img src="${logo}" class="gt-console-tab-logo" alt="${displayName}" onerror="this.style.display='none'"><span class="gt-console-tab-name">${displayName}${yearSpan}</span>`;
     } else {
-      btn.innerHTML = year ? `${c} <span class="gt-console-tab-year">(${year})</span>` : c;
+      btn.innerHTML = year ? `<span class="gt-console-tab-name">${displayName}</span>${yearSpan}` : displayName;
     }
     btn.onclick = () => {
       currentConsole = c;
@@ -5148,6 +7779,19 @@ function renderGTConsoleTabs() {
 }
 
 function renderGTView() {
+  const gtColumnsEl = document.getElementById('gtColumns');
+  const amiiboViewEl = document.getElementById('amiiboView');
+
+  if (currentConsole === 'Amiibo') {
+    gtColumnsEl.style.display = 'none';
+    amiiboViewEl.style.display = '';
+    renderAmiiboView();
+    return;
+  } else {
+    gtColumnsEl.style.display = '';
+    amiiboViewEl.style.display = 'none';
+  }
+
   const cols = { owned: [], tobuy: [], nicetohave: [] };
 
   const games = ownedGames.filter(g =>
@@ -5182,14 +7826,6 @@ function renderGTColumn(elId, games, column) {
     const platforms = g.platforms || [];
     const ownedPlatforms = platforms.filter(p => p.owned);
 
-    const moveOptions = column === 'tobuy'
-      ? `<button class="gt-action-btn move" onclick="moveGame(${g.id},'owned')">→ Owned</button>
-         <button class="gt-action-btn move" onclick="moveGame(${g.id},'nicetohave')">→ Nice</button>`
-      : column === 'nicetohave'
-      ? `<button class="gt-action-btn move" onclick="moveGame(${g.id},'owned')">→ Owned</button>
-         <button class="gt-action-btn move" onclick="moveGame(${g.id},'tobuy')">→ To Buy</button>`
-      : `<button class="gt-action-btn move" onclick="moveGame(${g.id},'tobuy')">→ To Buy</button>`;
-
     // Show which specific region versions are owned, inline
     const ownedRegions = isOwned && ownedPlatforms.length > 0
       ? ownedPlatforms.map(p => {
@@ -5206,27 +7842,117 @@ function renderGTColumn(elId, games, column) {
     const dlcChecked = dlcs.filter(d => d.owned).length;
     const dlcBadgeHtml = dlcs.length > 0 ? `<span class="dlc-badge">${dlcChecked}/${dlcs.length} DLC</span>` : '';
 
+    const coverShape = coverShapeForConsole(g.console);
+    const coverHtml = g.coverArt
+      ? `<img class="gt-cover-thumb shape-${coverShape}" src="${escHtml(g.coverArt)}" alt="" onerror="this.style.display='none'">`
+      : `<span class="gt-cover-placeholder shape-${coverShape}"></span>`;
+
+    const caseEligible = CASE_ELIGIBLE_CONSOLES.includes(g.console);
+    const caseBadgeHtml = caseEligible
+      ? `<span class="gt-case-badge${g.caseMade ? '' : ' off'}" title="Click to toggle" onclick="toggleCaseMade(${g.id})">${g.caseMade ? '🛠 Case made' : '+ Case'}</span>`
+      : '';
+
+    const postedBadgeHtml = g.lastPosted
+      ? `<span class="gt-posted-badge" title="Posted ${escHtml(g.lastPosted)} — click to clear" onclick="clearPosted(${g.id})">📌 ${escHtml(g.lastPosted)}</span>`
+      : `<span class="gt-posted-badge off" title="Click to mark posted today" onclick="markPostedToday(${g.id})">Mark posted</span>`;
+
+    const relatedIds = g.relatedItems || [];
+    const relatedTitles = relatedIds.map(ref => { const r = resolveRelatedRef(ref); return r ? r.label : null; }).filter(Boolean);
+    const relatedBadgeHtml = relatedTitles.length > 0
+      ? `<span class="gt-related-badge" title="${escHtml(relatedTitles.join(', '))}">🔗 ${relatedTitles.length}</span>`
+      : '';
+
+    const compilationItemsList = g.compilationItems || [];
+    const compilationBadgeHtml = g.isCompilation
+      ? `<span class="gt-compilation-badge" title="${escHtml(compilationItemsList.map(ref => resolveCompilationRef(ref).label).join(', ') || 'No titles listed yet')}">📀 Compilation${compilationItemsList.length ? ` (${compilationItemsList.length})` : ''}</span>`
+      : '';
+
     const wrap = document.createElement('div');
     wrap.className = 'gt-game-row-wrap';
+    wrap.draggable = true;
+    wrap.dataset.gameId = g.id;
 
     const row = document.createElement('div');
     row.className = 'gt-game-row';
     row.innerHTML = `
+      <span class="gt-drag-handle" title="Drag to move between columns">⠿</span>
+      ${coverHtml}
       <span class="gt-game-title" title="${escHtml(g.title)}">${escHtml(g.title)}</span>
       ${regionHtml}
       ${dlcBadgeHtml}
+      ${caseBadgeHtml}
+      ${postedBadgeHtml}
+      ${relatedBadgeHtml}
+      ${compilationBadgeHtml}
       <div class="gt-row-actions">
         <a class="gt-action-btn gt-wiki-btn" href="${wikiUrl(g)}" target="_blank" rel="noopener" title="Wikipedia">W</a>
-        ${moveOptions}
         <button class="gt-action-btn" onclick="openGTModal('${column}',${g.id})">Edit</button>
         <button class="gt-action-btn del" onclick="deleteGTGame(${g.id})">✕</button>
       </div>
     `;
 
-    if (g.notes) row.title = g.notes;
+    if (g.notes) row.title = g.notes; else row.title = 'Double-click for details';
     wrap.appendChild(row);
+
+    wrap.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', String(g.id));
+      e.dataTransfer.effectAllowed = 'move';
+      wrap.classList.add('dragging');
+    });
+    wrap.addEventListener('dragend', () => wrap.classList.remove('dragging'));
+
+    // Double-click anywhere on the row (except action buttons/badges/drag handle) opens full edit details
+    row.addEventListener('dblclick', (e) => {
+      if (e.target.closest('.gt-row-actions, .gt-case-badge, .gt-posted-badge, .gt-drag-handle')) return;
+      openGTModal(column, g.id);
+    });
+
     el.appendChild(wrap);
   });
+}
+
+// ── Drag-and-drop between Owned / To Buy / Nice to Have columns ──
+['gt-owned-list', 'gt-tobuy-list', 'gt-nicetohave-list'].forEach(elId => {
+  const col = elId === 'gt-owned-list' ? 'owned' : elId === 'gt-tobuy-list' ? 'tobuy' : 'nicetohave';
+  const el = document.getElementById(elId);
+  el.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    el.classList.add('drag-over');
+  });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', (e) => {
+    e.preventDefault();
+    el.classList.remove('drag-over');
+    const id = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    if (!isNaN(id)) moveGame(id, col);
+  });
+});
+
+function toggleCaseMade(gameId) {
+  const g = ownedGames.find(g => g.id === gameId);
+  if (!g) return;
+  g.caseMade = !g.caseMade;
+  persistOwned();
+  renderGTView();
+}
+
+function markPostedToday(gameId) {
+  const g = ownedGames.find(g => g.id === gameId);
+  if (!g) return;
+  const today = new Date();
+  const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  g.lastPosted = iso;
+  persistOwned();
+  renderGTView();
+}
+
+function clearPosted(gameId) {
+  const g = ownedGames.find(g => g.id === gameId);
+  if (!g) return;
+  g.lastPosted = '';
+  persistOwned();
+  renderGTView();
 }
 
 function togglePlatformOwned(gameId, platformIdx, owned) {
@@ -5253,6 +7979,27 @@ function deleteGTGame(id) {
   if (!confirm('Remove this game?')) return;
   ownedGames = ownedGames.filter(g => g.id !== id);
   expandedGames.delete(id);
+  // Clean up any dangling references to the deleted game from other games' related items
+  // and compilation contents (handles both "game:<id>" refs and older bare numeric ids)
+  ownedGames.forEach(g => {
+    if (g.relatedItems) {
+      g.relatedItems = g.relatedItems.filter(ref => ref !== id && ref !== `game:${id}`);
+    }
+    if (g.compilationItems) {
+      g.compilationItems = g.compilationItems.filter(ref => ref !== `game:${id}`);
+    }
+  });
+  // Also clean up any Amiibo "related games" pointing at the deleted game
+  let amiiboChanged = false;
+  amiiboData.forEach(series => {
+    series.items.forEach(item => {
+      if (item.relatedGames && item.relatedGames.includes(`game:${id}`)) {
+        item.relatedGames = item.relatedGames.filter(ref => ref !== `game:${id}`);
+        amiiboChanged = true;
+      }
+    });
+  });
+  if (amiiboChanged) saveAmiiboData();
   persistOwned();
   renderGTView();
 }
@@ -5305,6 +8052,13 @@ function openGTModal(column, editId) {
   document.getElementById('og-title').value = game ? game.title : '';
   document.getElementById('og-notes').value = game ? (game.notes || '') : '';
   document.getElementById('og-wiki').value = game ? (game.wikiUrl || '') : '';
+  document.getElementById('og-cover').value = game ? (game.coverArt || '') : '';
+  document.getElementById('og-posted').value = game ? (game.lastPosted || '') : '';
+
+  const gameConsole = game ? game.console : currentConsole;
+  const caseEligible = CASE_ELIGIBLE_CONSOLES.includes(gameConsole);
+  document.getElementById('og-case-group').style.display = caseEligible ? '' : 'none';
+  document.getElementById('og-case-made').checked = game ? !!game.caseMade : false;
 
   modalPlatformRows = game ? JSON.parse(JSON.stringify(game.platforms || [])) : [];
   renderModalPlatformRows();
@@ -5312,25 +8066,114 @@ function openGTModal(column, editId) {
   modalOgDlcRows = game ? JSON.parse(JSON.stringify(game.dlc || [])) : [];
   renderModalDlcRows('og');
 
+  modalRelatedRows = game ? [...(game.relatedItems || [])] : [];
+  populateRelatedDatalist(game ? game.id : null);
+  renderModalRelatedList();
+  modalDismissedSuggestionRefs = new Set();
+  renderRelatedSuggestions();
+
+  document.getElementById('og-is-compilation').checked = game ? !!game.isCompilation : false;
+  modalCompilationRows = game ? [...(game.compilationItems || [])] : [];
+  populateCompilationDatalist(game ? game.id : null);
+  renderModalCompilationList();
+  toggleCompilationGroup();
+
   document.getElementById('ownedModalOverlay').classList.add('open');
 }
 
+// ── TWO-WAY RELATED ITEM SYNC ───────────────────────────────────────────────────
+// Keeps related-item links consistent from both ends: if game A links to game B,
+// B automatically shows A back, and vice versa for Amiibo. Works for both
+// additions and removals — diffs old vs new refs and mirrors the change.
+function syncRelatedItemsForGame(gameId, oldRefs, newRefs) {
+  const added = newRefs.filter(r => !oldRefs.includes(r));
+  const removed = oldRefs.filter(r => !newRefs.includes(r));
+  const backRef = `game:${gameId}`;
+
+  added.forEach(ref => {
+    if (typeof ref !== 'string') return;
+    if (ref.startsWith('game:')) {
+      const targetId = Number(ref.slice(5));
+      const target = ownedGames.find(g => g.id === targetId);
+      if (target) {
+        target.relatedItems = target.relatedItems || [];
+        if (!target.relatedItems.includes(backRef)) target.relatedItems.push(backRef);
+      }
+    } else if (ref.startsWith('amiibo:')) {
+      const itemId = ref.slice(7);
+      for (const series of amiiboData) {
+        const item = series.items.find(it => it.id === itemId);
+        if (item) {
+          item.relatedGames = item.relatedGames || [];
+          if (!item.relatedGames.includes(backRef)) item.relatedGames.push(backRef);
+          break;
+        }
+      }
+    }
+  });
+
+  removed.forEach(ref => {
+    if (typeof ref !== 'string') return;
+    if (ref.startsWith('game:')) {
+      const targetId = Number(ref.slice(5));
+      const target = ownedGames.find(g => g.id === targetId);
+      if (target && target.relatedItems) {
+        target.relatedItems = target.relatedItems.filter(r => r !== backRef);
+      }
+    } else if (ref.startsWith('amiibo:')) {
+      const itemId = ref.slice(7);
+      for (const series of amiiboData) {
+        const item = series.items.find(it => it.id === itemId);
+        if (item && item.relatedGames) {
+          item.relatedGames = item.relatedGames.filter(r => r !== backRef);
+          break;
+        }
+      }
+    }
+  });
+
+  if (added.length || removed.length) saveAmiiboData();
+}
+
 function saveGTGame() {
+  // Catch anything still sitting in the "add" boxes that was typed/selected
+  // but never explicitly added — don't let it get lost just because Enter
+  // or the +Add button wasn't pressed.
+  if (document.getElementById('og-dlc-input').value.trim()) addModalDlc('og');
+  if (document.getElementById('og-related-input').value.trim()) addModalRelatedItem();
+  if (document.getElementById('og-is-compilation').checked && document.getElementById('og-compilation-input').value.trim()) addModalCompilationItem();
+
   const title = document.getElementById('og-title').value.trim();
   if (!title) { alert('Please enter a game title.'); return; }
 
   const column = document.getElementById('og-column').value;
   const notes = document.getElementById('og-notes').value.trim();
   const wikiUrlVal = document.getElementById('og-wiki').value.trim();
+  const coverArt = document.getElementById('og-cover').value.trim();
+  const lastPosted = document.getElementById('og-posted').value;
+  const caseMade = document.getElementById('og-case-made').checked;
+  const isCompilation = document.getElementById('og-is-compilation').checked;
   const platforms = modalPlatformRows.filter(p => p.name.trim()).map(p => ({
     name: p.name.trim(), owned: p.owned, pal: p.pal, ntsc: p.ntsc, jap: p.jap
   }));
 
+  let savedGameId;
+  let oldRelatedItems = [];
+
   if (ownedEditingId !== null) {
     const g = ownedGames.find(g => g.id === ownedEditingId);
-    if (g) { g.title = title; g.notes = notes; g.wikiUrl = wikiUrlVal; g.column = column; g.platforms = platforms; g.dlc = modalOgDlcRows.filter(d => d.title.trim()); }
+    if (g) {
+      oldRelatedItems = [...(g.relatedItems || [])];
+      savedGameId = g.id;
+      g.title = title; g.notes = notes; g.wikiUrl = wikiUrlVal; g.column = column; g.platforms = platforms; g.dlc = modalOgDlcRows.filter(d => d.title.trim()); g.coverArt = coverArt; g.lastPosted = lastPosted; g.caseMade = caseMade; g.relatedItems = [...modalRelatedRows]; g.isCompilation = isCompilation; g.compilationItems = [...modalCompilationRows];
+    }
   } else {
-    ownedGames.push({ id: ownedNextId++, console: currentConsole, column, title, notes, wikiUrl: wikiUrlVal, platforms, dlc: modalOgDlcRows.filter(d => d.title.trim()) });
+    savedGameId = ownedNextId++;
+    ownedGames.push({ id: savedGameId, console: currentConsole, column, title, notes, wikiUrl: wikiUrlVal, platforms, dlc: modalOgDlcRows.filter(d => d.title.trim()), coverArt, lastPosted, caseMade, relatedItems: [...modalRelatedRows], isCompilation, compilationItems: [...modalCompilationRows] });
+  }
+
+  if (savedGameId !== undefined) {
+    syncRelatedItemsForGame(savedGameId, oldRelatedItems, [...modalRelatedRows]);
   }
 
   persistOwned();
@@ -5340,12 +8183,18 @@ function saveGTGame() {
 
 function closeGTModal() {
   document.getElementById('ownedModalOverlay').classList.remove('open');
-  ['og-title','og-notes','og-wiki'].forEach(id => document.getElementById(id).value = '');
+  ['og-title','og-notes','og-wiki','og-cover','og-posted','og-related-input','og-compilation-input'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('og-case-made').checked = false;
+  document.getElementById('og-is-compilation').checked = false;
+  document.getElementById('og-compilation-group').style.display = 'none';
   modalPlatformRows = [];
   modalOgDlcRows = [];
+  modalRelatedRows = [];
+  modalCompilationRows = [];
 }
 
 document.getElementById('ownedModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeGTModal(); });
+document.getElementById('gtSettingsModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeGTSettingsModal(); });
 
 // ── SERIES TRACKING ───────────────────────────────────────────────────────────
 
@@ -5953,6 +8802,8 @@ function setRating(val) {
 }
 
 function saveCompleted() {
+  if (document.getElementById('cg-dlc-input').value.trim()) addModalDlc('cg');
+
   const title = document.getElementById('cg-title').value.trim();
   const platform = document.getElementById('cg-platform').value.trim();
   const completedDate = document.getElementById('cg-completed').value;
@@ -6034,6 +8885,334 @@ function modalDlcDelete(prefix, idx) {
   const rows = prefix === 'og' ? modalOgDlcRows : modalCgDlcRows;
   rows.splice(idx, 1);
   renderModalDlcRows(prefix);
+}
+
+// ── MODAL RELATED ITEMS HELPERS (Game Tracking) ───────────────────────────────
+// Related items are stored as string refs: "game:<id>" or "amiibo:<itemId>".
+// (Older saves may have a bare numeric game id — still handled for backward compatibility.)
+function relatedItemLabel(g) {
+  return `${g.title} (${g.console})`;
+}
+
+function relatedAmiiboLabel(item, seriesName) {
+  return `${item.name} Amiibo (${seriesName})`;
+}
+
+function resolveRelatedRef(ref) {
+  if (typeof ref === 'number' || (typeof ref === 'string' && /^\d+$/.test(ref))) {
+    // Legacy bare game id
+    const g = ownedGames.find(g => g.id === Number(ref));
+    return g ? { label: relatedItemLabel(g) } : null;
+  }
+  if (typeof ref === 'string' && ref.startsWith('game:')) {
+    const g = ownedGames.find(g => g.id === Number(ref.slice(5)));
+    return g ? { label: relatedItemLabel(g) } : null;
+  }
+  if (typeof ref === 'string' && ref.startsWith('amiibo:')) {
+    const itemId = ref.slice(7);
+    for (const series of amiiboData) {
+      const item = series.items.find(it => it.id === itemId);
+      if (item) return { label: relatedAmiiboLabel(item, series.name) };
+    }
+    return null;
+  }
+  return null;
+}
+
+// ── RELATED ITEM SUGGESTIONS ─────────────────────────────────────────────────
+// Suggests other games, peripherals, and owned Amiibo to link, based on shared
+// Series Tracking franchise membership and shared significant title keywords.
+const RELATED_SUGGESTION_STOPWORDS = new Set([
+  'the','of','and','for','to','in','a','an','vs','part','edition','remastered',
+  'remaster','hd','collection','definitive','complete','deluxe','special','game',
+  'games','video','volume','vol','trilogy','anthology','classics','classic',
+]);
+
+function titleKeywords(title) {
+  return (title || '')
+    .split(/[\s:,'"!?()&-]+/)
+    .map(w => w.toLowerCase())
+    .filter(w => w.length >= 3 && !RELATED_SUGGESTION_STOPWORDS.has(w));
+}
+
+function seriesNamesForTitle(title) {
+  const lower = (title || '').toLowerCase();
+  return seriesData.filter(s => s.games.some(sg => sg.title.toLowerCase() === lower)).map(s => s.name);
+}
+
+// How many distinct game titles in the collection contain each keyword — common
+// words like "world" or "legend" turn up everywhere, so they should barely move
+// the needle; rare words like "007" or "Digimon" are a much stronger signal.
+function buildKeywordFrequencyIndex() {
+  const freq = {};
+  ownedGames.forEach(g => {
+    new Set(titleKeywords(g.title)).forEach(k => { freq[k] = (freq[k] || 0) + 1; });
+  });
+  return freq;
+}
+
+// A word that appears in only 1 title is worth full weight (1.0); one that
+// appears in 20 titles is worth almost nothing. Series matches are treated as
+// maximum confidence since franchise membership is a much more reliable signal
+// than any single shared word.
+const SERIES_MATCH_CONFIDENCE = 1;
+const KEYWORD_MATCH_THRESHOLD = 0.15; // a lone word needs to appear in ~6 or fewer titles to qualify by itself
+
+function keywordMatchConfidence(myKeywords, theirKeywords, freq) {
+  const shared = myKeywords.filter(k => theirKeywords.includes(k));
+  if (shared.length === 0) return { confidence: 0, shared: [] };
+  const confidence = shared.reduce((sum, k) => sum + 1 / (freq[k] || 1), 0);
+  // Sort shared words by individual weight so the most distinctive one shows first
+  shared.sort((a, b) => (1 / (freq[a] || 1)) - (1 / (freq[b] || 1))).reverse();
+  return { confidence, shared };
+}
+
+function getSuggestedRelatedItems(title, selfId, excludeRefs) {
+  const excluded = new Set(excludeRefs || []);
+  const keywords = titleKeywords(title);
+  const matchedSeries = seriesNamesForTitle(title);
+  const matchedSeriesLower = matchedSeries.map(n => n.toLowerCase());
+  const freq = buildKeywordFrequencyIndex();
+  const suggestions = [];
+
+  ownedGames.forEach(og => {
+    if (selfId != null && og.id === selfId) return;
+    const ref = `game:${og.id}`;
+    if (excluded.has(ref)) return;
+
+    const isSeriesMatch = matchedSeries.length && seriesNamesForTitle(og.title).some(n => matchedSeriesLower.includes(n.toLowerCase()));
+    if (isSeriesMatch) {
+      suggestions.push({ ref, label: relatedItemLabel(og), confidence: SERIES_MATCH_CONFIDENCE, reason: `Series: ${matchedSeries[0]}` });
+      return;
+    }
+
+    const { confidence, shared } = keywordMatchConfidence(keywords, titleKeywords(og.title), freq);
+    if (confidence >= KEYWORD_MATCH_THRESHOLD) {
+      suggestions.push({ ref, label: relatedItemLabel(og), confidence, reason: `Shared: ${shared.slice(0, 2).join(', ')}` });
+    }
+  });
+
+  amiiboData.forEach(series => {
+    series.items.filter(it => it.owned).forEach(it => {
+      const ref = `amiibo:${it.id}`;
+      if (excluded.has(ref)) return;
+      const seriesLower = series.name.toLowerCase();
+
+      if (matchedSeriesLower.includes(seriesLower)) {
+        suggestions.push({ ref, label: relatedAmiiboLabel(it, series.name), confidence: SERIES_MATCH_CONFIDENCE, reason: `Series: ${series.name}` });
+        return;
+      }
+
+      const { confidence, shared } = keywordMatchConfidence(keywords, titleKeywords(series.name), freq);
+      if (confidence >= KEYWORD_MATCH_THRESHOLD) {
+        suggestions.push({ ref, label: relatedAmiiboLabel(it, series.name), confidence, reason: `Shared: ${shared.slice(0, 2).join(', ')}` });
+      }
+    });
+  });
+
+  // De-dupe, rank by confidence (most certain first), and cap so the box doesn't get noisy
+  const seen = new Set();
+  return suggestions
+    .filter(s => { if (seen.has(s.ref)) return false; seen.add(s.ref); return true; })
+    .sort((a, b) => b.confidence - a.confidence)
+    .slice(0, 8);
+}
+
+let modalDismissedSuggestionRefs = new Set();
+
+function renderRelatedSuggestions() {
+  const container = document.getElementById('og-related-suggestions');
+  if (!container) return;
+  const title = document.getElementById('og-title').value.trim();
+  if (!title) { container.innerHTML = ''; return; }
+
+  const excludeRefs = [...modalRelatedRows, ...modalDismissedSuggestionRefs];
+  const suggestions = getSuggestedRelatedItems(title, ownedEditingId, excludeRefs);
+  if (suggestions.length === 0) { container.innerHTML = ''; return; }
+
+  container.innerHTML = `
+    <div class="suggestion-row">
+      <div class="suggestion-label">SUGGESTED</div>
+      <div class="suggestion-chips">
+        ${suggestions.map(s => `
+          <span class="suggestion-chip${s.confidence >= 1 ? ' suggestion-chip-strong' : ''}" title="${escHtml(s.reason)}">
+            <span class="suggestion-chip-text">
+              <span class="suggestion-chip-label">${escHtml(s.label)}</span>
+              <span class="suggestion-chip-reason">${escHtml(s.reason)}</span>
+            </span>
+            <button class="suggestion-chip-btn suggestion-chip-accept" onclick="acceptRelatedSuggestion('${s.ref}')" title="Add this">✓</button>
+            <button class="suggestion-chip-btn suggestion-chip-ignore" onclick="ignoreRelatedSuggestion('${s.ref}')" title="Ignore">✕</button>
+          </span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function acceptRelatedSuggestion(ref) {
+  if (!modalRelatedRows.includes(ref)) modalRelatedRows.push(ref);
+  renderModalRelatedList();
+  renderRelatedSuggestions();
+}
+
+function ignoreRelatedSuggestion(ref) {
+  modalDismissedSuggestionRefs.add(ref);
+  renderRelatedSuggestions();
+}
+
+function populateRelatedDatalist(excludeId) {
+  const dl = document.getElementById('og-related-options');
+  if (!dl) return;
+  const gameOptions = ownedGames
+    .filter(g => g.id !== excludeId)
+    .map(g => `<option value="${escHtml(relatedItemLabel(g))}"></option>`);
+  const amiiboOptions = [];
+  amiiboData.forEach(series => {
+    series.items.filter(it => it.owned).forEach(it => {
+      amiiboOptions.push(`<option value="${escHtml(relatedAmiiboLabel(it, series.name))}"></option>`);
+    });
+  });
+  dl.innerHTML = gameOptions.concat(amiiboOptions).join('');
+}
+
+function renderModalRelatedList() {
+  const list = document.getElementById('og-related-list');
+  if (!list) return;
+  if (modalRelatedRows.length === 0) {
+    list.innerHTML = `<div class="gt-empty" style="padding:4px 0">No related items linked yet</div>`;
+    return;
+  }
+  list.innerHTML = modalRelatedRows.map((ref, i) => {
+    const resolved = resolveRelatedRef(ref);
+    const label = resolved ? resolved.label : 'Unknown item';
+    return `
+    <div class="dlc-item">
+      <span class="dlc-item-title">${escHtml(label)}</span>
+      <button class="dlc-item-del" onclick="removeModalRelatedItem(${i})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addModalRelatedItem() {
+  const input = document.getElementById('og-related-input');
+  const value = input.value.trim();
+  if (!value) return;
+
+  let ref = null;
+
+  let gameMatch = ownedGames.find(g => g.id !== ownedEditingId && relatedItemLabel(g) === value);
+  if (!gameMatch) {
+    const candidates = ownedGames.filter(g => g.id !== ownedEditingId && g.title.toLowerCase() === value.toLowerCase());
+    if (candidates.length === 1) gameMatch = candidates[0];
+  }
+  if (gameMatch) ref = `game:${gameMatch.id}`;
+
+  if (!ref) {
+    for (const series of amiiboData) {
+      const item = series.items.find(it => it.owned && relatedAmiiboLabel(it, series.name) === value);
+      if (item) { ref = `amiibo:${item.id}`; break; }
+    }
+  }
+  if (!ref) {
+    // Case-insensitive amiibo name fallback, only if there's exactly one owned match
+    const candidates = [];
+    amiiboData.forEach(series => series.items.forEach(it => {
+      if (it.owned && it.name.toLowerCase() === value.toLowerCase()) candidates.push({ item: it, series });
+    }));
+    if (candidates.length === 1) ref = `amiibo:${candidates[0].item.id}`;
+  }
+
+  if (!ref) {
+    alert('No matching item found in your collection (or your owned amiibo). Pick one from the suggestions as you type.');
+    return;
+  }
+  if (modalRelatedRows.includes(ref)) {
+    alert('That item is already linked.');
+    return;
+  }
+
+  modalRelatedRows.push(ref);
+  input.value = '';
+  renderModalRelatedList();
+  renderRelatedSuggestions();
+}
+
+function removeModalRelatedItem(idx) {
+  modalRelatedRows.splice(idx, 1);
+  renderModalRelatedList();
+  renderRelatedSuggestions();
+}
+
+// ── MODAL COMPILATION HELPERS (Game Tracking) ──────────────────────────────────
+// Included titles are stored as "game:<id>" when picked from the collection,
+// or plain free text when the included game isn't tracked as its own entry yet.
+function toggleCompilationGroup() {
+  const checked = document.getElementById('og-is-compilation').checked;
+  document.getElementById('og-compilation-group').style.display = checked ? '' : 'none';
+}
+
+function resolveCompilationRef(ref) {
+  if (typeof ref === 'string' && ref.startsWith('game:')) {
+    const g = ownedGames.find(g => g.id === Number(ref.slice(5)));
+    return g ? { label: relatedItemLabel(g), linked: true } : { label: 'Unknown item', linked: false };
+  }
+  return { label: ref, linked: false };
+}
+
+function populateCompilationDatalist(excludeId) {
+  const dl = document.getElementById('og-compilation-options');
+  if (!dl) return;
+  dl.innerHTML = ownedGames
+    .filter(g => g.id !== excludeId)
+    .map(g => `<option value="${escHtml(relatedItemLabel(g))}"></option>`)
+    .join('');
+}
+
+function renderModalCompilationList() {
+  const list = document.getElementById('og-compilation-list');
+  if (!list) return;
+  if (modalCompilationRows.length === 0) {
+    list.innerHTML = `<div class="gt-empty" style="padding:4px 0">No included titles added yet</div>`;
+    return;
+  }
+  list.innerHTML = modalCompilationRows.map((ref, i) => {
+    const resolved = resolveCompilationRef(ref);
+    const tag = resolved.linked
+      ? `<span class="dlc-item-status">Linked</span>`
+      : `<span class="dlc-item-status" title="Not tracked as its own entry yet">Not tracked</span>`;
+    return `
+    <div class="dlc-item">
+      <span class="dlc-item-title">${escHtml(resolved.label)}</span>
+      ${tag}
+      <button class="dlc-item-del" onclick="removeModalCompilationItem(${i})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addModalCompilationItem() {
+  const input = document.getElementById('og-compilation-input');
+  const value = input.value.trim();
+  if (!value) return;
+
+  let ref;
+  let gameMatch = ownedGames.find(g => g.id !== ownedEditingId && relatedItemLabel(g) === value);
+  if (!gameMatch) {
+    const candidates = ownedGames.filter(g => g.id !== ownedEditingId && g.title.toLowerCase() === value.toLowerCase());
+    if (candidates.length === 1) gameMatch = candidates[0];
+  }
+  ref = gameMatch ? `game:${gameMatch.id}` : value;
+
+  if (modalCompilationRows.includes(ref)) {
+    alert('That title is already in the list.');
+    return;
+  }
+
+  modalCompilationRows.push(ref);
+  input.value = '';
+  renderModalCompilationList();
+}
+
+function removeModalCompilationItem(idx) {
+  modalCompilationRows.splice(idx, 1);
+  renderModalCompilationList();
 }
 
 // ── COMPLETION DLC (card-level, kept for badge display only) ──────────────────
@@ -6496,13 +9675,13 @@ document.addEventListener('click', e => {
 
 render();
 applyLegendSettings();
-initSidebar();
 try {
   const t = localStorage.getItem('retro_tab');
-  if (t && t !== 'calendar') switchTab(t);
-  else requestAnimationFrame(() => updateTabSlider('calendar'));
+  if (t && t !== 'dashboard') switchTab(t);
+  else { switchTab('dashboard'); requestAnimationFrame(() => updateTabSlider('dashboard')); }
 } catch(e) {
-  requestAnimationFrame(() => updateTabSlider('calendar'));
+  switchTab('dashboard');
+  requestAnimationFrame(() => updateTabSlider('dashboard'));
 }
 
 // Kick off sync on load
