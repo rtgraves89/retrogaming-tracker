@@ -2796,129 +2796,6 @@ textarea { resize: vertical; min-height: 72px; }
   .month-tabs { display: none; }
 }
 
-/* ── INSTAGRAM PREP MODAL ── */
-.ig-modal {
-  width: 520px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-.ig-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  gap: 12px;
-}
-
-.ig-modal-eyebrow {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.ig-modal-header h2 {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-bottom: 0;
-  line-height: 1.3;
-}
-
-.ig-section {
-  margin-bottom: 16px;
-}
-
-.ig-section-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ig-copy-btn {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 3px 10px;
-  border-radius: 3px;
-  border: 1px solid var(--border-strong);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.ig-copy-btn:hover { color: var(--text); border-color: var(--text); }
-.ig-copy-btn.copied { background: var(--franchise); color: #fff; border-color: var(--franchise); }
-
-.ig-text-block {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 12px 14px;
-  font-size: 13px;
-  line-height: 1.65;
-  color: var(--text);
-  white-space: pre-wrap;
-  user-select: all;
-  cursor: text;
-}
-
-.ig-text-block.ig-tags {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--release);
-  letter-spacing: 0.02em;
-}
-
-.ig-text-block.ig-shoot {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-  font-style: italic;
-}
-
-.ig-tip {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.5;
-  padding: 10px 12px;
-  background: var(--anniversary-bg);
-  border: 1px solid var(--anniversary-border);
-  border-radius: 5px;
-  margin-top: 4px;
-}
-
-/* Prepare button on tile */
-.tile-ig-btn {
-  display: none;
-  font-family: var(--mono);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 2px 6px;
-  margin-top: 4px;
-  border-radius: 3px;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: inherit;
-  opacity: 0.6;
-  cursor: pointer;
-  transition: opacity 0.1s;
-}
-
-.post-tile:hover .tile-ig-btn { display: inline-block; }
-.tile-ig-btn:hover { opacity: 1; }
 .tile-planner-tag {
   display: inline-block;
   font-family: var(--mono);
@@ -3017,7 +2894,7 @@ textarea { resize: vertical; min-height: 72px; }
   .tile-title { font-size: 9.5px; }
   .tile-type { font-size: 8px; }
   .post-tile { padding: 4px 5px; }
-  .tile-ig-btn, .tile-delete { display: none !important; }
+  .tile-delete { display: none !important; }
 
   /* On mobile, tile tap opens the IG modal (handled via click) */
   .post-tile { cursor: pointer; }
@@ -3082,8 +2959,6 @@ textarea { resize: vertical; min-height: 72px; }
   .modal h2 { font-size: 12px; margin-bottom: 14px; }
   .modal-actions { bottom: -18px; margin-bottom: -18px; margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; border-radius: 0; }
   .form-row { grid-template-columns: 1fr; gap: 8px; }
-  .ig-modal { width: 100%; max-height: 90vh; border-radius: 12px 12px 0 0; }
-
   /* Modal overlays slide up from bottom on mobile */
   .modal-overlay.open { align-items: flex-end; }
   .modal-overlay .modal { margin: 0; max-width: 100%; border-radius: 14px 14px 0 0; }
@@ -3302,7 +3177,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.3</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.4</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -3664,40 +3539,6 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeCompletedModal()">Cancel</button>
       <button class="btn-save" id="completed-save-btn" onclick="saveCompleted()">Log completion</button>
-    </div>
-  </div>
-</div>
-
-<!-- INSTAGRAM PREP MODAL -->
-<div class="modal-overlay" id="igOverlay">
-  <div class="modal ig-modal">
-    <div class="ig-modal-header">
-      <div>
-        <div class="ig-modal-eyebrow">PREPARE FOR INSTAGRAM</div>
-        <h2 id="ig-title" style="margin-bottom:0"></h2>
-      </div>
-      <button class="btn-cancel" onclick="closeIgModal()" style="align-self:flex-start">✕</button>
-    </div>
-    <div class="ig-section">
-      <div class="ig-section-label">
-        CAPTION
-        <button class="ig-copy-btn" onclick="copyField('ig-caption-text', this)">Copy</button>
-      </div>
-      <div class="ig-text-block" id="ig-caption-text"></div>
-    </div>
-    <div class="ig-section">
-      <div class="ig-section-label">
-        HASHTAGS
-        <button class="ig-copy-btn" onclick="copyField('ig-tags-text', this)">Copy</button>
-      </div>
-      <div class="ig-text-block ig-tags" id="ig-tags-text"></div>
-    </div>
-    <div class="ig-section" id="ig-shoot-section" style="display:none">
-      <div class="ig-section-label">SHOOT NOTES</div>
-      <div class="ig-text-block ig-shoot" id="ig-shoot-text"></div>
-    </div>
-    <div class="ig-tip">
-      💡 Instagram wants caption and hashtags pasted separately — copy each block above in turn.
     </div>
   </div>
 </div>
@@ -4229,7 +4070,6 @@ function makeTile(post) {
     <span class="tile-title">${escHtml(post.title)}</span>
     <span class="tile-type">${currentTypeLabel(post.type)}</span>
     ${plannerTagHTML}
-    <button class="tile-ig-btn" onclick="openIgModal(${post.id}, event)">▶ Prepare for Instagram</button>
     <button class="tile-delete" title="Remove" onclick="deletePost(${post.id}, event)">✕</button>
   `;
 
@@ -4246,12 +4086,12 @@ function makeTile(post) {
     hidePopover();
     openModal(post);
   });
-  // Mobile: single tap opens edit modal (since hover isn't available)
+  // Mobile: single tap opens the edit modal
   tile.addEventListener('touchend', e => {
-    if (e.target.closest('.tile-delete') || e.target.closest('.tile-ig-btn') || e.target.closest('.tile-planner-tag')) return;
+    if (e.target.closest('.tile-delete') || e.target.closest('.tile-planner-tag')) return;
     e.preventDefault();
     hidePopover();
-    openIgModal(post.id, e);
+    openModal(post);
   }, { passive: false });
 
   return tile;
@@ -4955,35 +4795,6 @@ document.getElementById('ideaModalOverlay').addEventListener('click', function(e
   if (e.target === this) closeIdeaModal();
 });
 
-// ── INSTAGRAM PREP MODAL ─────────────────────────────────────────────────────
-function openIgModal(id, e) {
-  e.stopPropagation();
-  hidePopover();
-  const post = posts.find(p => p.id === id);
-  if (!post) return;
-
-  document.getElementById('ig-title').textContent = post.title;
-  document.getElementById('ig-caption-text').textContent = post.caption || '(no caption yet — double-click the post to add one)';
-  document.getElementById('ig-tags-text').textContent = post.tags || '(no hashtags yet)';
-
-  const shootSection = document.getElementById('ig-shoot-section');
-  if (post.shootNotes) {
-    document.getElementById('ig-shoot-text').textContent = post.shootNotes;
-    shootSection.style.display = 'block';
-  } else {
-    shootSection.style.display = 'none';
-  }
-
-  // Reset copy buttons
-  document.querySelectorAll('.ig-copy-btn').forEach(b => { b.textContent = 'Copy'; b.classList.remove('copied'); });
-
-  document.getElementById('igOverlay').classList.add('open');
-}
-
-function closeIgModal() {
-  document.getElementById('igOverlay').classList.remove('open');
-}
-
 function copyField(elId, btn) {
   const text = document.getElementById(elId).textContent;
   navigator.clipboard.writeText(text).then(() => {
@@ -5005,11 +4816,8 @@ function copyField(elId, btn) {
   });
 }
 
-document.getElementById('igOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeIgModal();
-});
 
-// ── HASHTAG SUGGESTIONS ───────────────────────────────────────────────────────
+// ── HASHTAG SUGGESTIONS ───────────────────────────────────────────────────────// ── HASHTAG SUGGESTIONS ───────────────────────────────────────────────────────
 
 // Base hashtag library keyed by topic/type
 const HT_LIBRARY = {
