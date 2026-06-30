@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.2.1</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.3.0</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -3532,7 +3532,7 @@ textarea { resize: vertical; min-height: 72px; }
   <div class="modal" style="width:480px">
     <h2>GAME TRACKING SETTINGS</h2>
     <div style="margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border)">
-      <div class="linked-box-subtitle" style="margin-bottom:8px">Bulk fetch missing cover art from Wikipedia for all owned games that don't have a cover yet. Uses the saved Wikipedia URL where available, otherwise searches by title.</div>
+      <div class="linked-box-subtitle" style="margin-bottom:8px">Fetch missing cover art for all games across all columns (Owned, To Buy, Nice to Have). Already-populated covers are skipped automatically, so re-running is safe.</div>
       <button class="btn-save" id="btnBulkFetchCovers" onclick="bulkFetchCovers()" style="width:100%; margin-bottom:8px">🖼 Fetch missing covers</button>
       <div id="bulkFetchStatus" style="font-family:var(--mono); font-size:10px; color:var(--muted); min-height:16px; line-height:1.5"></div>
     </div>
@@ -3562,7 +3562,8 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="modal-overlay" id="completedSettingsModalOverlay">
   <div class="modal" style="width:480px">
     <h2>COMPLETION TRACKING SETTINGS</h2>
-    <div class="gt-empty" style="padding:20px 0">No settings here yet — check back as more options get added.</div>
+    <div class="linked-box-subtitle" style="margin-bottom:10px">Set the cover art shape for each platform. Uses the same settings as Game Tracking — changes here apply there too.</div>
+    <div id="ctSettingsPlatformList"></div>
     <div class="modal-actions">
       <button class="btn-save" onclick="closeCompletedSettingsModal()">Done</button>
     </div>
@@ -7982,9 +7983,10 @@ async function bulkFetchCovers() {
   const btn = document.getElementById('btnBulkFetchCovers');
   const status = document.getElementById('bulkFetchStatus');
 
-  // All owned games without cover art — use the saved Wikipedia URL if there
-  // is one, fall back to title-based search if not.
-  const targets = ownedGames.filter(g => g.column === 'owned' && !g.coverArt);
+  // All games across all columns (owned, wishlist, nice to have) without cover
+  // art. Already-fetched ones are skipped automatically since !g.coverArt will
+  // be false for them — so re-running is safe and won't redo your 700+ owned.
+  const targets = ownedGames.filter(g => !g.coverArt);
 
   if (!targets.length) {
     status.textContent = 'Nothing to fetch — all owned games with a Wikipedia URL already have cover art.';
@@ -8047,7 +8049,33 @@ function closeCalendarSettingsModal() {
   document.getElementById('calendarSettingsModalOverlay').classList.remove('open');
 }
 
+function renderCTSettingsModal() {
+  const el = document.getElementById('ctSettingsPlatformList');
+  if (!el) return;
+  const shapes = [
+    { id: 'tall', label: 'Tall' },
+    { id: 'square', label: 'Square' },
+    { id: 'wide', label: 'Wide' },
+  ];
+  // Only show platforms that actually appear in the completion log
+  const platforms = [...new Set(completedGames.map(g => g.platform).filter(Boolean))].sort();
+  if (!platforms.length) {
+    el.innerHTML = '<div class="gt-empty" style="padding:12px 0">No completed games with a platform set yet.</div>';
+    return;
+  }
+  el.innerHTML = platforms.map(c => {
+    const current = coverShapeForConsole(c);
+    return `<div class="gt-settings-row">
+      <span class="gt-settings-console-name">${escHtml(c)}</span>
+      <span class="gt-shape-control">
+        ${shapes.map(s => `<button class="gt-shape-btn${s.id === current ? ' active' : ''}" onclick="setCoverShape('${escHtml(c)}','${s.id}'); renderCTSettingsModal(); renderCompletedTable();">${s.label}</button>`).join('')}
+      </span>
+    </div>`;
+  }).join('');
+}
+
 function openCompletedSettingsModal() {
+  renderCTSettingsModal();
   document.getElementById('completedSettingsModalOverlay').classList.add('open');
 }
 function closeCompletedSettingsModal() {
@@ -9934,7 +9962,7 @@ function renderCompletedTable() {
     if (g.notes) card.title = g.notes;
     card.innerHTML = `
       <div class="ct-card-num">#${displayNum}</div>
-      <div class="ct-card-cover">${g.cover ? `<img src="${g.cover}" class="ct-cover" alt="cover" onerror="this.parentElement.style.display='none'">` : ''}</div>
+      <div class="ct-card-cover" style="width:${coverShapeForConsole(g.platform) === 'wide' ? '70px' : coverShapeForConsole(g.platform) === 'square' ? '60px' : '54px'}">${g.cover ? `<img src="${g.cover}" class="ct-cover" alt="cover" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ct-card-body">
         <div class="ct-card-logo">${logoHtml}</div>
         <div class="ct-card-content">
