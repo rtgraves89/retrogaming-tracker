@@ -3288,7 +3288,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.1.1</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.2.0</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -3531,6 +3531,11 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="modal-overlay" id="gtSettingsModalOverlay">
   <div class="modal" style="width:480px">
     <h2>GAME TRACKING SETTINGS</h2>
+    <div style="margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border)">
+      <div class="linked-box-subtitle" style="margin-bottom:8px">Bulk fetch missing cover art from Wikipedia for all owned games. Only runs on games that have a Wikipedia URL saved but no cover art yet.</div>
+      <button class="btn-save" id="btnBulkFetchCovers" onclick="bulkFetchCovers()" style="width:100%; margin-bottom:8px">🖼 Fetch missing covers</button>
+      <div id="bulkFetchStatus" style="font-family:var(--mono); font-size:10px; color:var(--muted); min-height:16px; line-height:1.5"></div>
+    </div>
     <div class="linked-box-subtitle" style="margin-bottom:10px">Set the box-art shape used for cover thumbnails on each console. Defaults to Tall until set.</div>
     <div id="gtSettingsConsoleList"></div>
     <div class="modal-actions">
@@ -7973,7 +7978,59 @@ function setCoverShape(console, shape) {
   renderGTView();
 }
 
+async function bulkFetchCovers() {
+  const btn = document.getElementById('btnBulkFetchCovers');
+  const status = document.getElementById('bulkFetchStatus');
+
+  // Only owned games that have a Wikipedia URL but no cover art yet
+  const targets = ownedGames.filter(g => g.column === 'owned' && g.wikiUrl && !g.coverArt);
+
+  if (!targets.length) {
+    status.textContent = 'Nothing to fetch — all owned games with a Wikipedia URL already have cover art.';
+    return;
+  }
+
+  btn.disabled = true;
+  let done = 0, found = 0, failed = 0;
+  status.textContent = `Starting… 0 / ${targets.length}`;
+
+  for (const game of targets) {
+    status.textContent = `Fetching ${done + 1} / ${targets.length}: ${game.title}…`;
+    try {
+      // Try the direct Wikipedia URL first (same logic as single-game fetch)
+      let dataUrl = await fetchCoverArtFromKnownUrl(game.wikiUrl);
+      if (!dataUrl) {
+        const result = await fetchCoverArtForTitle(game.title);
+        dataUrl = result.dataUrl;
+      }
+      if (dataUrl) {
+        game.coverArt = dataUrl;
+        found++;
+      } else {
+        failed++;
+      }
+    } catch (e) {
+      console.warn('[bulk-fetch] failed for', game.title, e);
+      failed++;
+    }
+    done++;
+    // Brief pause between requests so we don't hammer Wikipedia's API
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  persistOwned();
+  scheduleSync();
+  renderGTView();
+
+  const parts = [`Done. ${found} cover${found !== 1 ? 's' : ''} fetched`];
+  if (failed) parts.push(`${failed} not found`);
+  parts.push(`out of ${targets.length} games checked`);
+  status.textContent = parts.join(' · ') + '.';
+  btn.disabled = false;
+}
+
 function openGTSettingsModal() {
+
   renderGTSettingsModal();
   document.getElementById('gtSettingsModalOverlay').classList.add('open');
 }
