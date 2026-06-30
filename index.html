@@ -90,11 +90,17 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
   min-height: 100vh;
+  max-width: 100%;
 }
 
 /* ── HEADER ── */
@@ -2952,12 +2958,22 @@ textarea { resize: vertical; min-height: 72px; }
   /* Header */
   .app-header {
     padding: 10px 14px;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
+  .header-left { width: 100%; flex-wrap: wrap; gap: 6px; }
+  .header-actions { gap: 4px; flex-wrap: wrap; }
+  .header-right { width: 100%; }
   .app-title { font-size: 11px; }
-  .app-tabs { gap: 0; }
-  .app-tab { font-size: 10px; padding: 5px 9px; letter-spacing: 0.03em; }
-  .header-actions { gap: 4px; }
+  .app-tabs {
+    gap: 0;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .app-tabs::-webkit-scrollbar { display: none; }
+  .app-tab { font-size: 10px; padding: 5px 9px; letter-spacing: 0.03em; flex-shrink: 0; }
   .btn-add { font-size: 10px; padding: 6px 10px; }
 
   /* Legend bar — scrollable on mobile */
@@ -3007,7 +3023,18 @@ textarea { resize: vertical; min-height: 72px; }
   .gt-region-badge { font-size: 7px; }
   .gt-action-btn { font-size: 8px; padding: 2px 5px; }
   .gt-brand-row { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .gt-console-row { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .gt-console-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .gt-console-row::-webkit-scrollbar { display: none; }
+  .gt-console-tab { flex-shrink: 0; }
+  .gt-console-tab--has-logo { padding: 5px 8px; gap: 2px; }
+  .gt-console-tab-logo { height: 20px; max-width: 48px; }
+  .gt-console-tab-name { font-size: 8px; }
+  .gt-console-tab-year { font-size: 7px; }
   .gt-console-tabs { min-width: 0; }
 
   /* Completion tracking */
@@ -3684,22 +3711,14 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2>ADD POST</h2>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Year</label>
-        <select id="f-year" onchange="populateMonthDropdown(); populateDayDropdown(null);">
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Month</label>
-        <select id="f-month" onchange="populateDayDropdown(null)"></select>
-      </div>
-      <div class="form-group">
-        <label>Day</label>
-        <select id="f-day"></select>
-      </div>
+    <div class="form-group">
+      <label>Post date</label>
+      <input type="date" id="f-date">
+    </div>
+    <div class="form-group">
+      <label>Select a game (optional — fills in the title below)</label>
+      <input type="text" id="f-game-select" list="f-game-options" placeholder="Type to search your owned games..." oninput="applyGameSelectToTitle()">
+      <datalist id="f-game-options"></datalist>
     </div>
     <div class="form-group">
       <label>Post title</label>
@@ -3707,13 +3726,7 @@ textarea { resize: vertical; min-height: 72px; }
     </div>
     <div class="form-group">
       <label>Type</label>
-      <select id="f-type">
-        <option value="release">New Release</option>
-        <option value="anniversary">Anniversary</option>
-        <option value="collection">Collection</option>
-        <option value="maker">Maker</option>
-        <option value="franchise">Franchise</option>
-      </select>
+      <select id="f-type"></select>
     </div>
     <div class="form-group">
       <label>Description (optional)</label>
@@ -3723,6 +3736,7 @@ textarea { resize: vertical; min-height: 72px; }
       <label>Instagram Hashtags (optional)</label>
       <input type="text" id="f-tags" placeholder="#Gaming #Nintendo ..." autocomplete="off" oninput="showHashtagSuggestions('f-tags', 'ht-sug-tags')">
       <div class="ht-suggestions" id="ht-sug-tags"></div>
+      <button type="button" class="btn-cancel" style="margin-top:6px;padding:5px 10px;font-size:10px" onclick="generateHashtagsDraft()">#️⃣ Generate hashtags</button>
     </div>
     <div class="form-group">
       <label>Planner Hashtag (optional)</label>
@@ -3730,13 +3744,9 @@ textarea { resize: vertical; min-height: 72px; }
       <div class="ht-suggestions" id="ht-sug-planner"></div>
     </div>
     <div class="form-group">
-      <label>Shoot notes (optional)</label>
-      <input type="text" id="f-shoot" placeholder="e.g. IMG_4821 — shelf close-up, still to shoot">
+      <label><input type="checkbox" id="f-published" style="width:auto" onchange="toggleMetricsVisibility()"> Already published to Instagram</label>
     </div>
-    <div class="form-group">
-      <label><input type="checkbox" id="f-published" style="width:auto" checked> Already published to Instagram</label>
-    </div>
-    <div class="form-group">
+    <div class="form-group" id="f-metrics-group" style="display:none">
       <label>Performance (optional — fill in once you've checked Instagram Insights, roughly 2 weeks after posting)</label>
       <div class="form-row">
         <input type="number" id="f-views" min="0" placeholder="Views">
@@ -4174,7 +4184,7 @@ function makeTile(post) {
 
   tile.innerHTML = `
     <span class="tile-title">${escHtml(post.title)}</span>
-    <span class="tile-type">${TYPE_LABELS[post.type]}</span>
+    <span class="tile-type">${currentTypeLabel(post.type)}</span>
     ${plannerTagHTML}
     <button class="tile-ig-btn" onclick="openIgModal(${post.id}, event)">▶ Prepare for Instagram</button>
     <button class="tile-delete" title="Remove" onclick="deletePost(${post.id}, event)">✕</button>
@@ -4303,7 +4313,7 @@ function showMonth(idx) {
 
 // ── POPOVER ───────────────────────────────────────────────────────────────────
 function showPopover(post, e) {
-  document.getElementById('pop-type').textContent = TYPE_LABELS[post.type];
+  document.getElementById('pop-type').textContent = currentTypeLabel(post.type);
   document.getElementById('pop-title').textContent = post.title;
   document.getElementById('pop-caption').textContent = post.caption || '';
   document.getElementById('pop-tags').textContent = post.tags || '';
@@ -4341,84 +4351,104 @@ function deletePost(id, e) {
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
+// Returns the live, possibly-renamed label for a post type, so the Type
+// dropdown and anywhere else a type name is shown stays in sync with whatever
+// the person has customised the legend to say (e.g. "Anniversary" renamed to
+// "Milestones").
+function currentTypeLabel(type) {
+  const cfg = legendSettings[type] || LEGEND_DEFAULTS[type];
+  if (!cfg) return TYPE_LABELS[type] || type;
+  // Legend labels are stored upper-case for the legend bar; title-case it for
+  // use in dropdowns and post meta so it doesn't shout.
+  const raw = cfg.label || TYPE_LABELS[type] || type;
+  return raw.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
+function populateTypeSelectOptions() {
+  const sel = document.getElementById('f-type');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  Object.keys(TYPE_LABELS).forEach(type => {
+    const opt = document.createElement('option');
+    opt.value = type;
+    opt.textContent = currentTypeLabel(type);
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function dateToIso(year, month, day) {
+  // month is 0-11 internally; <input type="date"> wants YYYY-MM-DD
+  const mm = String(month + 1).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  return `${year}-${mm}-${dd}`;
+}
+
+function applyGameSelectToTitle() {
+  const val = document.getElementById('f-game-select').value.trim();
+  if (!val) return;
+  const match = ownedGames.find(g => g.title.toLowerCase() === val.toLowerCase());
+  if (match) document.getElementById('f-title').value = match.title;
+}
+
+function toggleMetricsVisibility() {
+  const published = document.getElementById('f-published').checked;
+  document.getElementById('f-metrics-group').style.display = published ? '' : 'none';
+}
+
+function populateGameSelectOptions() {
+  const dl = document.getElementById('f-game-options');
+  if (!dl) return;
+  dl.innerHTML = ownedGames
+    .filter(g => g.column === 'owned')
+    .map(g => `<option value="${escHtml(g.title)}"></option>`)
+    .join('');
+}
+
 function openModal(post) {
   const isNew = !post || post._new;
   editingId = isNew ? null : post.id;
   document.querySelector('#modalOverlay h2').textContent = isNew ? 'ADD POST' : 'EDIT POST';
   document.getElementById('modal-save-btn').textContent = isNew ? 'Add to calendar' : 'Save changes';
 
-  const yearSel = document.getElementById('f-year');
-  const curYear = post ? (post.year || 2026) : MONTHS[currentMonthIdx].year;
-  yearSel.value = curYear;
-  populateMonthDropdown();
-  const monthSel = document.getElementById('f-month');
-  monthSel.value = post ? post.month : MONTHS[currentMonthIdx].idx;
-  populateDayDropdown(post ? post.day : null);
+  populateTypeSelectOptions();
+  populateGameSelectOptions();
 
+  const dateEl = document.getElementById('f-date');
+  if (isNew) {
+    if (post && post.year != null && post.month != null && post.day != null) {
+      dateEl.value = dateToIso(post.year, post.month, post.day);
+    } else {
+      const today = new Date();
+      dateEl.value = dateToIso(today.getFullYear(), today.getMonth(), today.getDate());
+    }
+  } else {
+    dateEl.value = dateToIso(post.year || 2026, post.month, post.day);
+  }
+
+  document.getElementById('f-game-select').value = '';
   document.getElementById('f-title').value = isNew ? '' : (post.title || '');
   document.getElementById('f-type').value = isNew ? 'release' : (post.type || 'release');
   document.getElementById('f-caption').value = isNew ? '' : (post.caption || '');
   document.getElementById('f-tags').value = isNew ? '' : (post.tags || '');
   document.getElementById('f-planner').value = isNew ? '' : (post.plannerTag || '');
-  document.getElementById('f-shoot').value = isNew ? '' : (post.shootNotes || '');
-  document.getElementById('f-published').checked = isNew ? true : (post.published !== false);
+  document.getElementById('f-published').checked = isNew ? false : (post.published === true);
   const m = (!isNew && post.metrics) ? post.metrics : {};
   document.getElementById('f-views').value = m.views != null ? m.views : '';
   document.getElementById('f-likes').value = m.likes != null ? m.likes : '';
   document.getElementById('f-shares').value = m.shares != null ? m.shares : '';
   document.getElementById('f-saves').value = m.saves != null ? m.saves : '';
+  toggleMetricsVisibility();
 
   document.getElementById('modalOverlay').classList.add('open');
 }
 
-function populateMonthDropdown() {
-  const year = parseInt(document.getElementById('f-year').value);
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const sel = document.getElementById('f-month');
-  const prev = sel.value;
-  sel.innerHTML = '';
-  MONTHS.filter(m => m.year === year).forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.idx;
-    opt.textContent = m.name;
-    sel.appendChild(opt);
-  });
-  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
-}
-
-function populateDayDropdown(targetDay) {
-  const monthVal = parseInt(document.getElementById('f-month').value);
-  const yearVal = parseInt(document.getElementById('f-year').value);
-  const monthData = MONTHS.find(m => m.idx === monthVal && m.year === yearVal);
-  const daySelect = document.getElementById('f-day');
-  const prevDay = targetDay != null ? targetDay : (daySelect.value ? parseInt(daySelect.value) : null);
-
-  const today = new Date();
-  const todayMonth = today.getMonth();
-  const todayDay = today.getDate();
-
-  daySelect.innerHTML = '';
-  const days = monthData ? monthData.days : 31;
-  for (let d = 1; d <= days; d++) {
-    const opt = document.createElement('option');
-    opt.value = d;
-    opt.textContent = d;
-    daySelect.appendChild(opt);
-  }
-
-  if (prevDay && prevDay <= days) {
-    daySelect.value = prevDay;
-  } else if (monthVal === todayMonth && todayDay <= days) {
-    daySelect.value = todayDay;
-  } else {
-    daySelect.value = 1;
-  }
-}
-
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
-  ['f-title','f-caption','f-tags','f-planner','f-shoot','f-views','f-likes','f-shares','f-saves'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-published').checked = true;
+  ['f-title','f-game-select','f-caption','f-tags','f-planner','f-views','f-likes','f-shares','f-saves'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-published').checked = false;
+  toggleMetricsVisibility();
 }
 
 function readMetricsFromForm() {
@@ -4432,22 +4462,91 @@ function readMetricsFromForm() {
   return any ? metrics : null;
 }
 
+// ── CAPTION GENERATOR ───────────────────────────────────────────────────────
+// Template-based, not AI-written — stitches together varied opening/body/closing
+// lines using whatever data is already on hand (linked owned game notes,
+// completed game notes/rating, franchise). Follows the established voice rules:
+// verbose flowing sentences, no em dashes ever, no short snappy lines.
+function findOwnedGameByTitle(title) {
+  if (!title) return null;
+  const lower = title.toLowerCase();
+  const ownedOnly = ownedGames.filter(g => g.column === 'owned');
+  // Prefer an exact title match first, so "Metal Gear Solid" never matches a
+  // different record like "Metal Gear" sitting in a wishlist column.
+  const exact = ownedOnly.find(g => g.title.toLowerCase() === lower);
+  if (exact) return exact;
+  return ownedOnly.find(g => g.title.toLowerCase().includes(lower) || lower.includes(g.title.toLowerCase())) || null;
+}
+
+// ── HASHTAG GENERATOR ───────────────────────────────────────────────────────
+// Builds a max-5 hashtag set from the same HT_LIBRARY used by the suggestion
+// dropdown, prioritising specific matches (game/franchise/console) over
+// generic ones, matching the established "max 5, most specific first" rule.
+const HT_TOPIC_MAP = {
+  mario: 'mario', zelda: 'zelda', metroid: 'metroid', pokemon: 'pokemon', pokémon: 'pokemon',
+  gameboy: 'gameboy', 'game boy': 'gameboy', gba: 'gba', n64: 'n64',
+  nintendo64: 'n64', snes: 'snes', 'super nintendo': 'snes', nes: 'nes',
+  playstation: 'playstation', xbox: 'xbox', jrpg: 'jrpg', horror: 'horror',
+};
+
+function generateHashtagsDraft() {
+  const title = document.getElementById('f-title').value.trim();
+  const type = document.getElementById('f-type').value;
+  const tagsEl = document.getElementById('f-tags');
+  if (!title) { alert('Add a post title first, hashtags are picked based on it.'); return; }
+
+  const cleanTitle = title.split(/[—–-]/)[0].trim() || title;
+  const lowerTitle = cleanTitle.toLowerCase();
+  const owned = findOwnedGameByTitle(cleanTitle);
+  const franchise = franchiseForTitle(cleanTitle);
+
+  const picked = [];
+  const addTag = (t) => { if (t && !picked.includes(t) && picked.length < 5) picked.push(t); };
+
+  // 1. Most specific — a direct keyword match on the title (franchise/console name)
+  Object.entries(HT_TOPIC_MAP).forEach(([kw, lib]) => {
+    if (picked.length >= 5) return;
+    if (lowerTitle.includes(kw)) addTag((HT_LIBRARY[lib] || [])[0]);
+  });
+
+  // 2. Console-specific, from the linked owned game record if there's one
+  if (owned && owned.console) {
+    const consoleKw = Object.keys(HT_TOPIC_MAP).find(kw => owned.console.toLowerCase().includes(kw));
+    if (consoleKw) addTag((HT_LIBRARY[HT_TOPIC_MAP[consoleKw]] || [])[1]);
+  }
+
+  // 3. Franchise, if Series Tracking has it grouped and it's not already covered
+  if (franchise) {
+    const franchiseTag = '#' + franchise.replace(/[^a-zA-Z0-9]/g, '');
+    addTag(franchiseTag);
+  }
+
+  // 4. Type-specific
+  (HT_LIBRARY[type] || []).forEach(t => addTag(t));
+
+  // 5. Fall back to general/retro tags to fill any remaining slots
+  HT_LIBRARY.retro.forEach(t => addTag(t));
+  HT_LIBRARY.general.forEach(t => addTag(t));
+
+  tagsEl.value = picked.slice(0, 5).join(' ');
+}
+
 function savePost() {
-  const month = parseInt(document.getElementById('f-month').value);
-  const day = parseInt(document.getElementById('f-day').value);
+  const dateVal = document.getElementById('f-date').value;
+  if (!dateVal) { alert('Please choose a post date.'); return; }
+  const [year, monthOneIdx, day] = dateVal.split('-').map(n => parseInt(n, 10));
+  const month = monthOneIdx - 1; // back to 0-11 internally
+
   const title = document.getElementById('f-title').value.trim();
   const type = document.getElementById('f-type').value;
   const caption = document.getElementById('f-caption').value.trim();
   const tags = document.getElementById('f-tags').value.trim();
   let plannerTag = document.getElementById('f-planner').value.trim();
   if (plannerTag && !plannerTag.startsWith('#')) plannerTag = '#' + plannerTag;
-  const shootNotes = document.getElementById('f-shoot').value.trim();
   const published = document.getElementById('f-published').checked;
   const formMetrics = readMetricsFromForm();
 
   if (!title) { alert('Please enter a post title.'); return; }
-
-  const year = parseInt(document.getElementById('f-year').value);
 
   if (editingId !== null) {
     const post = posts.find(p => p.id === editingId);
@@ -4455,12 +4554,11 @@ function savePost() {
       post.month = month; post.year = year; post.day = day; post.type = type;
       post.title = title; post.caption = caption;
       post.tags = tags; post.plannerTag = plannerTag || '';
-      post.shootNotes = shootNotes;
       post.published = published;
       if (formMetrics) { post.metrics = formMetrics; post.metricsLoggedAt = new Date().toISOString().slice(0,10); }
     }
   } else {
-    const newPost = { id: nextId++, month, year, day, type, title, caption, tags, plannerTag: plannerTag || '', shootNotes, published };
+    const newPost = { id: nextId++, month, year, day, type, title, caption, tags, plannerTag: plannerTag || '', published };
     if (formMetrics) { newPost.metrics = formMetrics; newPost.metricsLoggedAt = new Date().toISOString().slice(0,10); }
     posts.push(newPost);
   }
@@ -4570,7 +4668,6 @@ function useCompletedIdeaForPost(completedId) {
   document.getElementById('f-title').value = `${c.title} — Completed`;
   document.getElementById('f-type').value = 'collection';
   document.getElementById('f-caption').value = c.notes || '';
-  document.getElementById('f-shoot').value = `Just completed: ${c.title} (${c.platform || ''})${c.rating ? ` — rated ${c.rating}★` : ''}`;
 }
 
 function ideaTypeIcon(type) {
@@ -4719,14 +4816,11 @@ function searchIdeaByTitle() {
 function useIdeaForPost(gameId) {
   const game = ownedGames.find(g => g.id === gameId);
   if (!game) return;
-  const suggestions = getSuggestionsForGame(game);
-  const checklist = `Gather: ${game.title} (${game.console})` + (suggestions.length ? ' • ' + suggestions.map(s => s.label).join(' • ') : '');
 
   closeIdeaModal();
   openModal();
   document.getElementById('f-title').value = game.title;
   document.getElementById('f-type').value = 'collection';
-  document.getElementById('f-shoot').value = checklist;
 }
 
 function openIdeaModal() {
@@ -5005,7 +5099,7 @@ function dashPostRow(p, opts) {
     ${rankBit}
     <div class="dash-row-body">
       <div class="dash-row-title">${escHtml(p.title)}</div>
-      <div class="dash-row-meta">${monthLabel} ${p.day}${opts.metric ? '' : ` · ${escHtml(TYPE_LABELS[p.type] || p.type || '')}`}</div>
+      <div class="dash-row-meta">${monthLabel} ${p.day}${opts.metric ? '' : ` · ${escHtml(currentTypeLabel(p.type))}`}</div>
     </div>
     ${metricBit}
   </div>`;
@@ -5067,7 +5161,50 @@ function buildPerformanceChartSvg(metric) {
   return `<svg class="dash-chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${bars}</svg>`;
 }
 
+function postsAwaitingCaption(days) {
+  const today = new Date();
+  return posts.filter(p => {
+    if (p.caption && p.caption.trim()) return false;
+    const d = postDateObj(p);
+    if (isNaN(d)) return false;
+    const diffDays = (d - today) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= days;
+  }).sort((a, b) => postDateObj(a) - postDateObj(b));
+}
+
+function buildAwaitingCaptionText(list) {
+  return list.map(p => {
+    const yr = p.year || 2026;
+    const monthData = MONTHS.find(m => m.idx === p.month && m.year === yr);
+    const monthLabel = monthData ? monthData.name : '';
+    return `${monthLabel} ${p.day} — ${p.title} (${currentTypeLabel(p.type)})`;
+  }).join('\n');
+}
+
+function copyAwaitingCaptionList(btn) {
+  const list = postsAwaitingCaption(14);
+  if (!list.length) return;
+  const text = `Captions needed for these upcoming posts:\n\n${buildAwaitingCaptionText(list)}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
+
 function renderDashboard() {
+
   const el = document.getElementById('dashboardBody');
   if (!el) return;
 
@@ -5088,6 +5225,7 @@ function renderDashboard() {
   const unpostedCompletions = completedGames.filter(isCompletedUnposted)
     .sort((a, b) => (b.completedDate || '').localeCompare(a.completedDate || ''));
   const attentionCount = needsMetrics.length + unpostedCompletions.length;
+  const awaitingCaption = postsAwaitingCaption(14);
 
   const monthPostCount = curMonthData ? posts.filter(p => p.month === curMonthData.idx && (p.year || 2026) === curMonthData.year).length : 0;
   const pastPublished = posts.filter(p => p.published !== false).filter(p => { const d = postDateObj(p); return !isNaN(d) && d <= today; }).sort((a,b) => postDateObj(b) - postDateObj(a));
@@ -5117,6 +5255,13 @@ function renderDashboard() {
     <div class="dash-section">
       <div class="dash-section-title">🗓 UPCOMING WEEK</div>
       ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">✍️ UPCOMING — AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
+      ${awaitingCaption.length ? `
+        <button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>
+        ${awaitingCaption.map(p => dashPostRow(p)).join('')}
+      ` : `<div class="dash-empty">Nothing in the next 2 weeks is missing a caption.</div>`}
     </div>
     <div class="dash-section">
       <div class="dash-section-title">🏆 BEST POSTS — LAST 30 DAYS</div>
@@ -9758,6 +9903,7 @@ function applyLegendSettings() {
     const lbl = document.getElementById('label-' + type);
     if (lbl) lbl.textContent = label;
   });
+  populateTypeSelectOptions();
 }
 
 function hexToRgb(hex) {
