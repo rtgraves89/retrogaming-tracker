@@ -3021,7 +3021,7 @@ textarea { resize: vertical; min-height: 72px; }
 .dash-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 10px;
   grid-column: 1 / -1;
 }
 @media (max-width: 760px) { .dash-stats { grid-template-columns: repeat(2, 1fr); } }
@@ -3029,12 +3029,12 @@ textarea { resize: vertical; min-height: 72px; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 16px 10px;
+  padding: 14px 10px;
   text-align: center;
 }
 .dash-stat-num {
   font-family: var(--mono);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
   color: var(--text);
@@ -3046,18 +3046,22 @@ textarea { resize: vertical; min-height: 72px; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 8px;
+  margin-top: 6px;
 }
+/* Dashboard body: max-width so it never stretches into absurdity on ultrawide */
 .dash-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
 }
 @media (max-width: 760px) { .dash-grid { grid-template-columns: 1fr; } }
 .dash-section {
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 16px;
+  padding: 14px;
   background: var(--surface);
 }
 .dash-section.dash-attention-active { border-color: var(--maker-border); background: var(--maker-bg); }
@@ -3142,7 +3146,10 @@ textarea { resize: vertical; min-height: 72px; }
   text-align: center;
   padding: 18px 6px;
 }
-.dash-chart-section { grid-column: 1 / -1; }
+/* Wide sections span the full grid explicitly */
+.dash-wide { grid-column: 1 / -1; }
+/* Tab switcher always full width */
+.dash-tab-switch { grid-column: 1 / -1; }
 .dash-chart-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
 .dash-chart-svg { width: 100%; height: 180px; display: block; }
 .dash-chart-bar { transition: opacity 0.12s; cursor: pointer; }
@@ -3238,7 +3245,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.0</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.1</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -5266,7 +5273,7 @@ function buildHashtagExplorer(metric) {
   const allTags = Object.entries(allTagsMap).sort(([a], [b]) => a.localeCompare(b));
 
   if (!allTags.length) {
-    return `<div class="dash-section dash-chart-section">
+    return `<div class="dash-section dash-wide">
       <div class="dash-section-title">🏷 HASHTAG EXPLORER</div>
       <div class="dash-empty">No hashtag data yet — log metrics on some posts to start seeing patterns.</div>
     </div>`;
@@ -5330,7 +5337,7 @@ function buildHashtagExplorer(metric) {
       </div>`;
   }
 
-  return `<div class="dash-section dash-chart-section">
+  return `<div class="dash-section dash-wide">
     <div class="dash-section-title">🏷 HASHTAG EXPLORER</div>
     <div class="dash-chart-tabs" style="margin-bottom:12px">
       ${['views','likes','shares','saves'].map(m =>
@@ -5517,11 +5524,11 @@ function calcStreakStats() {
 function buildBestVsWorst(metric) {
   const logged = posts.filter(p => p.metricsLoggedAt && p.metrics && p.metrics[metric] != null)
     .sort((a,b) => (b.metrics[metric]||0) - (a.metrics[metric]||0));
-  if (logged.length < 2) return `<div class="dash-section dash-chart-section"><div class="dash-section-title">🏆 BEST VS WORST</div><div class="dash-empty">Need at least 2 logged posts to compare.</div></div>`;
+  if (logged.length < 2) return `<div class="dash-section dash-wide"><div class="dash-section-title">🏆 BEST VS WORST</div><div class="dash-empty">Need at least 2 logged posts to compare.</div></div>`;
   const top = logged.slice(0,3);
   const bottom = logged.slice(-3).reverse();
   const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
-  return `<div class="dash-section dash-chart-section">
+  return `<div class="dash-section dash-wide">
     <div class="dash-section-title">🏆 BEST VS WORST — ${metricLabel.toUpperCase()}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
@@ -5558,7 +5565,7 @@ function buildContentGaps() {
     };
   }).filter(Boolean).sort((a,b) => b.owned - a.owned);
 
-  return `<div class="dash-section dash-chart-section">
+  return `<div class="dash-section dash-wide">
     <div class="dash-section-title">🕳 CONTENT GAPS — 5+ OWNED, NOT POSTED IN 6 MONTHS</div>
     ${gaps.length ? gaps.map(g => `
       <div class="dash-row" style="cursor:default">
@@ -5604,13 +5611,13 @@ function renderDashboard() {
         <div class="dash-section-title">🗓 UPCOMING WEEK</div>
         ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
       </div>
-      <div class="dash-section">
+      <div class="dash-section dash-wide">
         <div class="dash-section-title">✍️ AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
         ${awaitingCaption.length
           ? `<button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>${awaitingCaption.map(p => dashPostRow(p)).join('')}`
           : `<div class="dash-empty">Nothing in the next 2 weeks is missing a caption.</div>`}
       </div>
-      <div class="dash-section${attentionCount?' dash-attention-active':''}">
+      <div class="dash-section dash-wide${attentionCount?' dash-attention-active':''}">
         <div class="dash-section-title">⚠ NEEDS ATTENTION${attentionCount?`<span class="dash-count-badge">${attentionCount}</span>`:''}</div>
         ${needsMetrics.map(p => dashPostRow(p)).join('')}
         ${unpostedCompletions.map(dashCompletedRow).join('')}
@@ -5626,13 +5633,13 @@ function renderDashboard() {
   const streak = calcStreakStats();
   const best30 = topPerformingPosts(m, 30).slice(0,5);
 
-  const metricToggle = `<div class="dash-chart-tabs" style="grid-column:1/-1;margin-bottom:0">
+  const metricToggle = `<div class="dash-chart-tabs dash-wide" style="margin-bottom:0">
     ${['views','likes','shares','saves'].map(mt =>
       `<button class="ct-sort-btn${m===mt?' active':''}" onclick="dashSetChartMetric('${mt}')">${mt.charAt(0).toUpperCase()+mt.slice(1)}</button>`
     ).join('')}
   </div>`;
 
-  const quickStats = `<div class="dash-stats">
+  const quickStats = `<div class="dash-stats dash-wide">
     ${dashStatCard(streak.streak, 'WEEK STREAK')}
     ${dashStatCard(streak.total30, 'POSTS THIS MONTH')}
     ${dashStatCard(streak.perWeek, 'AVG POSTS / WEEK')}
@@ -5642,7 +5649,7 @@ function renderDashboard() {
   el.innerHTML = tabSwitch + metricToggle + quickStats + `
     ${buildBestVsWorst(m)}
 
-    <div class="dash-section dash-chart-section">
+    <div class="dash-section dash-wide">
       <div class="dash-section-title">📈 PERFORMANCE TRENDS — LAST 10 LOGGED POSTS</div>
       ${buildPerformanceChartSvg(m)}
     </div>
