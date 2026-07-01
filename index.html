@@ -3170,6 +3170,22 @@ textarea { resize: vertical; min-height: 72px; }
   flex-shrink: 0;
 }
 .field-copy-btn:hover { opacity: 1; }
+.ht-chip {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.ht-chip:hover { border-color: var(--text); color: var(--text); }
+.ht-chip.active { background: var(--text); color: var(--surface); border-color: var(--text); }
+.ht-chip span { opacity: 0.6; margin-left: 3px; }
 </style>
 </head>
 <body>
@@ -3189,7 +3205,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.3</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.4</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -5197,7 +5213,103 @@ function copyAwaitingCaptionList(btn) {
   });
 }
 
-// ── HASHTAG ANALYTICS ───────────────────────────────────────────────────────
+let dashSelectedTag = null;
+
+function selectDashTag(tag) {
+  dashSelectedTag = dashSelectedTag === tag ? null : tag; // toggle off if already selected
+  renderDashboard();
+}
+
+function buildHashtagExplorer(metric) {
+  const loggedPosts = posts.filter(p => p.metricsLoggedAt && p.metrics);
+
+  // Build all tags from logged posts
+  const allTagsMap = {};
+  loggedPosts.forEach(post => {
+    extractPostTags(post).forEach(tag => {
+      allTagsMap[tag] = (allTagsMap[tag] || 0) + 1;
+    });
+  });
+  const allTags = Object.entries(allTagsMap).sort(([a], [b]) => a.localeCompare(b));
+
+  if (!allTags.length) {
+    return `<div class="dash-section dash-chart-section">
+      <div class="dash-section-title">🏷 HASHTAG EXPLORER</div>
+      <div class="dash-empty">No hashtag data yet — log metrics on some posts to start seeing patterns.</div>
+    </div>`;
+  }
+
+  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
+
+  const chips = allTags.map(([tag, count]) =>
+    `<button class="ht-chip${dashSelectedTag === tag ? ' active' : ''}" onclick="selectDashTag('${tag.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">${escHtml(tag)} <span>${count}</span></button>`
+  ).join('');
+
+  let detail;
+  if (dashSelectedTag) {
+    const tagPosts = loggedPosts.filter(p => extractPostTags(p).includes(dashSelectedTag));
+    const totalVal = tagPosts.reduce((s, p) => s + (p.metrics[metric] || 0), 0);
+    const avgVal = tagPosts.length ? Math.round(totalVal / tagPosts.length) : 0;
+
+    // What other tags appear alongside the selected one, and how do they perform?
+    const coTagMap = {};
+    tagPosts.forEach(post => {
+      const val = post.metrics[metric] || 0;
+      extractPostTags(post).forEach(tag => {
+        if (tag === dashSelectedTag) return;
+        if (!coTagMap[tag]) coTagMap[tag] = { tag, total: 0, count: 0 };
+        coTagMap[tag].total += val;
+        coTagMap[tag].count++;
+      });
+    });
+    const coTags = Object.values(coTagMap)
+      .map(t => ({ ...t, avg: Math.round(t.total / t.count) }))
+      .sort((a, b) => b.avg - a.avg);
+
+    detail = `
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+          <span style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text)">${escHtml(dashSelectedTag)}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${tagPosts.length} post${tagPosts.length !== 1 ? 's' : ''}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">avg ${avgVal.toLocaleString()} ${metricLabel.toLowerCase()}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">total ${totalVal.toLocaleString()}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">TAGS SEEN ALONGSIDE — AVG ${metricLabel.toUpperCase()}</div>
+            ${coTags.length
+              ? renderHashtagTable(coTags, 'tag', metric, 10)
+              : `<div class="dash-empty" style="padding:10px 0">No co-occurring tags found.</div>`}
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">POSTS WITH THIS TAG</div>
+            ${tagPosts.sort((a,b) => (b.metrics[metric]||0)-(a.metrics[metric]||0))
+              .map(p => dashPostRow(p, { metric })).join('')}
+          </div>
+        </div>
+      </div>`;
+  } else {
+    const tagStats = buildHashtagStats(metric);
+    detail = `
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">ALL TAGS — AVG ${metricLabel.toUpperCase()} · SELECT ONE TO EXPLORE</div>
+        ${renderHashtagTable(tagStats, 'tag', metric, 20)}
+      </div>`;
+  }
+
+  return `<div class="dash-section dash-chart-section">
+    <div class="dash-section-title">🏷 HASHTAG EXPLORER</div>
+    <div class="dash-chart-tabs" style="margin-bottom:12px">
+      ${['views','likes','shares','saves'].map(m =>
+        `<button class="ct-sort-btn${dashChartMetric === m ? ' active' : ''}" onclick="dashSetChartMetric('${m}')">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`
+      ).join('')}
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">${chips}</div>
+    ${detail}
+  </div>`;
+}
+
+
 // Extracts all hashtags from a post (planner tag + full hashtag string),
 // deduped and lowercased so #Zelda and #zelda count as the same tag.
 function extractPostTags(post) {
@@ -5264,29 +5376,6 @@ function renderHashtagTable(rows, labelKey, metric, limit) {
   }).join('');
 }
 
-function buildAnalyticsSection(metric) {
-  const tagStats = buildHashtagStats(metric);
-  const pairStats = buildPairStats(metric);
-  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
-
-  return `
-    <div class="dash-section dash-chart-section" style="grid-column:1/-1">
-      <div class="dash-section-title">🏷 HASHTAG PERFORMANCE</div>
-      <div class="dash-chart-tabs" style="margin-bottom:16px">
-        ${['views','likes','shares','saves'].map(m => `<button class="ct-sort-btn${dashChartMetric === m ? ' active' : ''}" onclick="dashSetChartMetric('${m}')">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-        <div>
-          <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">INDIVIDUAL TAGS — AVG ${metricLabel.toUpperCase()}</div>
-          ${renderHashtagTable(tagStats, 'tag', metric, 10)}
-        </div>
-        <div>
-          <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">TAG COMBINATIONS — AVG ${metricLabel.toUpperCase()} (2+ POSTS)</div>
-          ${renderHashtagTable(pairStats, 'pair', metric, 10)}
-        </div>
-      </div>
-    </div>`;
-}
 
 function renderDashboard() {
   const el = document.getElementById('dashboardBody');
@@ -5332,7 +5421,7 @@ function renderDashboard() {
       ${buildPerformanceChartSvg(dashChartMetric)}
     </div>
 
-    ${buildAnalyticsSection(dashChartMetric)}
+    ${buildHashtagExplorer(dashChartMetric)}
 
     <div class="dash-section">
       <div class="dash-section-title">📅 TODAY</div>
