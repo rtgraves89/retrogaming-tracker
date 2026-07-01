@@ -3245,7 +3245,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.1</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.2</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -5155,6 +5155,33 @@ function dashPostRow(p, opts) {
   </div>`;
 }
 
+function togglePostScheduled(id, e) {
+  e.stopPropagation();
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+  post.scheduled = !post.scheduled;
+  savePosts();
+  renderDashboard();
+}
+
+function dashUpcomingRow(p) {
+  const yr = p.year || 2026;
+  const monthData = MONTHS.find(m => m.idx === p.month && m.year === yr);
+  const monthLabel = monthData ? monthData.name.slice(0, 3).toUpperCase() : '';
+  const done = p.scheduled === true;
+  return `<div class="dash-row type-${p.type || ''}" onclick="dashJumpToPost(${p.id})" style="${done ? 'opacity:0.45' : ''}">
+    <button onclick="togglePostScheduled(${p.id}, event)" title="${done ? 'Mark as not ready' : 'Mark as scheduled & ready'}" style="background:none;border:1.5px solid ${done ? 'var(--franchise)' : 'var(--border-strong)'};border-radius:50%;width:20px;height:20px;cursor:pointer;flex-shrink:0;color:${done ? 'var(--franchise)' : 'var(--muted2)'};font-size:10px;display:flex;align-items:center;justify-content:center;padding:0">
+      ${done ? '✓' : ''}
+    </button>
+    <div class="dash-row-body">
+      <div class="dash-row-title" style="${done ? 'text-decoration:line-through' : ''}">${escHtml(p.title)}</div>
+      <div class="dash-row-meta">${monthLabel} ${p.day} · ${escHtml(currentTypeLabel(p.type))}</div>
+    </div>
+  </div>`;
+}
+
+
+
 function dashCompletedRow(c) {
   return `<div class="dash-row type-collection" onclick="openIdeaModal()">
     <div class="dash-row-body">
@@ -5609,9 +5636,9 @@ function renderDashboard() {
       </div>
       <div class="dash-section">
         <div class="dash-section-title">🗓 UPCOMING WEEK</div>
-        ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
+        ${weekPosts.length ? weekPosts.map(p => dashUpcomingRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
       </div>
-      <div class="dash-section dash-wide">
+      <div class="dash-section">
         <div class="dash-section-title">✍️ AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
         ${awaitingCaption.length
           ? `<button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>${awaitingCaption.map(p => dashPostRow(p)).join('')}`
@@ -5622,7 +5649,8 @@ function renderDashboard() {
         ${needsMetrics.map(p => dashPostRow(p)).join('')}
         ${unpostedCompletions.map(dashCompletedRow).join('')}
         ${!attentionCount ? `<div class="dash-empty">All caught up.</div>` : ''}
-      </div>`;
+      </div>
+      ${buildContentGaps()}`;
     return;
   }
 
@@ -5657,8 +5685,6 @@ function renderDashboard() {
     ${buildTimingInsights(m)}
 
     ${buildTypeBreakdown(m)}
-
-    ${buildContentGaps()}
 
     ${buildHashtagExplorer(m)}
   `;
