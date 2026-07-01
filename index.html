@@ -3189,7 +3189,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.4.6</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.3</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -3714,13 +3714,14 @@ async function doSyncPush() {
   setSyncStatus('Syncing…', 'syncing');
   try {
     const payload = {
-      posts:     JSON.parse(localStorage.getItem('retro_posts')     || 'null'),
-      owned:     JSON.parse(localStorage.getItem('retro_owned')     || 'null'),
-      completed: JSON.parse(localStorage.getItem('retro_completed') || 'null'),
-      legend:    JSON.parse(localStorage.getItem('retro_legend')    || 'null'),
-      series:    JSON.parse(localStorage.getItem('retro_series')    || 'null'),
+      posts:       JSON.parse(localStorage.getItem('retro_posts')        || 'null'),
+      owned:       JSON.parse(localStorage.getItem('retro_owned')        || 'null'),
+      completed:   JSON.parse(localStorage.getItem('retro_completed')    || 'null'),
+      legend:      JSON.parse(localStorage.getItem('retro_legend')       || 'null'),
+      series:      JSON.parse(localStorage.getItem('retro_series')       || 'null'),
       seriesLogos: JSON.parse(localStorage.getItem('retro_series_logos') || 'null'),
-      amiiboData: JSON.parse(localStorage.getItem('retro_amiibo_data') || 'null'),
+      amiiboData:  JSON.parse(localStorage.getItem('retro_amiibo_data')  || 'null'),
+      coverShapes: JSON.parse(localStorage.getItem('retro_cover_shapes') || 'null'),
     };
     const res = await fetch(`${SYNC_WORKER}/sync`, {
       method: 'PUT',
@@ -3763,7 +3764,8 @@ async function initSync() {
       if (data.legend)      { localStorage.setItem('retro_legend',      JSON.stringify(data.legend));      legendSettings = data.legend; applyLegendSettings(); }
       if (data.series)      { localStorage.setItem('retro_series',      JSON.stringify(data.series));      seriesData = data.series; }
       if (data.seriesLogos) { localStorage.setItem('retro_series_logos',JSON.stringify(data.seriesLogos)); seriesLogos = data.seriesLogos; }
-      if (data.amiiboData) { localStorage.setItem('retro_amiibo_data',JSON.stringify(data.amiiboData)); amiiboData = data.amiiboData; }
+      if (data.amiiboData)  { localStorage.setItem('retro_amiibo_data',  JSON.stringify(data.amiiboData));  amiiboData = data.amiiboData; }
+      if (data.coverShapes) { localStorage.setItem('retro_cover_shapes', JSON.stringify(data.coverShapes)); GT_COVER_SHAPES = data.coverShapes; }
       localStorage.setItem('retro_sync_ts', cloudTime.toString());
 
       // Re-render active tab
@@ -4536,6 +4538,21 @@ function savePost() {
   }
 
   savePosts();
+
+  // If marked as published, find the matching owned game and update lastPosted
+  if (published) {
+    const cleanTitle = title.split(/[—–-]/)[0].trim() || title;
+    const matchedGame = findOwnedGameByTitle(cleanTitle);
+    if (matchedGame) {
+      const isoDate = `${year}-${String(monthOneIdx).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      // Only update if this post date is more recent than what's already recorded
+      if (!matchedGame.lastPosted || isoDate > matchedGame.lastPosted) {
+        matchedGame.lastPosted = isoDate;
+        persistOwned();
+      }
+    }
+  }
+
   closeModal();
 
   const mi = MONTHS.findIndex(m => m.idx === month && m.year === year);
@@ -5180,8 +5197,98 @@ function copyAwaitingCaptionList(btn) {
   });
 }
 
-function renderDashboard() {
+// ── HASHTAG ANALYTICS ───────────────────────────────────────────────────────
+// Extracts all hashtags from a post (planner tag + full hashtag string),
+// deduped and lowercased so #Zelda and #zelda count as the same tag.
+function extractPostTags(post) {
+  const tags = new Set();
+  if (post.plannerTag) post.plannerTag.match(/#\w+/g)?.forEach(t => tags.add(t.toLowerCase()));
+  if (post.tags) post.tags.match(/#\w+/g)?.forEach(t => tags.add(t.toLowerCase()));
+  return [...tags];
+}
 
+function buildHashtagStats(metric) {
+  const tagMap = {};
+  for (const post of posts) {
+    if (!post.metricsLoggedAt || !post.metrics) continue;
+    const val = post.metrics[metric] || 0;
+    extractPostTags(post).forEach(tag => {
+      if (!tagMap[tag]) tagMap[tag] = { tag, total: 0, count: 0 };
+      tagMap[tag].total += val;
+      tagMap[tag].count++;
+    });
+  }
+  return Object.values(tagMap)
+    .map(t => ({ ...t, avg: Math.round(t.total / t.count) }))
+    .sort((a, b) => b.avg - a.avg);
+}
+
+function buildPairStats(metric) {
+  const pairMap = {};
+  for (const post of posts) {
+    if (!post.metricsLoggedAt || !post.metrics) continue;
+    const val = post.metrics[metric] || 0;
+    const tags = extractPostTags(post);
+    for (let i = 0; i < tags.length; i++) {
+      for (let j = i + 1; j < tags.length; j++) {
+        const key = [tags[i], tags[j]].sort().join(' + ');
+        if (!pairMap[key]) pairMap[key] = { pair: key, total: 0, count: 0 };
+        pairMap[key].total += val;
+        pairMap[key].count++;
+      }
+    }
+  }
+  return Object.values(pairMap)
+    .filter(p => p.count >= 2) // need at least 2 data points to mean anything
+    .map(p => ({ ...p, avg: Math.round(p.total / p.count) }))
+    .sort((a, b) => b.avg - a.avg);
+}
+
+function renderHashtagTable(rows, labelKey, metric, limit) {
+  if (!rows.length) return `<div class="dash-empty">Not enough data yet — log ${metric} on more posts to see patterns.</div>`;
+  const shown = rows.slice(0, limit);
+  const maxAvg = shown[0].avg || 1;
+  return shown.map((r, i) => {
+    const label = r[labelKey];
+    const barPct = Math.max(4, Math.round((r.avg / maxAvg) * 100));
+    const rankColour = i === 0 ? 'var(--franchise)' : i === 1 ? 'var(--release)' : i === 2 ? 'var(--anniversary)' : 'var(--border-strong)';
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px">
+        <span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text)">${escHtml(label)}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:auto">${r.avg.toLocaleString()} avg · ${r.count} post${r.count !== 1 ? 's' : ''}</span>
+      </div>
+      <div style="height:6px;border-radius:3px;background:var(--surface2);overflow:hidden">
+        <div style="height:100%;width:${barPct}%;background:${rankColour};border-radius:3px;transition:width 0.3s"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildAnalyticsSection(metric) {
+  const tagStats = buildHashtagStats(metric);
+  const pairStats = buildPairStats(metric);
+  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
+
+  return `
+    <div class="dash-section dash-chart-section" style="grid-column:1/-1">
+      <div class="dash-section-title">🏷 HASHTAG PERFORMANCE</div>
+      <div class="dash-chart-tabs" style="margin-bottom:16px">
+        ${['views','likes','shares','saves'].map(m => `<button class="ct-sort-btn${dashChartMetric === m ? ' active' : ''}" onclick="dashSetChartMetric('${m}')">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">INDIVIDUAL TAGS — AVG ${metricLabel.toUpperCase()}</div>
+          ${renderHashtagTable(tagStats, 'tag', metric, 10)}
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px">TAG COMBINATIONS — AVG ${metricLabel.toUpperCase()} (2+ POSTS)</div>
+          ${renderHashtagTable(pairStats, 'pair', metric, 10)}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderDashboard() {
   const el = document.getElementById('dashboardBody');
   if (!el) return;
 
@@ -5224,6 +5331,8 @@ function renderDashboard() {
       </div>
       ${buildPerformanceChartSvg(dashChartMetric)}
     </div>
+
+    ${buildAnalyticsSection(dashChartMetric)}
 
     <div class="dash-section">
       <div class="dash-section-title">📅 TODAY</div>
@@ -7840,7 +7949,67 @@ function importSeedGames() {
     : `Added ${added} title${added !== 1 ? 's' : ''}${skipped ? `, ${skipped} already present` : ''}.`;
 }
 
-// ── COVER STORE (IndexedDB) ─────────────────────────────────────────────────
+// ── COVER SYNC ───────────────────────────────────────────────────────────────
+// Pushes a single cover to the Worker KV. Called whenever a cover is set
+// (single game save, or each iteration of the bulk fetch).
+async function pushCoverToWorker(key, dataUrl) {
+  if (!dataUrl || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  try {
+    await fetch(`${SYNC_WORKER}/covers/${key}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'text/plain' },
+      body: dataUrl,
+    });
+  } catch(e) {
+    console.warn('[cover-sync] push failed for', key, e);
+  }
+}
+
+// On load: asks the Worker what covers it has, downloads any that are missing
+// from the local IndexedDB, and hydrates them into memory for rendering.
+async function pullMissingCovers() {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  try {
+    const res = await fetch(`${SYNC_WORKER}/covers`, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return;
+    const serverKeys = await res.json(); // e.g. ['gt_1', 'gt_2', 'ct_5']
+    const localAll = await CoverStore.getAll();
+
+    const missing = serverKeys.filter(k => !localAll[k]);
+    if (!missing.length) return;
+
+    console.log(`[cover-sync] pulling ${missing.length} missing cover(s) from Worker`);
+    for (const key of missing) {
+      try {
+        const r = await fetch(`${SYNC_WORKER}/covers/${key}`, { signal: AbortSignal.timeout(10000) });
+        if (!r.ok) continue;
+        const dataUrl = await r.text();
+        if (!dataUrl.startsWith('data:image/')) continue;
+        await CoverStore.set(key, dataUrl);
+
+        // Hydrate into memory immediately so the current render reflects it
+        if (key.startsWith('gt_')) {
+          const id = parseInt(key.slice(3));
+          const g = ownedGames.find(g => g.id === id);
+          if (g) g.coverArt = dataUrl;
+        } else if (key.startsWith('ct_')) {
+          const id = parseInt(key.slice(3));
+          const c = completedGames.find(c => c.id === id);
+          if (c) c.cover = dataUrl;
+        }
+      } catch(e) {
+        console.warn('[cover-sync] pull failed for', key, e);
+      }
+    }
+
+    // Re-render once after batch pull
+    if (missing.length) { renderGTView(); renderCompletedTable(); }
+  } catch(e) {
+    console.warn('[cover-sync] pullMissingCovers failed:', e);
+  }
+}
+
+
 // Base64 cover images are too large for localStorage (5MB limit).
 // IndexedDB has no meaningful size cap. Keys: 'gt_<id>' / 'ct_<id>'.
 const CoverStore = {
@@ -7967,6 +8136,7 @@ async function bulkFetchCovers() {
       if (dataUrl) {
         game.coverArt = dataUrl;
         await CoverStore.set('gt_' + game.id, dataUrl);
+        pushCoverToWorker('gt_' + game.id, dataUrl); // fire-and-forget, don't block the loop
         found++;
       } else {
         failed++;
@@ -8610,7 +8780,10 @@ function saveGTGame() {
 
   if (savedGameId !== undefined) {
     syncRelatedItemsForGame(savedGameId, oldRelatedItems, [...modalRelatedRows]);
-    if (coverArt) CoverStore.set('gt_' + savedGameId, coverArt).catch(e => console.warn('[CoverStore] set failed:', e));
+    if (coverArt) {
+      CoverStore.set('gt_' + savedGameId, coverArt).catch(e => console.warn('[CoverStore] set failed:', e));
+      pushCoverToWorker('gt_' + savedGameId, coverArt);
+    }
   }
 
   persistOwned();
@@ -9259,7 +9432,10 @@ function saveCompleted() {
     completedGames.push({ id: savedCtId, title, platform, completedDate, rating, notes, cover, dlc: modalCgDlcRows.filter(d => d.title.trim()) });
   }
 
-  if (savedCtId !== undefined && cover) CoverStore.set('ct_' + savedCtId, cover).catch(e => console.warn('[CoverStore] set failed:', e));
+  if (savedCtId !== undefined && cover) {
+    CoverStore.set('ct_' + savedCtId, cover).catch(e => console.warn('[CoverStore] set failed:', e));
+    pushCoverToWorker('ct_' + savedCtId, cover);
+  }
 
   try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   closeCompletedModal();
@@ -10117,8 +10293,8 @@ document.addEventListener('click', e => {
 
 render();
 applyLegendSettings();
-// Load covers from IndexedDB into memory (async, re-renders when done)
-initCovers();
+// Load covers from IndexedDB, then pull any missing ones from the Worker
+initCovers().then(() => pullMissingCovers());
 try {
   const t = localStorage.getItem('retro_tab');
   if (t && t !== 'dashboard') switchTab(t);
