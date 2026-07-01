@@ -3186,6 +3186,39 @@ textarea { resize: vertical; min-height: 72px; }
 .ht-chip:hover { border-color: var(--text); color: var(--text); }
 .ht-chip.active { background: var(--text); color: var(--surface); border-color: var(--text); }
 .ht-chip span { opacity: 0.6; margin-left: 3px; }
+.dash-tab-switch {
+  grid-column: 1 / -1;
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dash-tab-btn {
+  flex: 1;
+  padding: 11px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dash-tab-btn + .dash-tab-btn { border-left: 1px solid var(--border); }
+.dash-tab-btn.active { background: var(--text); color: var(--surface); }
+.dash-mini-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface2);
+  overflow: hidden;
+  margin-top: 3px;
+}
+.dash-mini-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
 </style>
 </head>
 <body>
@@ -3205,7 +3238,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.5</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.0</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -5378,77 +5411,249 @@ function renderHashtagTable(rows, labelKey, metric, limit) {
 }
 
 
+let dashTab = 'today';
+function setDashTab(t) { dashTab = t; renderDashboard(); }
+
+// ── TIMING INSIGHTS ────────────────────────────────────────────────────────
+function buildTimingInsights(metric) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayMap = Object.fromEntries(days.map(d => [d, { total:0, count:0 }]));
+  const weekMap = { 'Wk 1':{ total:0,count:0 }, 'Wk 2':{ total:0,count:0 }, 'Wk 3':{ total:0,count:0 }, 'Wk 4+':{ total:0,count:0 } };
+
+  posts.filter(p => p.metricsLoggedAt && p.metrics).forEach(p => {
+    const val = p.metrics[metric] || 0;
+    const d = postDateObj(p);
+    if (isNaN(d)) return;
+    dayMap[days[d.getDay()]].total += val; dayMap[days[d.getDay()]].count++;
+    const wk = Math.min(Math.ceil(p.day / 7), 4);
+    const wkKey = wk <= 3 ? `Wk ${wk}` : 'Wk 4+';
+    weekMap[wkKey].total += val; weekMap[wkKey].count++;
+  });
+
+  const dayRows = days.map(d => ({ label:d, avg: dayMap[d].count ? Math.round(dayMap[d].total / dayMap[d].count) : 0, count: dayMap[d].count }));
+  const weekRows = Object.entries(weekMap).map(([k,v]) => ({ label:k, avg: v.count ? Math.round(v.total/v.count) : 0, count: v.count }));
+
+  const renderMiniRows = rows => {
+    const max = Math.max(...rows.map(r => r.avg), 1);
+    return rows.map(r => `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--muted);width:30px;flex-shrink:0">${r.label}</span>
+        <div class="dash-mini-bar" style="flex:1"><div class="dash-mini-bar-fill" style="width:${r.count ? Math.max(4,Math.round(r.avg/max*100)) : 0}%;background:var(--release)"></div></div>
+        <span style="font-family:var(--mono);font-size:10px;font-weight:700;color:${r.count ? 'var(--text)' : 'var(--muted2)'};width:36px;text-align:right">${r.count ? r.avg.toLocaleString() : '—'}</span>
+      </div>`).join('');
+  };
+
+  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
+  return `
+    <div class="dash-section">
+      <div class="dash-section-title">📅 DAY OF WEEK — AVG ${metricLabel.toUpperCase()}</div>
+      ${renderMiniRows(dayRows)}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">📆 WEEK OF MONTH — AVG ${metricLabel.toUpperCase()}</div>
+      ${renderMiniRows(weekRows)}
+    </div>`;
+}
+
+// ── POST TYPE BREAKDOWN ────────────────────────────────────────────────────
+function buildTypeBreakdown(metric) {
+  const typeMap = {};
+  posts.filter(p => p.metricsLoggedAt && p.metrics).forEach(p => {
+    const val = p.metrics[metric] || 0;
+    const type = p.type || 'unknown';
+    if (!typeMap[type]) typeMap[type] = { total:0, count:0 };
+    typeMap[type].total += val; typeMap[type].count++;
+  });
+  const rows = Object.entries(typeMap)
+    .map(([type, d]) => ({ type, label: currentTypeLabel(type), avg: Math.round(d.total/d.count), count: d.count }))
+    .sort((a,b) => b.avg - a.avg);
+  const max = Math.max(...rows.map(r => r.avg), 1);
+  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
+  const colours = { anniversary:'var(--anniversary)', release:'var(--release)', collection:'var(--collection)', maker:'var(--maker)', franchise:'var(--franchise)' };
+  return `<div class="dash-section">
+    <div class="dash-section-title">🎮 POST TYPE — AVG ${metricLabel.toUpperCase()}</div>
+    ${rows.length ? rows.map(r => `
+      <div style="margin-bottom:9px">
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px">
+          <span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text)">${escHtml(r.label)}</span>
+          <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);margin-left:auto">${r.avg.toLocaleString()}</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted)">${r.count} post${r.count!==1?'s':''}</span>
+        </div>
+        <div class="dash-mini-bar"><div class="dash-mini-bar-fill" style="width:${Math.max(4,Math.round(r.avg/max*100))}%;background:${colours[r.type]||'var(--muted)'}"></div></div>
+      </div>`).join('')
+    : `<div class="dash-empty">No data yet.</div>`}
+  </div>`;
+}
+
+// ── STREAK & CONSISTENCY ────────────────────────────────────────────────────
+function calcStreakStats() {
+  const published = posts
+    .filter(p => p.published !== false)
+    .map(p => postDateObj(p))
+    .filter(d => !isNaN(d))
+    .sort((a,b) => b - a);
+  if (!published.length) return { streak:0, perWeek:'—', total30:0 };
+
+  const getWeekKey = d => {
+    const y = d.getFullYear(), w = Math.floor((d - new Date(y,0,1)) / (7*24*60*60*1000));
+    return `${y}-${w}`;
+  };
+  const weeks = [...new Set(published.map(getWeekKey))];
+  let streak = 1;
+  for (let i = 1; i < weeks.length; i++) {
+    const [y1,w1] = weeks[i-1].split('-').map(Number);
+    const [y2,w2] = weeks[i].split('-').map(Number);
+    if ((y1*52+w1) - (y2*52+w2) === 1) streak++; else break;
+  }
+
+  const now = new Date();
+  const total30 = published.filter(d => (now-d)/(1000*60*60*24) <= 30).length;
+  const total90 = published.filter(d => (now-d)/(1000*60*60*24) <= 90).length;
+  const perWeek = (total90 / 13).toFixed(1);
+  return { streak, perWeek, total30 };
+}
+
+// ── BEST VS WORST ──────────────────────────────────────────────────────────
+function buildBestVsWorst(metric) {
+  const logged = posts.filter(p => p.metricsLoggedAt && p.metrics && p.metrics[metric] != null)
+    .sort((a,b) => (b.metrics[metric]||0) - (a.metrics[metric]||0));
+  if (logged.length < 2) return `<div class="dash-section dash-chart-section"><div class="dash-section-title">🏆 BEST VS WORST</div><div class="dash-empty">Need at least 2 logged posts to compare.</div></div>`;
+  const top = logged.slice(0,3);
+  const bottom = logged.slice(-3).reverse();
+  const metricLabel = metric.charAt(0).toUpperCase() + metric.slice(1);
+  return `<div class="dash-section dash-chart-section">
+    <div class="dash-section-title">🏆 BEST VS WORST — ${metricLabel.toUpperCase()}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--franchise);margin-bottom:10px">TOP ${top.length}</div>
+        ${top.map((p,i) => dashPostRow(p,{rank:i+1,metric})).join('')}
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--maker);margin-bottom:10px">BOTTOM ${bottom.length}</div>
+        ${bottom.map(p => dashPostRow(p,{metric})).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── CONTENT GAPS ───────────────────────────────────────────────────────────
+function buildContentGaps() {
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const gaps = seriesData.map(series => {
+    const ownedInSeries = ownedGames.filter(g =>
+      g.column === 'owned' &&
+      (series.games || []).some(sg => sg.title.toLowerCase() === g.title.toLowerCase())
+    );
+    if (ownedInSeries.length < 5) return null;
+    const lastPosted = ownedInSeries
+      .map(g => g.lastPosted ? new Date(g.lastPosted) : null)
+      .filter(Boolean).sort((a,b) => b-a)[0];
+    if (lastPosted && lastPosted > sixMonthsAgo) return null;
+    return {
+      name: series.name,
+      owned: ownedInSeries.length,
+      lastPosted: lastPosted ? lastPosted.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : 'never posted'
+    };
+  }).filter(Boolean).sort((a,b) => b.owned - a.owned);
+
+  return `<div class="dash-section dash-chart-section">
+    <div class="dash-section-title">🕳 CONTENT GAPS — 5+ OWNED, NOT POSTED IN 6 MONTHS</div>
+    ${gaps.length ? gaps.map(g => `
+      <div class="dash-row" style="cursor:default">
+        <div class="dash-row-body">
+          <div class="dash-row-title">${escHtml(g.name)}</div>
+          <div class="dash-row-meta">${g.owned} owned · last posted ${escHtml(g.lastPosted)}</div>
+        </div>
+      </div>`).join('')
+    : `<div class="dash-empty">No gaps — you're covering your collection well.</div>`}
+  </div>`;
+}
+
 function renderDashboard() {
   const el = document.getElementById('dashboardBody');
   if (!el) return;
 
   const today = new Date();
   const todayStr = today.toDateString();
-  const curMonthData = MONTHS.find(m => m.year === today.getFullYear() && m.idx === today.getMonth());
 
   const todayPosts = posts.filter(p => { const d = postDateObj(p); return !isNaN(d) && d.toDateString() === todayStr; });
   const weekPosts = posts.filter(p => {
-    const d = postDateObj(p);
-    if (isNaN(d)) return false;
-    const diffDays = (d - today) / (1000 * 60 * 60 * 24);
-    return diffDays > 0 && diffDays < 7;
-  }).sort((a, b) => postDateObj(a) - postDateObj(b));
+    const d = postDateObj(p); if (isNaN(d)) return false;
+    const diff = (d - today) / (1000*60*60*24); return diff > 0 && diff < 7;
+  }).sort((a,b) => postDateObj(a) - postDateObj(b));
 
-  const best = topPerformingPosts('likes', 30).slice(0, 5);
   const needsMetrics = postsNeedingMetrics();
-  const unpostedCompletions = completedGames.filter(isCompletedUnposted)
-    .sort((a, b) => (b.completedDate || '').localeCompare(a.completedDate || ''));
+  const unpostedCompletions = completedGames.filter(isCompletedUnposted).sort((a,b) => (b.completedDate||'').localeCompare(a.completedDate||''));
   const attentionCount = needsMetrics.length + unpostedCompletions.length;
   const awaitingCaption = postsAwaitingCaption(14);
 
-  const monthPostCount = curMonthData ? posts.filter(p => p.month === curMonthData.idx && (p.year || 2026) === curMonthData.year).length : 0;
-  const pastPublished = posts.filter(p => p.published !== false).filter(p => { const d = postDateObj(p); return !isNaN(d) && d <= today; }).sort((a,b) => postDateObj(b) - postDateObj(a));
-  const daysSinceLast = pastPublished.length ? Math.round((today - postDateObj(pastPublished[0])) / (1000*60*60*24)) : '—';
-  const loggedCount = posts.filter(p => p.metricsLoggedAt).length;
+  const tabSwitch = `<div class="dash-tab-switch">
+    <button class="dash-tab-btn${dashTab==='today'?' active':''}" onclick="setDashTab('today')">📅 Today</button>
+    <button class="dash-tab-btn${dashTab==='metrics'?' active':''}" onclick="setDashTab('metrics')">📊 Metrics</button>
+  </div>`;
 
-  el.innerHTML = `
-    <div class="dash-stats">
-      ${dashStatCard(monthPostCount, curMonthData ? curMonthData.name.toUpperCase() + ' POSTS' : 'POSTS THIS MONTH')}
-      ${dashStatCard(daysSinceLast, 'DAYS SINCE LAST POST')}
-      ${dashStatCard(unpostedCompletions.length, 'COMPLETED, NOT POSTED')}
-      ${dashStatCard(loggedCount, 'POSTS WITH METRICS LOGGED')}
-    </div>
+  if (dashTab === 'today') {
+    el.innerHTML = tabSwitch + `
+      <div class="dash-section">
+        <div class="dash-section-title">📅 TODAY</div>
+        ${todayPosts.length ? todayPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned for today.</div>`}
+      </div>
+      <div class="dash-section">
+        <div class="dash-section-title">🗓 UPCOMING WEEK</div>
+        ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
+      </div>
+      <div class="dash-section">
+        <div class="dash-section-title">✍️ AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
+        ${awaitingCaption.length
+          ? `<button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>${awaitingCaption.map(p => dashPostRow(p)).join('')}`
+          : `<div class="dash-empty">Nothing in the next 2 weeks is missing a caption.</div>`}
+      </div>
+      <div class="dash-section${attentionCount?' dash-attention-active':''}">
+        <div class="dash-section-title">⚠ NEEDS ATTENTION${attentionCount?`<span class="dash-count-badge">${attentionCount}</span>`:''}</div>
+        ${needsMetrics.map(p => dashPostRow(p)).join('')}
+        ${unpostedCompletions.map(dashCompletedRow).join('')}
+        ${!attentionCount ? `<div class="dash-empty">All caught up.</div>` : ''}
+      </div>`;
+    return;
+  }
+
+  // ── METRICS TAB ────────────────────────────────────────────────────────────
+  const m = dashChartMetric;
+  const metricLabel = m.charAt(0).toUpperCase() + m.slice(1);
+  const loggedPosts = posts.filter(p => p.metricsLoggedAt && p.metrics);
+  const streak = calcStreakStats();
+  const best30 = topPerformingPosts(m, 30).slice(0,5);
+
+  const metricToggle = `<div class="dash-chart-tabs" style="grid-column:1/-1;margin-bottom:0">
+    ${['views','likes','shares','saves'].map(mt =>
+      `<button class="ct-sort-btn${m===mt?' active':''}" onclick="dashSetChartMetric('${mt}')">${mt.charAt(0).toUpperCase()+mt.slice(1)}</button>`
+    ).join('')}
+  </div>`;
+
+  const quickStats = `<div class="dash-stats">
+    ${dashStatCard(streak.streak, 'WEEK STREAK')}
+    ${dashStatCard(streak.total30, 'POSTS THIS MONTH')}
+    ${dashStatCard(streak.perWeek, 'AVG POSTS / WEEK')}
+    ${dashStatCard(loggedPosts.length, 'METRICS LOGGED')}
+  </div>`;
+
+  el.innerHTML = tabSwitch + metricToggle + quickStats + `
+    ${buildBestVsWorst(m)}
 
     <div class="dash-section dash-chart-section">
       <div class="dash-section-title">📈 PERFORMANCE TRENDS — LAST 10 LOGGED POSTS</div>
-      <div class="dash-chart-tabs">
-        ${['views', 'likes', 'shares', 'saves'].map(m => `<button class="ct-sort-btn${dashChartMetric === m ? ' active' : ''}" onclick="dashSetChartMetric('${m}')">${m.charAt(0).toUpperCase() + m.slice(1)}</button>`).join('')}
-      </div>
-      ${buildPerformanceChartSvg(dashChartMetric)}
+      ${buildPerformanceChartSvg(m)}
     </div>
 
-    ${buildHashtagExplorer(dashChartMetric)}
+    ${buildTimingInsights(m)}
 
-    <div class="dash-section">
-      <div class="dash-section-title">📅 TODAY</div>
-      ${todayPosts.length ? todayPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned for today.</div>`}
-    </div>
-    <div class="dash-section">
-      <div class="dash-section-title">🗓 UPCOMING WEEK</div>
-      ${weekPosts.length ? weekPosts.map(p => dashPostRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
-    </div>
-    <div class="dash-section">
-      <div class="dash-section-title">✍️ UPCOMING — AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
-      ${awaitingCaption.length ? `
-        <button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>
-        ${awaitingCaption.map(p => dashPostRow(p)).join('')}
-      ` : `<div class="dash-empty">Nothing in the next 2 weeks is missing a caption.</div>`}
-    </div>
-    <div class="dash-section">
-      <div class="dash-section-title">🏆 BEST POSTS — LAST 30 DAYS</div>
-      ${best.length ? best.map((p, i) => dashPostRow(p, { rank: i + 1, metric: 'likes' })).join('') : `<div class="dash-empty">Not enough performance data logged yet. Log numbers on a post once you've checked Instagram Insights.</div>`}
-    </div>
-    <div class="dash-section${attentionCount ? ' dash-attention-active' : ''}">
-      <div class="dash-section-title">⚠ NEEDS ATTENTION${attentionCount ? `<span class="dash-count-badge">${attentionCount}</span>` : ''}</div>
-      ${needsMetrics.length ? needsMetrics.map(p => dashPostRow(p)).join('') : ''}
-      ${unpostedCompletions.length ? unpostedCompletions.map(dashCompletedRow).join('') : ''}
-      ${!attentionCount ? `<div class="dash-empty">All caught up.</div>` : ''}
-    </div>
+    ${buildTypeBreakdown(m)}
+
+    ${buildContentGaps()}
+
+    ${buildHashtagExplorer(m)}
   `;
 }
 
