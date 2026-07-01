@@ -3205,7 +3205,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.4</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.5.5</span></div>
     <div class="header-actions">
       <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
       <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
@@ -5268,11 +5268,11 @@ function buildHashtagExplorer(metric) {
 
     detail = `
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-          <span style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text)">${escHtml(dashSelectedTag)}</span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${tagPosts.length} post${tagPosts.length !== 1 ? 's' : ''}</span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">avg ${avgVal.toLocaleString()} ${metricLabel.toLowerCase()}</span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">total ${totalVal.toLocaleString()}</span>
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+          <span style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text)">${escHtml(dashSelectedTag)}</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text)">${avgVal.toLocaleString()} <span style="font-size:9px;font-weight:400;color:var(--muted)">avg ${metricLabel.toLowerCase()}</span></span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text)">${totalVal.toLocaleString()} <span style="font-size:9px;font-weight:400;color:var(--muted)">total</span></span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text)">${tagPosts.length} <span style="font-size:9px;font-weight:400;color:var(--muted)">post${tagPosts.length !== 1 ? 's' : ''}</span></span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
           <div>
@@ -5367,7 +5367,8 @@ function renderHashtagTable(rows, labelKey, metric, limit) {
     return `<div style="margin-bottom:10px">
       <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px">
         <span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text)">${escHtml(label)}</span>
-        <span style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:auto">${r.avg.toLocaleString()} avg · ${r.count} post${r.count !== 1 ? 's' : ''}</span>
+        <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);margin-left:auto">${r.avg.toLocaleString()}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--muted)">avg · ${r.count} post${r.count !== 1 ? 's' : ''}</span>
       </div>
       <div style="height:6px;border-radius:3px;background:var(--surface2);overflow:hidden">
         <div style="height:100%;width:${barPct}%;background:${rankColour};border-radius:3px;transition:width 0.3s"></div>
