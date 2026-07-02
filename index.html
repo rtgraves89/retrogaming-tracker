@@ -3355,6 +3355,23 @@ textarea { resize: vertical; min-height: 72px; }
 .shot-row { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; font-size: 13px; }
 .shot-row .shot-meta { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 
+/* ── Dashboard arrange mode ── */
+.dash-arrange-bar {
+  display: flex; align-items: center; gap: 6px;
+  margin: -6px 0 10px; padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+.dash-arrange-bar button {
+  font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+}
+.dash-arrange-bar button:disabled { opacity: 0.35; cursor: default; }
+.dash-drag-hint { font-family: var(--mono); font-size: 9px; color: var(--muted2); margin-left: auto; }
+.dash-section[draggable="true"] { cursor: grab; }
+.dash-section.dash-dragging { opacity: 0.5; }
+@media (max-width: 760px) { .dash-drag-hint { display: none; } }
+
 /* ── Dark theme: CRT phosphor, matched to rtgraves.com ── */
 html[data-theme="dark"] {
   --bg: #0f120e; --surface: #161b15; --surface2: #1c231b;
@@ -3390,7 +3407,7 @@ html[data-theme="dark"] img { opacity: 0.92; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.8.2</span></div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.8.3</span></div>
   </div>
   <div class="header-right">
     <div class="month-tabs" id="monthTabs" style="display:none"></div>
@@ -3986,6 +4003,7 @@ async function doSyncPush() {
       seriesLogos: JSON.parse(localStorage.getItem('retro_series_logos') || 'null'),
       amiiboData:  JSON.parse(localStorage.getItem('retro_amiibo_data')  || 'null'),
       coverShapes: JSON.parse(localStorage.getItem('retro_cover_shapes') || 'null'),
+      dashLayout:  JSON.parse(localStorage.getItem('retro_dash_layout')  || 'null'),
     };
     const body = JSON.stringify(payload);
     // Identical to what's already in the cloud? Skip the write entirely.
@@ -4060,6 +4078,7 @@ async function initSync() {
       if (data.seriesLogos) { localStorage.setItem('retro_series_logos',JSON.stringify(data.seriesLogos)); seriesLogos = data.seriesLogos; }
       if (data.amiiboData)  { localStorage.setItem('retro_amiibo_data',  JSON.stringify(data.amiiboData));  amiiboData = data.amiiboData; }
       if (data.coverShapes) { localStorage.setItem('retro_cover_shapes', JSON.stringify(data.coverShapes)); GT_COVER_SHAPES = data.coverShapes; }
+      if (data.dashLayout)  { localStorage.setItem('retro_dash_layout',  JSON.stringify(data.dashLayout));  dashLayout = { today: [], metrics: [], ...data.dashLayout }; }
       localStorage.setItem('retro_sync_ts', cloudTime.toString());
 
       // Re-render active tab
@@ -5705,6 +5724,117 @@ function renderHashtagTable(rows, labelKey, metric, limit) {
 let dashTab = 'today';
 function setDashTab(t) { dashTab = t; renderDashboard(); }
 
+// ── Movable / resizable dashboard sections ───────────────────────────
+// Layout is stored per sub-tab as [{id, w}] where id is a slug of the section
+// title and w is 1 (one grid column) or 2 (full row). Sections are identified
+// and reordered AFTER render, so the dashboard templates stay untouched.
+let dashLayout = { today: [], metrics: [] };
+try { dashLayout = { today: [], metrics: [], ...JSON.parse(localStorage.getItem('retro_dash_layout') || '{}') }; } catch(e) {}
+let _dashArrange = false;
+let _dashDragIdx = null;
+
+function saveDashLayout() {
+  try { localStorage.setItem('retro_dash_layout', JSON.stringify(dashLayout)); } catch(e) {}
+  scheduleSync();
+}
+function dashSectionId(sec) {
+  const t = sec.querySelector('.dash-section-title');
+  // Strip digits so titles with live counts ("CONTENT GAPS (5 owned...)") keep
+  // a stable identity as the numbers change, and cap length for sanity.
+  return (t ? t.textContent : 'section').toLowerCase().replace(/[0-9]+/g, '').replace(/[^a-z]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48);
+}
+function dashSections() {
+  const el = document.getElementById('dashboardBody');
+  return el ? [...el.querySelectorAll(':scope > .dash-section')] : [];
+}
+// Capture whatever is currently on screen into the layout array, keeping any
+// saved order/width for sections that still exist and appending new ones.
+function captureDashOrder() {
+  const current = dashSections().map(s => dashSectionId(s));
+  const saved = dashLayout[dashTab] || [];
+  const merged = [];
+  saved.forEach(e => { if (current.includes(e.id)) merged.push({ id: e.id, w: e.w || 1 }); });
+  current.forEach(id => { if (!merged.some(e => e.id === id)) merged.push({ id, w: 1 }); });
+  dashLayout[dashTab] = merged;
+  return merged;
+}
+function applyDashLayout() {
+  const el = document.getElementById('dashboardBody');
+  if (!el) return;
+  const layout = captureDashOrder();
+  const byId = {};
+  dashSections().forEach(s => { byId[dashSectionId(s)] = s; });
+  layout.forEach((e, i) => {
+    const sec = byId[e.id];
+    if (!sec) return;
+    el.appendChild(sec); // append in saved order — moves, doesn't clone, so canvases/SVGs survive
+    sec.style.gridColumn = e.w === 2 ? '1 / -1' : '';
+    if (_dashArrange) injectDashControls(sec, i, layout.length, e.w);
+  });
+  // Arrange toggle lives in the sub-tab switch
+  const sw = el.querySelector('.dash-tab-switch');
+  if (sw && !sw.querySelector('.dash-arrange-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'dash-tab-btn dash-arrange-btn' + (_dashArrange ? ' active' : '');
+    btn.textContent = _dashArrange ? '✓ Done' : '⇅ Arrange';
+    btn.onclick = toggleDashArrange;
+    sw.appendChild(btn);
+    if (_dashArrange) {
+      const rst = document.createElement('button');
+      rst.className = 'dash-tab-btn';
+      rst.textContent = 'Reset layout';
+      rst.onclick = resetDashLayout;
+      sw.appendChild(rst);
+    }
+  }
+}
+function toggleDashArrange() {
+  _dashArrange = !_dashArrange;
+  renderDashboard();
+}
+function resetDashLayout() {
+  dashLayout[dashTab] = [];
+  saveDashLayout();
+  renderDashboard();
+}
+function injectDashControls(sec, idx, total, w) {
+  const bar = document.createElement('div');
+  bar.className = 'dash-arrange-bar';
+  bar.innerHTML =
+    `<button title="Move earlier" ${idx === 0 ? 'disabled' : ''} onclick="moveDashSection(${idx},-1)">↑</button>` +
+    `<button title="Move later" ${idx === total - 1 ? 'disabled' : ''} onclick="moveDashSection(${idx},1)">↓</button>` +
+    `<button title="Toggle width" onclick="toggleDashWidth(${idx})">${w === 2 ? '▣ Full row' : '□ Column'}</button>` +
+    `<span class="dash-drag-hint">drag to move</span>`;
+  sec.prepend(bar);
+  sec.draggable = true;
+  sec.ondragstart = (e) => { _dashDragIdx = idx; e.dataTransfer.effectAllowed = 'move'; sec.classList.add('dash-dragging'); };
+  sec.ondragend = () => { _dashDragIdx = null; sec.classList.remove('dash-dragging'); };
+  sec.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; };
+  sec.ondrop = (e) => {
+    e.preventDefault();
+    if (_dashDragIdx === null || _dashDragIdx === idx) return;
+    const l = dashLayout[dashTab];
+    const [moved] = l.splice(_dashDragIdx, 1);
+    l.splice(idx, 0, moved);
+    saveDashLayout();
+    renderDashboard();
+  };
+}
+function moveDashSection(idx, dir) {
+  const l = dashLayout[dashTab];
+  const to = idx + dir;
+  if (to < 0 || to >= l.length) return;
+  [l[idx], l[to]] = [l[to], l[idx]];
+  saveDashLayout();
+  renderDashboard();
+}
+function toggleDashWidth(idx) {
+  const l = dashLayout[dashTab];
+  l[idx].w = l[idx].w === 2 ? 1 : 2;
+  saveDashLayout();
+  renderDashboard();
+}
+
 // ── TIMING INSIGHTS ────────────────────────────────────────────────────────
 function buildTimingInsights(metric) {
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -5947,6 +6077,7 @@ function renderDashboard() {
       </div>
       ${buildContentGaps()}
       ${buildPriorityHuntingList()}`;
+    applyDashLayout();
     return;
   }
 
@@ -5984,6 +6115,7 @@ function renderDashboard() {
 
     ${buildHashtagExplorer(m)}
   `;
+  applyDashLayout();
 }
 
 
@@ -11132,7 +11264,7 @@ function toggleTheme() {
 }
 
 // ── Full backup: export / import everything ──
-const BACKUP_KEYS = ['retro_posts','retro_owned','retro_completed','retro_legend','retro_series','retro_series_logos','retro_amiibo_data','retro_cover_shapes'];
+const BACKUP_KEYS = ['retro_posts','retro_owned','retro_completed','retro_legend','retro_series','retro_series_logos','retro_amiibo_data','retro_cover_shapes','retro_dash_layout'];
 function exportAllData() {
   const out = { app: 'retro-collection-tracker', version: '1.8.0', exportedAt: new Date().toISOString(), data: {} };
   BACKUP_KEYS.forEach(k => {
