@@ -763,15 +763,6 @@ body {
   text-overflow: ellipsis;
 }
 
-.series-card-arrow {
-  font-size: 9px;
-  color: var(--muted2);
-  transition: transform 0.15s;
-  flex-shrink: 0;
-  display: inline-block;
-}
-.series-row.open .series-card-arrow { transform: rotate(90deg); }
-
 /* Bottom meta row: pips + bar + count */
 .series-card-meta {
   display: flex;
@@ -3226,6 +3217,160 @@ textarea { resize: vertical; min-height: 72px; }
   height: 100%;
   border-radius: 3px;
 }
+/* Platform version badges per game row */
+.series-platform-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.series-platform-badge.owned { background: var(--franchise-bg); border-color: var(--franchise-border); color: var(--franchise); }
+.series-platform-badge.tobuy { background: var(--anniversary-bg); border-color: var(--anniversary-border); color: var(--anniversary); }
+.series-platform-badge.missing { background: var(--surface2); color: var(--muted2); }
+.series-game-cover {
+  width: 24px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.series-priority-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  flex-shrink: 0;
+  transition: all 0.12s;
+}
+.series-priority-badge.high { background: var(--maker-bg); color: var(--maker); border: 1px solid var(--maker-border); }
+.series-priority-badge.medium { background: var(--anniversary-bg); color: var(--anniversary); border: 1px solid var(--anniversary-border); }
+.series-priority-badge.low { background: var(--surface2); color: var(--muted); border: 1px solid var(--border-strong); }
+.series-priority-badge.none { background: transparent; color: var(--muted2); border: 1px dashed var(--border); }
+.series-game-priority {
+  font-size: 11px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  flex-shrink: 0;
+  opacity: 0.35;
+  transition: opacity 0.12s;
+  line-height: 1;
+}
+.series-game-priority.active { opacity: 1; }
+.series-game-row:hover .series-game-priority { opacity: 0.6; }
+.series-game-row:hover .series-game-priority.active { opacity: 1; }
+.series-last-posted {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ══ v1.8 ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Context bar ── */
+.context-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 24px; background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.context-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.theme-toggle { flex-shrink: 0; padding: 6px 8px; }
+.theme-toggle svg { margin-right: 0 !important; }
+@media (max-width: 768px) {
+  .context-bar { padding: 6px 14px; }
+  .context-actions { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .context-actions::-webkit-scrollbar { display: none; }
+  .context-actions .btn-add { flex-shrink: 0; }
+}
+
+/* ── Type scale: lift the floor, keep mono for metadata only ── */
+.app-tab { font-size: 12px; }
+.btn-add { font-size: 11px; }
+.tile-title { font-size: 11px; }
+.tile-type { font-size: 9px; }
+.cell-date { font-size: 11px; }
+.legend-item { font-size: 10px; }
+.gt-game-row { font-size: 13px; }
+.gt-game-title { font-size: 13px; }
+.gt-col-header { font-size: 11px; }
+.gt-console-tab-name { font-size: 10px; }
+.form-group label { font-size: 11px; }
+.form-group input, .form-group textarea, .form-group select { font-size: 13px; }
+.tracking-table { font-size: 12px; }
+.tracking-search, .tracking-filter { font-size: 12px; }
+.ct-card-title { font-size: 13px; }
+.ct-date { font-size: 10px; }
+.series-row-name { font-size: 13px; }
+.popover-caption { font-size: 12px; }
+.popover-title { font-size: 13px; }
+.modal h2 { font-size: 14px; letter-spacing: 0.1em; }
+.dash-section-title { font-size: 11px; }
+.sync-status-bar { font-size: 10px; }
+@media (max-width: 768px) {
+  .app-tab { font-size: 11px; padding: 6px 10px; }
+  .tile-title { font-size: 10px; }
+  .cal-cell { min-height: 78px; }
+  .gt-game-title { font-size: 12px; }
+  .ct-card-title { font-size: 12px; }
+}
+
+/* ── Modal sections ── */
+.modal-section {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--border);
+  padding-bottom: 4px; margin: 18px 0 10px;
+}
+.modal h2 + .modal-section { margin-top: 0; }
+
+/* ── Undo toast ── */
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px;
+  background: #1a1a18; color: #f5f4f0; padding: 10px 16px; border-radius: 8px;
+  display: flex; gap: 14px; align-items: center;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+  z-index: 9999; box-shadow: 0 6px 24px rgba(0,0,0,0.3); max-width: 90vw;
+}
+.toast button {
+  background: none; border: none; color: #7ee2a8; font: inherit;
+  cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; padding: 0;
+}
+
+/* ── Shot list ── */
+.shot-group-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin: 12px 0 6px; border-bottom: 1px solid var(--border); padding-bottom: 3px;
+}
+.shot-row { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; font-size: 13px; }
+.shot-row .shot-meta { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+/* ── Dark theme: CRT phosphor, matched to rtgraves.com ── */
+html[data-theme="dark"] {
+  --bg: #0f120e; --surface: #161b15; --surface2: #1c231b;
+  --border: #2a3328; --border-strong: #3a4537;
+  --text: #e2e8da; --muted: #8a9482; --muted2: #5c665a;
+  --anniversary: #e0a24a; --anniversary-bg: #2a2110; --anniversary-border: #4d3d1c;
+  --release: #5aa7e0; --release-bg: #12202c; --release-border: #23405a;
+  --collection: #a97ae0; --collection-bg: #221630; --collection-border: #3f2a5a;
+  --maker: #e05a86; --maker-bg: #2c1219; --maker-border: #552330;
+  --franchise: #4ac48e; --franchise-bg: #0f261b; --franchise-border: #1d4a34;
+}
+html[data-theme="dark"] .app-title { color: #7ee2a8; text-shadow: 0 0 10px rgba(126,226,168,0.3); }
+html[data-theme="dark"] .toast { background: #e2e8da; color: #161b15; }
+html[data-theme="dark"] .toast button { color: #1d7a4c; }
+html[data-theme="dark"] img { opacity: 0.92; }
+
 </style>
 </head>
 <body>
@@ -3245,17 +3390,7 @@ textarea { resize: vertical; min-height: 72px; }
 <!-- HEADER -->
 <header class="app-header">
   <div class="header-left">
-    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.6.2</span></div>
-    <div class="header-actions">
-      <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings">⚙ Settings</button>
-      <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none">+ Add game</button>
-      <button class="btn-add" id="btnAddSeries" onclick="openAddSeriesModal()" style="display:none">+ Add series</button>
-      <button class="btn-add" id="btnAddCompleted" onclick="openCompletedModal()" style="display:none">+ Log completion</button>
-      <button class="btn-add" id="btnCheckUpdates" onclick="importSeedGames()" style="display:none" title="Import any new titles added to the seed list">⬇ Check for updates</button>
-      <span id="seedImportResult" style="font-family:var(--mono); font-size:9px; color:var(--muted); display:none; margin-left:6px;"></span>
-      <button class="btn-add" id="btnCheckCompletedUpdates" onclick="importSeedCompleted()" style="display:none" title="Import any new titles added to the completion seed list">⬇ Check for updates</button>
-      <span id="ct-seed-result" style="font-family:var(--mono); font-size:9px; color:var(--muted); display:none; margin-left:6px;"></span>
-    </div>
+    <div class="app-title">Retro Collection Tracker <span style="color:var(--muted); font-weight:400; font-size:0.85em;">v1.8.2</span></div>
   </div>
   <div class="header-right">
     <div class="month-tabs" id="monthTabs" style="display:none"></div>
@@ -3263,12 +3398,33 @@ textarea { resize: vertical; min-height: 72px; }
       <div class="app-tab-slider" id="appTabSlider"></div>
       <button class="app-tab active" id="tab-dashboard" onclick="switchTab('dashboard')">Dashboard</button>
       <button class="app-tab" id="tab-calendar" onclick="switchTab('calendar')">Calendar</button>
-      <button class="app-tab" id="tab-owned" onclick="switchTab('owned')">Game Tracking</button>
-      <button class="app-tab" id="tab-completed" onclick="switchTab('completed')">Completion Tracking</button>
-      <button class="app-tab" id="tab-series" onclick="switchTab('series')">Series Tracking</button>
+      <button class="app-tab" id="tab-owned" onclick="switchTab('owned')">Games</button>
+      <button class="app-tab" id="tab-completed" onclick="switchTab('completed')">Completions</button>
+      <button class="app-tab" id="tab-series" onclick="switchTab('series')">Series</button>
     </div>
   </div>
 </header>
+
+<!-- CONTEXT BAR: per-tab actions live here, not in the header -->
+<div class="context-bar" id="contextBar">
+  <div class="context-actions">
+    <button class="btn-add" id="btnAddPost" onclick="openModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg>Add post</button>
+    <button class="btn-add" id="btnNewIdea" onclick="openIdeaModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>New post idea</button>
+    <button class="btn-add" id="btnShotList" onclick="openShotListModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg>Shot list</button>
+    <button class="btn-add" id="btnIcs" onclick="exportCalendarIcs()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Export .ics</button>
+    <a href="https://gamefaqs.gamespot.com/games/thisdayingaming" target="_blank" rel="noopener" class="btn-add" id="lnkOnThisDay" style="display:none; text-decoration:none;">On This Day ↗</a>
+    <button class="btn-add" id="btnCalendarSettings" onclick="openCalendarSettingsModal()" title="Calendar settings" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="7" cy="18" r="2" fill="var(--surface)"/></svg>Settings</button>
+    <button class="btn-add" id="btnAddOwned" onclick="openGTModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg>Add game</button>
+    <button class="btn-add" id="btnAddSeries" onclick="openAddSeriesModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg>Add series</button>
+    <button class="btn-add" id="btnAddCompleted" onclick="openCompletedModal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg>Log completion</button>
+    <button class="btn-add" id="btnCheckUpdates" onclick="importSeedGames()" style="display:none" title="Import any new titles added to the seed list"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>Check for updates</button>
+    <span id="seedImportResult" style="font-family:var(--mono); font-size:10px; color:var(--muted); display:none; margin-left:6px;"></span>
+    <button class="btn-add" id="btnCheckCompletedUpdates" onclick="importSeedCompleted()" style="display:none" title="Import any new titles added to the completion seed list"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>Check for updates</button>
+    <span id="ct-seed-result" style="font-family:var(--mono); font-size:10px; color:var(--muted); display:none; margin-left:6px;"></span>
+  </div>
+  <button class="btn-add theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Toggle dark mode"></button>
+</div>
+
 
 <!-- LEGEND -->
 <div class="tracking-view" id="viewDashboard">
@@ -3308,7 +3464,8 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="tracking-view" id="viewOwned" style="display:none">
   <div class="gt-toolbar">
     <div class="gt-console-tabs" id="gtConsoleTabs"></div>
-    <button class="btn-add" id="btnGTSettings" onclick="openGTSettingsModal()" title="Game Tracking settings" style="flex-shrink:0">⚙ Settings</button>
+    <input type="text" class="tracking-search" id="gtSearch" placeholder="Search this console..." oninput="renderGTView()" style="max-width:190px; flex-shrink:0">
+    <button class="btn-add" id="btnGTSettings" onclick="openGTSettingsModal()" title="Game Tracking settings" style="flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="7" cy="18" r="2" fill="var(--surface)"/></svg>Settings</button>
   </div>
   <div class="gt-columns" id="gtColumns">
     <div class="gt-column">
@@ -3353,9 +3510,10 @@ textarea { resize: vertical; min-height: 72px; }
       <button class="ct-sort-btn" id="series-sort-owned" onclick="setSeriesSort('owned')">Most owned</button>
       <button class="ct-sort-btn" id="series-sort-pct" onclick="setSeriesSort('pct')">% complete</button>
       <button class="ct-sort-btn" id="series-sort-missing" onclick="setSeriesSort('missing')">Most missing</button>
+      <button class="ct-sort-btn" id="series-sort-priority" onclick="setSeriesSort('priority')">Priority</button>
     </div>
     <span class="tracking-count" id="seriesCount"></span>
-    <button class="btn-add" id="btnSeriesSettings" onclick="openSeriesSettingsModal()" title="Series Tracking settings" style="margin-left:auto">⚙ Settings</button>
+    <button class="btn-add" id="btnSeriesSettings" onclick="openSeriesSettingsModal()" title="Series Tracking settings" style="margin-left:auto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="7" cy="18" r="2" fill="var(--surface)"/></svg>Settings</button>
   </div>
   <div class="series-global-legend">
     <div class="series-legend-item"><div class="series-status-dot owned"></div>OWNED</div>
@@ -3393,7 +3551,7 @@ textarea { resize: vertical; min-height: 72px; }
       <button class="ct-sort-btn" data-col="platform">Platform</button>
     </div>
     <span class="tracking-count" id="completedCount"></span>
-    <button class="btn-add" id="btnCompletedSettings" onclick="openCompletedSettingsModal()" title="Completion Tracking settings" style="margin-left:auto">⚙ Settings</button>
+    <button class="btn-add" id="btnCompletedSettings" onclick="openCompletedSettingsModal()" title="Completion Tracking settings" style="margin-left:auto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="7" cy="18" r="2" fill="var(--surface)"/></svg>Settings</button>
   </div>
   <div class="ct-grid" id="completedBody"></div>
 </div>
@@ -3501,6 +3659,19 @@ textarea { resize: vertical; min-height: 72px; }
   </div>
 </div>
 
+<!-- SHOT LIST MODAL -->
+<div class="modal-overlay" id="shotListModalOverlay">
+  <div class="modal" style="width:540px">
+    <h2>SHOT LIST — NEXT 30 DAYS</h2>
+    <div class="linked-box-subtitle" style="margin-bottom:10px">Everything to photograph in one session, grouped by platform. Unmatched posts likely need digital or archive assets instead.</div>
+    <div id="shotListBody"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="copyShotList(this)">Copy list</button>
+      <button class="btn-save" onclick="closeShotListModal()">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- CALENDAR SETTINGS MODAL -->
 <div class="modal-overlay" id="calendarSettingsModalOverlay">
   <div class="modal" style="width:480px">
@@ -3508,6 +3679,16 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="linked-box">
       <div class="linked-box-title">Cloud sync</div>
       <div id="syncStatus" style="font-family:var(--mono); font-size:10px; color:var(--muted); line-height:1.5; min-height:14px;">Auto-syncing…</div>
+      <div id="kvWriteInfo" style="font-family:var(--mono); font-size:10px; color:var(--muted); margin-top:4px;"></div>
+    </div>
+    <div class="linked-box">
+      <div class="linked-box-title">Backup</div>
+      <div class="linked-box-subtitle">Download everything — posts, games, completions, series, Amiibo — as one file, or restore a previous backup.</div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn-add" onclick="exportAllData()">Export backup</button>
+        <button class="btn-add" onclick="document.getElementById('importAllFile').click()">Import backup</button>
+        <input type="file" id="importAllFile" accept="application/json" style="display:none" onchange="importAllData(this.files[0])">
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-save" onclick="closeCalendarSettingsModal()">Done</button>
@@ -3632,15 +3813,6 @@ textarea { resize: vertical; min-height: 72px; }
   <div class="calendar-wrap" id="calendarWrap"></div>
 
   <!-- SUGGESTIONS SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <span class="sidebar-title">Plan a Post</span>
-    </div>
-
-    <button class="sidebar-fetch-btn" onclick="openModal()">+ Add post</button>
-    <button class="sidebar-secondary-btn" onclick="openIdeaModal()">💡 I need a new post</button>
-    <a href="https://gamefaqs.gamespot.com/games/thisdayingaming" target="_blank" rel="noopener" class="sidebar-secondary-btn" style="display:block; text-align:center; text-decoration:none; box-sizing:border-box; margin-bottom:0;">On This Day in Gaming ↗</a>
-  </aside>
 </div>
 
 <!-- POPOVER -->
@@ -3656,10 +3828,12 @@ textarea { resize: vertical; min-height: 72px; }
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2>ADD POST</h2>
+    <div class="modal-section">Scheduling</div>
     <div class="form-group">
       <label>Post date</label>
       <input type="date" id="f-date">
     </div>
+    <div class="modal-section">Content</div>
     <div class="form-group">
       <label>Select a game (optional — fills in the title below)</label>
       <input type="text" id="f-game-select" list="f-game-options" placeholder="Type to search your owned games..." oninput="applyGameSelectToTitle()">
@@ -3688,6 +3862,7 @@ textarea { resize: vertical; min-height: 72px; }
       <input type="text" id="f-planner" placeholder="e.g. #Mario or #Nintendo" autocomplete="off" oninput="showHashtagSuggestions('f-planner', 'ht-sug-planner')">
       <div class="ht-suggestions" id="ht-sug-planner"></div>
     </div>
+    <div class="modal-section">Performance</div>
     <div class="form-group">
       <label><input type="checkbox" id="f-published" style="width:auto" onchange="toggleMetricsVisibility()"> Already published to Instagram</label>
     </div>
@@ -3701,6 +3876,7 @@ textarea { resize: vertical; min-height: 72px; }
       </div>
     </div>
     <div class="modal-actions">
+      <button class="btn-cancel" onclick="copyInstagramBlock(this)" title="Copy caption + separator + hashtags in house format">Copy for Instagram</button>
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" id="modal-save-btn" onclick="savePost()">Add to calendar</button>
     </div>
@@ -3740,9 +3916,35 @@ textarea { resize: vertical; min-height: 72px; }
 <script>
 // ── AUTO CLOUD SYNC ───────────────────────────────────────────────────────────
 const SYNC_WORKER = 'https://retro-sync.rtgraves.workers.dev';
+// Shared secret — the Worker must check this header and reject anything without it.
+const SYNC_TOKEN = 'rt-790fc72c9c3d3a71c648dd2590b0b6a9';
+const SYNC_HEADERS = { 'X-Auth-Token': SYNC_TOKEN };
+
+// ── KV write budget: the free tier allows 1,000 puts/day (resets 00:00 UTC).
+// Data syncs always go through (data safety first) but are counted; cover
+// pushes stop at the cap and queue for the next day instead of 429ing.
+const KV_WRITE_CAP = 800; // headroom for data syncs under the 1,000 limit
+function kvWritesToday() {
+  try {
+    const o = JSON.parse(localStorage.getItem('retro_kv_writes') || 'null');
+    const today = new Date().toISOString().slice(0, 10); // UTC, same as CF reset
+    return (o && o.date === today) ? o.count : 0;
+  } catch(e) { return 0; }
+}
+function bumpKvWrites() {
+  const today = new Date().toISOString().slice(0, 10);
+  let o = null;
+  try { o = JSON.parse(localStorage.getItem('retro_kv_writes') || 'null'); } catch(e) {}
+  if (!o || o.date !== today) o = { date: today, count: 0 };
+  o.count++;
+  try { localStorage.setItem('retro_kv_writes', JSON.stringify(o)); } catch(e) {}
+}
 
 let _syncTimer = null;
 let _syncBusy = false;
+let _syncFirstDirty = null;   // when the current batch of edits started
+let _lastPushHash = null;     // payload hash of the last successful push
+let _lastPushOk = 0;          // timestamp of the last successful push
 
 function setSyncStatus(msg, state = 'idle') {
   // state: idle | syncing | ok | error
@@ -3760,8 +3962,14 @@ function setSyncStatus(msg, state = 'idle') {
 
 // Debounced auto-push: fires 2s after last data change
 function scheduleSync() {
+  // KV free tier allows 1,000 writes/day. A 2s debounce during a batch
+  // planning session burned through that; 20s idle / 90s max-wait doesn't.
+  if (!_syncFirstDirty) _syncFirstDirty = Date.now();
   if (_syncTimer) clearTimeout(_syncTimer);
-  _syncTimer = setTimeout(doSyncPush, 2000);
+  const elapsed = Date.now() - _syncFirstDirty;
+  const wait = elapsed >= 90000 ? 0 : Math.min(20000, 90000 - elapsed);
+  _syncTimer = setTimeout(doSyncPush, wait);
+  setSyncStatus('Changes pending…', 'syncing');
 }
 
 async function doSyncPush() {
@@ -3779,14 +3987,44 @@ async function doSyncPush() {
       amiiboData:  JSON.parse(localStorage.getItem('retro_amiibo_data')  || 'null'),
       coverShapes: JSON.parse(localStorage.getItem('retro_cover_shapes') || 'null'),
     };
+    const body = JSON.stringify(payload);
+    // Identical to what's already in the cloud? Skip the write entirely.
+    let _h = 5381;
+    for (let i = 0; i < body.length; i++) _h = ((_h * 33) ^ body.charCodeAt(i)) >>> 0;
+    const _pendingHash = body.length + ':' + _h;
+    if (_pendingHash === _lastPushHash) {
+      _syncFirstDirty = null;
+      setSyncStatus(`Synced ${new Date(_lastPushOk).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`, 'ok');
+      return;
+    }
+    // Don't clobber newer cloud data from a stale tab — check before pushing.
+    // Skip when this tab pushed within the last 5 minutes: the cloud can't be
+    // newer than us, and it saves a KV read per push.
+    if (Date.now() - _lastPushOk > 300000) try {
+      const chk = await fetch(`${SYNC_WORKER}/sync`, { headers: SYNC_HEADERS, signal: AbortSignal.timeout(4000) });
+      if (chk.ok) {
+        const remote = await chk.json();
+        const remoteTime = remote.savedAt ? new Date(remote.savedAt).getTime() : 0;
+        const localTime = parseInt(localStorage.getItem('retro_sync_ts') || '0');
+        if (remoteTime > localTime) {
+          setSyncStatus('Cloud has newer data — refresh this page before editing', 'error');
+          return;
+        }
+      }
+    } catch(e) { /* offline or slow — fall through and attempt the push */ }
     const res = await fetch(`${SYNC_WORKER}/sync`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json', ...SYNC_HEADERS },
+      body,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const t = new Date(data.savedAt);
+    try { localStorage.setItem('retro_sync_ts', t.getTime().toString()); } catch(e) {}
+    _lastPushOk = Date.now();
+    _lastPushHash = _pendingHash;
+    _syncFirstDirty = null;
+    bumpKvWrites();
     setSyncStatus(`Synced ${t.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`, 'ok');
   } catch(e) {
     setSyncStatus(`Sync failed — ${e.message}`, 'error');
@@ -3803,7 +4041,7 @@ async function initSync() {
   }
   setSyncStatus('Loading…', 'syncing');
   try {
-    const res = await fetch(`${SYNC_WORKER}/sync`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${SYNC_WORKER}/sync`, { headers: SYNC_HEADERS, signal: AbortSignal.timeout(5000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data.savedAt) { setSyncStatus('Ready', 'idle'); return; }
@@ -4375,9 +4613,17 @@ function hidePopover() {
 function deletePost(id, e) {
   e.stopPropagation();
   hidePopover();
-  posts = posts.filter(p => p.id !== id);
+  const idx = posts.findIndex(p => p.id === id);
+  if (idx < 0) return;
+  const removed = posts[idx];
+  posts.splice(idx, 1);
   savePosts();
   render();
+  showUndoToast(`Deleted “${removed.title}”`, () => {
+    posts.splice(Math.min(idx, posts.length), 0, removed);
+    savePosts();
+    render();
+  });
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
@@ -4418,7 +4664,10 @@ function dateToIso(year, month, day) {
 function applyGameSelectToTitle() {
   const val = document.getElementById('f-game-select').value.trim();
   if (!val) return;
-  const match = ownedGames.find(g => g.title.toLowerCase() === val.toLowerCase());
+  const match = ownedGames.find(g => {
+    const full = g.console ? `${g.title} (${g.console})` : g.title;
+    return full.toLowerCase() === val.toLowerCase() || g.title.toLowerCase() === val.toLowerCase();
+  });
   if (match) document.getElementById('f-title').value = match.title;
 }
 
@@ -4432,7 +4681,10 @@ function populateGameSelectOptions() {
   if (!dl) return;
   dl.innerHTML = ownedGames
     .filter(g => g.column === 'owned')
-    .map(g => `<option value="${escHtml(g.title)}"></option>`)
+    .map(g => {
+      const label = g.console ? `${g.title} (${g.console})` : g.title;
+      return `<option value="${escHtml(label)}"></option>`;
+    })
     .join('');
 }
 
@@ -5110,6 +5362,11 @@ function switchTab(tab) {
   document.getElementById('monthTabs').style.display = 'none'; // always hidden in header now
   document.getElementById('monthNav').classList.toggle('hidden', !isCalendar);
   document.getElementById('btnCalendarSettings').style.display = isCalendar ? '' : 'none';
+  document.getElementById('btnAddPost').style.display = isCalendar ? '' : 'none';
+  document.getElementById('btnNewIdea').style.display = isCalendar ? '' : 'none';
+  document.getElementById('btnShotList').style.display = isCalendar ? '' : 'none';
+  document.getElementById('btnIcs').style.display = isCalendar ? '' : 'none';
+  document.getElementById('lnkOnThisDay').style.display = isCalendar ? '' : 'none';
   document.getElementById('btnAddOwned').style.display = isOwned ? '' : 'none';
   document.getElementById('btnAddSeries').style.display = isSeries ? '' : 'none';
   document.getElementById('btnAddCompleted').style.display = isCompleted ? '' : 'none';
@@ -5605,6 +5862,36 @@ function buildContentGaps() {
   </div>`;
 }
 
+function buildPriorityHuntingList() {
+  const items = [];
+  seriesData.forEach((series, sIdx) => {
+    const isHighPrioritySeries = series.priority === 'high' || series.priority === 'medium';
+    series.games.forEach((game, gIdx) => {
+      const status = getSeriesStatus(game);
+      if (status.status === 'owned') return;
+      if (!game.priorityBuy && !isHighPrioritySeries) return;
+      items.push({ game, series, status, sIdx, gIdx, seriesPriority: series.priority || null });
+    });
+  });
+
+  // Sort: series priority first (high > medium), then per-game flags
+  const rank = { high: 0, medium: 1, low: 2, null: 3 };
+  items.sort((a, b) => (rank[a.seriesPriority] ?? 3) - (rank[b.seriesPriority] ?? 3));
+
+  if (!items.length) return '';
+  return `<div class="dash-section dash-wide">
+    <div class="dash-section-title">🎯 PRIORITY HUNTING LIST</div>
+    ${items.slice(0, 12).map(({ game, series, status }) => `
+      <div class="dash-row${status.status === 'tobuy' ? ' type-release' : ''}">
+        <div class="dash-row-body">
+          <div class="dash-row-title">${escHtml(game.title)}${game.priorityBuy ? ' ★' : ''}</div>
+          <div class="dash-row-meta">${escHtml(series.name)} · ${status.status === 'tobuy' ? 'In To Buy' : 'Missing'}</div>
+        </div>
+      </div>`).join('')}
+    ${items.length > 12 ? `<div class="dash-empty" style="padding:8px 0">+${items.length-12} more — see Series Tracking</div>` : ''}
+  </div>`;
+}
+
 function renderDashboard() {
   const el = document.getElementById('dashboardBody');
   if (!el) return;
@@ -5639,6 +5926,14 @@ function renderDashboard() {
         ${weekPosts.length ? weekPosts.map(p => dashUpcomingRow(p)).join('') : `<div class="dash-empty">Nothing planned in the next 7 days.</div>`}
       </div>
       <div class="dash-section">
+        <div class="dash-section-title">🎮 PLAY NEXT</div>
+        ${(() => {
+          const picks = playNextSuggestions();
+          if (!picks.length) return `<div class="dash-empty">No owned-but-unfinished games tied to upcoming anniversary or franchise posts.</div>`;
+          return picks.map(s => `<div class="shot-row"><span>${escHtml(s.game.title)} <span class="shot-meta">(${escHtml(s.game.console)})</span></span><span class="shot-meta">→ “${escHtml(s.post.title)}” · ${postDateObj(s.post).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span></div>`).join('');
+        })()}
+      </div>
+      <div class="dash-section">
         <div class="dash-section-title">✍️ AWAITING CAPTION${awaitingCaption.length ? `<span class="dash-count-badge">${awaitingCaption.length}</span>` : ''}</div>
         ${awaitingCaption.length
           ? `<button class="ct-sort-btn" style="margin-bottom:10px" onclick="copyAwaitingCaptionList(this)">📋 Copy list</button>${awaitingCaption.map(p => dashPostRow(p)).join('')}`
@@ -5650,7 +5945,8 @@ function renderDashboard() {
         ${unpostedCompletions.map(dashCompletedRow).join('')}
         ${!attentionCount ? `<div class="dash-empty">All caught up.</div>` : ''}
       </div>
-      ${buildContentGaps()}`;
+      ${buildContentGaps()}
+      ${buildPriorityHuntingList()}`;
     return;
   }
 
@@ -8282,15 +8578,60 @@ function importSeedGames() {
 // (single game save, or each iteration of the bulk fetch).
 async function pushCoverToWorker(key, dataUrl) {
   if (!dataUrl || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  if (kvWritesToday() >= KV_WRITE_CAP) { queueCoverPush(key); return; }
   try {
-    await fetch(`${SYNC_WORKER}/covers/${key}`, {
+    const r = await fetch(`${SYNC_WORKER}/covers/${key}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'text/plain', ...SYNC_HEADERS },
       body: dataUrl,
     });
+    if (r.ok) bumpKvWrites();
+    else queueCoverPush(key); // 429 from the limit, or auth mismatch — retry later
   } catch(e) {
-    console.warn('[cover-sync] push failed for', key, e);
+    console.warn('[cover-sync] push failed for', key, '— queued for retry', e);
+    queueCoverPush(key);
   }
+}
+
+function queueCoverPush(key) {
+  try {
+    const q = JSON.parse(localStorage.getItem('retro_cover_push_queue') || '[]');
+    if (!q.includes(key)) {
+      q.push(key);
+      localStorage.setItem('retro_cover_push_queue', JSON.stringify(q));
+    }
+  } catch(e) {}
+}
+
+// On load: push any covers that were held back by the daily budget, oldest
+// first, stopping again if today's budget runs out.
+async function drainCoverPushQueue() {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  let q = [];
+  try { q = JSON.parse(localStorage.getItem('retro_cover_push_queue') || '[]'); } catch(e) { return; }
+  if (!q.length) return;
+  console.log(`[cover-sync] ${q.length} queued cover push(es) waiting`);
+  const remaining = [];
+  let pushed = 0;
+  for (const key of q) {
+    if (kvWritesToday() >= KV_WRITE_CAP) { remaining.push(key); continue; }
+    let dataUrl = null;
+    try { dataUrl = await CoverStore.get(key); } catch(e) {}
+    if (!dataUrl) continue; // cover no longer exists locally — drop it
+    try {
+      const r = await fetch(`${SYNC_WORKER}/covers/${key}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'text/plain', ...SYNC_HEADERS },
+        body: dataUrl,
+      });
+      if (r.ok) { bumpKvWrites(); pushed++; }
+      else remaining.push(key);
+    } catch(e) {
+      remaining.push(key);
+    }
+  }
+  try { localStorage.setItem('retro_cover_push_queue', JSON.stringify(remaining)); } catch(e) {}
+  if (pushed) console.log(`[cover-sync] drained ${pushed} queued push(es), ${remaining.length} still waiting`);
 }
 
 // On load: asks the Worker what covers it has, downloads any that are missing
@@ -8298,7 +8639,7 @@ async function pushCoverToWorker(key, dataUrl) {
 async function pullMissingCovers() {
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
   try {
-    const res = await fetch(`${SYNC_WORKER}/covers`, { signal: AbortSignal.timeout(8000) });
+    const res = await fetch(`${SYNC_WORKER}/covers`, { headers: SYNC_HEADERS, signal: AbortSignal.timeout(8000) });
     if (!res.ok) return;
     const serverKeys = await res.json(); // e.g. ['gt_1', 'gt_2', 'ct_5']
     const localAll = await CoverStore.getAll();
@@ -8307,12 +8648,12 @@ async function pullMissingCovers() {
     if (!missing.length) return;
 
     console.log(`[cover-sync] pulling ${missing.length} missing cover(s) from Worker`);
-    for (const key of missing) {
+    const pullOne = async (key) => {
       try {
-        const r = await fetch(`${SYNC_WORKER}/covers/${key}`, { signal: AbortSignal.timeout(10000) });
-        if (!r.ok) continue;
+        const r = await fetch(`${SYNC_WORKER}/covers/${key}`, { headers: SYNC_HEADERS, signal: AbortSignal.timeout(10000) });
+        if (!r.ok) return;
         const dataUrl = await r.text();
-        if (!dataUrl.startsWith('data:image/')) continue;
+        if (!dataUrl.startsWith('data:image/')) return;
         await CoverStore.set(key, dataUrl);
 
         // Hydrate into memory immediately so the current render reflects it
@@ -8328,6 +8669,10 @@ async function pullMissingCovers() {
       } catch(e) {
         console.warn('[cover-sync] pull failed for', key, e);
       }
+    };
+    // Four at a time — sequential was painfully slow on a fresh device
+    for (let i = 0; i < missing.length; i += 4) {
+      await Promise.all(missing.slice(i, i + 4).map(pullOne));
     }
 
     // Re-render once after batch pull
@@ -8461,6 +8806,7 @@ async function bulkFetchCovers() {
         const result = await fetchCoverArtForTitle(game.title);
         dataUrl = result.dataUrl;
       }
+      if (dataUrl) dataUrl = await compressCover(dataUrl);
       if (dataUrl) {
         game.coverArt = dataUrl;
         await CoverStore.set('gt_' + game.id, dataUrl);
@@ -8500,6 +8846,12 @@ function closeGTSettingsModal() {
 }
 
 function openCalendarSettingsModal() {
+  const info = document.getElementById('kvWriteInfo');
+  if (info) {
+    let queued = 0;
+    try { queued = (JSON.parse(localStorage.getItem('retro_cover_push_queue') || '[]')).length; } catch(e) {}
+    info.textContent = `KV writes today: ${kvWritesToday()} of ~1000 (soft cap ${KV_WRITE_CAP})` + (queued ? ` · ${queued} cover push(es) queued for tomorrow` : '');
+  }
   document.getElementById('calendarSettingsModalOverlay').classList.add('open');
 }
 function closeCalendarSettingsModal() {
@@ -8728,8 +9080,10 @@ function renderGTView() {
 
   const cols = { owned: [], tobuy: [], nicetohave: [] };
 
+  const gtQuery = (document.getElementById('gtSearch')?.value || '').trim().toLowerCase();
   const games = ownedGames.filter(g =>
-    g.console === currentConsole
+    g.console === currentConsole &&
+    (!gtQuery || g.title.toLowerCase().includes(gtQuery))
   );
 
   games.forEach(g => { if (cols[g.column]) cols[g.column].push(g); });
@@ -8910,17 +9264,22 @@ function moveGame(id, toColumn) {
 }
 
 function deleteGTGame(id) {
-  if (!confirm('Remove this game?')) return;
-  ownedGames = ownedGames.filter(g => g.id !== id);
+  const idx = ownedGames.findIndex(g => g.id === id);
+  if (idx < 0) return;
+  const removed = ownedGames[idx];
+  const restore = []; // snapshots of every reference list we strip, for undo
+  ownedGames.splice(idx, 1);
   expandedGames.delete(id);
   // Clean up any dangling references to the deleted game from other games' related items
   // and compilation contents (handles both "game:<id>" refs and older bare numeric ids)
   ownedGames.forEach(g => {
     if (g.relatedItems) {
-      g.relatedItems = g.relatedItems.filter(ref => ref !== id && ref !== `game:${id}`);
+      const after = g.relatedItems.filter(ref => ref !== id && ref !== `game:${id}`);
+      if (after.length !== g.relatedItems.length) { restore.push({ o: g, key: 'relatedItems', val: g.relatedItems }); g.relatedItems = after; }
     }
     if (g.compilationItems) {
-      g.compilationItems = g.compilationItems.filter(ref => ref !== `game:${id}`);
+      const after = g.compilationItems.filter(ref => ref !== `game:${id}`);
+      if (after.length !== g.compilationItems.length) { restore.push({ o: g, key: 'compilationItems', val: g.compilationItems }); g.compilationItems = after; }
     }
   });
   // Also clean up any Amiibo "related games" pointing at the deleted game
@@ -8928,6 +9287,7 @@ function deleteGTGame(id) {
   amiiboData.forEach(series => {
     series.items.forEach(item => {
       if (item.relatedGames && item.relatedGames.includes(`game:${id}`)) {
+        restore.push({ o: item, key: 'relatedGames', val: item.relatedGames });
         item.relatedGames = item.relatedGames.filter(ref => ref !== `game:${id}`);
         amiiboChanged = true;
       }
@@ -8936,6 +9296,13 @@ function deleteGTGame(id) {
   if (amiiboChanged) saveAmiiboData();
   persistOwned();
   renderGTView();
+  showUndoToast(`Removed “${removed.title}”`, () => {
+    ownedGames.splice(Math.min(idx, ownedGames.length), 0, removed);
+    restore.forEach(r => { r.o[r.key] = r.val; });
+    saveAmiiboData();
+    persistOwned();
+    renderGTView();
+  });
 }
 
 // ── PLATFORM MODAL ROWS ───────────────────────────────────────────────────────
@@ -9109,8 +9476,11 @@ function saveGTGame() {
   if (savedGameId !== undefined) {
     syncRelatedItemsForGame(savedGameId, oldRelatedItems, [...modalRelatedRows]);
     if (coverArt) {
-      CoverStore.set('gt_' + savedGameId, coverArt).catch(e => console.warn('[CoverStore] set failed:', e));
-      pushCoverToWorker('gt_' + savedGameId, coverArt);
+      compressCover(coverArt).then(cc => {
+        if (cc !== coverArt) { const g = ownedGames.find(g => g.id === savedGameId); if (g) g.coverArt = cc; }
+        CoverStore.set('gt_' + savedGameId, cc).catch(e => console.warn('[CoverStore] set failed:', e));
+        pushCoverToWorker('gt_' + savedGameId, cc);
+      });
     }
   }
 
@@ -9461,17 +9831,63 @@ function saveSeriesData() {
 let seriesData = loadSeriesData();
 
 function getSeriesStatus(seriesGame) {
-  // Check across ALL console tabs in ownedGames
   const titleLower = seriesGame.title.toLowerCase();
-  const match = ownedGames.find(g => g.title.toLowerCase() === titleLower);
-  if (!match) return { status: 'missing', platforms: [] };
-  if (match.column === 'owned') {
-    const ownedPlatforms = (match.platforms || []).filter(p => p.owned).map(p => p.name);
-    return { status: 'owned', platforms: ownedPlatforms, gameId: match.id };
+  const matches = ownedGames.filter(g => g.title.toLowerCase() === titleLower);
+  if (!matches.length) return { status: 'missing', platforms: [], perPlatform: {} };
+
+  // Build per-platform status across all matching owned game records
+  const perPlatform = {};
+  (seriesGame.platforms || []).forEach(platform => {
+    let best = 'missing';
+    matches.forEach(match => {
+      const plt = (match.platforms || []).find(p => p.name === platform);
+      if (plt && plt.owned && match.column === 'owned') best = 'owned';
+      else if (match.column === 'tobuy' && best !== 'owned') best = 'tobuy';
+      else if (match.column === 'nicetohave' && best === 'missing') best = 'nicetohave';
+    });
+    perPlatform[platform] = best;
+  });
+
+  // Overall status = best single status across all platforms/matches
+  const ownedMatch = matches.find(m => m.column === 'owned');
+  if (ownedMatch) {
+    const ownedPlatforms = (ownedMatch.platforms || []).filter(p => p.owned).map(p => p.name);
+    return { status: 'owned', platforms: ownedPlatforms, gameId: ownedMatch.id, coverArt: ownedMatch.coverArt || null, perPlatform };
   }
-  if (match.column === 'tobuy') return { status: 'tobuy', platforms: [], gameId: match.id };
-  return { status: 'nicetohave', platforms: [], gameId: match.id };
+  const tobuyMatch = matches.find(m => m.column === 'tobuy');
+  if (tobuyMatch) return { status: 'tobuy', platforms: [], gameId: tobuyMatch.id, perPlatform };
+  return { status: 'nicetohave', platforms: [], gameId: matches[0].id, perPlatform };
 }
+
+function seriesLastPosted(series) {
+  const dates = series.games
+    .map(g => {
+      const match = ownedGames.find(og => og.title.toLowerCase() === g.title.toLowerCase() && og.lastPosted);
+      return match ? match.lastPosted : null;
+    })
+    .filter(Boolean)
+    .sort()
+    .reverse();
+  return dates[0] || null;
+}
+
+function cycleSeriesPriority(seriesIdx) {
+  const s = seriesData[seriesIdx];
+  const cycle = [null, 'high', 'medium', 'low'];
+  const cur = cycle.indexOf(s.priority || null);
+  s.priority = cycle[(cur + 1) % cycle.length];
+  saveSeriesData();
+  renderSeriesView();
+}
+
+function toggleGamePriority(seriesIdx, gameIdx) {
+  const g = seriesData[seriesIdx].games[gameIdx];
+  g.priorityBuy = !g.priorityBuy;
+  saveSeriesData();
+  renderSeriesView();
+}
+
+
 
 // Track which series rows are open
 const openSeries = new Set();
@@ -9505,10 +9921,14 @@ function renderSeriesView() {
   });
 
   const sorted = [...withStats].sort((a, b) => {
-    if (seriesSort === 'alpha')   return a.series.name.localeCompare(b.series.name);
-    if (seriesSort === 'owned')   return b.ownedCount - a.ownedCount;
-    if (seriesSort === 'pct')     return b.pct - a.pct;
-    if (seriesSort === 'missing') return b.missing - a.missing;
+    if (seriesSort === 'alpha')    return a.series.name.localeCompare(b.series.name);
+    if (seriesSort === 'owned')    return b.ownedCount - a.ownedCount;
+    if (seriesSort === 'pct')      return b.pct - a.pct;
+    if (seriesSort === 'missing')  return b.missing - a.missing;
+    if (seriesSort === 'priority') {
+      const rank = { high:0, medium:1, low:2, null:3 };
+      return (rank[a.series.priority||null]??3) - (rank[b.series.priority||null]??3);
+    }
     return 0;
   });
 
@@ -9532,19 +9952,50 @@ function renderSeriesView() {
 
     // Game rows in expanded panel
     const gameRows = statuses.map((g, gi) => {
-      const ownedPlatformText = g.status === 'owned' && g.platforms && g.platforms.length > 0
-        ? g.platforms.join(', ') : '';
       const dotCls = g.status === 'owned' ? 'owned'
                    : g.status === 'tobuy' ? 'tobuy'
                    : g.status === 'nicetohave' ? 'nicetohave'
                    : 'missing';
+
+      // Platform badges — show each platform the game exists on with its status
+      const badgeHtml = Object.keys(g.perPlatform || {}).length
+        ? Object.entries(g.perPlatform).map(([plt, st]) =>
+            `<span class="series-platform-badge ${st}">${escHtml(plt)}</span>`
+          ).join('')
+        : (g.status === 'owned' && g.platforms && g.platforms.length
+            ? g.platforms.map(p => `<span class="series-platform-badge owned">${escHtml(p)}</span>`).join('')
+            : '');
+
+      // Cover art — only for owned games with a loaded cover
+      const coverHtml = g.coverArt
+        ? `<img class="series-game-cover" src="${escHtml(g.coverArt)}" alt="">`
+        : '';
+
+      // Priority flag — only for non-owned games (missing/tobuy/nicetohave)
+      const isPriority = g.priorityBuy === true;
+      const priorityBtn = g.status !== 'owned'
+        ? `<button class="series-game-priority${isPriority?' active':''}" title="${isPriority?'Remove priority':'Mark as priority to buy'}" onclick="event.stopPropagation();toggleGamePriority(${originalIdx},${gi})">★</button>`
+        : '';
+
       return `<div class="series-game-row" data-game-index="${gi}">
+        ${coverHtml}
         <div class="series-status-dot ${dotCls}" style="flex-shrink:0"></div>
-        <span class="series-game-title ${g.status === 'missing' ? 'missing' : ''}">${escHtml(g.title)}</span>
-        ${ownedPlatformText ? `<span class="series-game-platforms">${escHtml(ownedPlatformText)}</span>` : ''}
+        <span class="series-game-title${g.status==='missing'?' missing':''}">${escHtml(g.title)}</span>
+        <div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:auto">${badgeHtml}</div>
+        ${priorityBtn}
         <button class="series-game-remove" title="Remove from series" data-series-idx="${originalIdx}" data-game-idx="${gi}">✕</button>
       </div>`;
     }).join('');
+
+    // Priority badge + last posted for the series header
+    const priority = series.priority || null;
+    const priorityLabels = { high: '🔴 HIGH', medium: '🟡 MED', low: '🟢 LOW' };
+    const priorityBadge = `<button class="series-priority-badge ${priority||'none'}" title="Cycle priority" onclick="event.stopPropagation();cycleSeriesPriority(${originalIdx})">${priority ? priorityLabels[priority] : '○ PRIORITY'}</button>`;
+
+    const lastPosted = seriesLastPosted(series);
+    const lastPostedHtml = lastPosted
+      ? `<span class="series-last-posted">Last posted ${lastPosted}</span>`
+      : '';
 
     // Logo column — shows image or a ✦ placeholder; entire col is clickable
     const logoHtml = logoUrl
@@ -9561,7 +10012,8 @@ function renderSeriesView() {
           onclick="event.stopPropagation()">
       </div>
       <div class="series-add-game-row" style="column-span:all">
-        <input type="text" class="series-add-game-input" placeholder="Add game title..." onclick="event.stopPropagation()">
+        <input type="text" class="series-add-game-input" placeholder="Add game title or pick from collection..." list="series-game-datalist-${originalIdx}" onclick="event.stopPropagation()">
+        <datalist id="series-game-datalist-${originalIdx}">${ownedGames.filter(g=>g.column==='owned').map(g=>`<option value="${escHtml(g.console?g.title+' ('+g.console+')':g.title)}"></option>`).join('')}</datalist>
         <button class="series-add-game-btn" data-series-idx="${originalIdx}" onclick="event.stopPropagation();addSeriesGame(this)">+ ADD</button>
       </div>`;
 
@@ -9576,14 +10028,15 @@ function renderSeriesView() {
           <div class="series-card-top">
             <span class="series-row-name">${escHtml(series.name)}</span>
             <div style="display:flex;align-items:center;gap:6px">
+              ${priorityBadge}
               <button class="gt-action-btn del" onclick="event.stopPropagation();deleteSeries(${originalIdx})" title="Remove series">✕</button>
-              <span class="series-card-arrow">▶</span>
             </div>
           </div>
           <div class="series-card-meta">
             <div class="series-pip-strip">${pips}</div>
             <div class="series-row-bar"><div class="series-row-bar-fill" style="width:${pctRounded}%"></div></div>
             <span class="series-row-count">${ownedCount}/${series.games.length}</span>
+            ${lastPostedHtml}
           </div>
         </div>
       </div>
@@ -9654,7 +10107,10 @@ function addSeriesGame(btn) {
   const sIdx = parseInt(btn.dataset.seriesIdx);
   const row = btn.closest('.series-row');
   const input = row.querySelector('.series-add-game-input');
-  const title = input.value.trim();
+  let title = input.value.trim();
+  if (!title) return;
+  // Strip "(Console)" suffix if picked from the owned-games datalist
+  title = title.replace(/\s*\([^)]+\)$/, '').trim();
   if (!title) return;
   seriesData[sIdx].games.push({ title, platforms: [] });
   saveSeriesData();
@@ -9761,8 +10217,11 @@ function saveCompleted() {
   }
 
   if (savedCtId !== undefined && cover) {
-    CoverStore.set('ct_' + savedCtId, cover).catch(e => console.warn('[CoverStore] set failed:', e));
-    pushCoverToWorker('ct_' + savedCtId, cover);
+    compressCover(cover).then(cc => {
+      if (cc !== cover) { const g = completedGames.find(g => g.id === savedCtId); if (g) g.cover = cc; }
+      CoverStore.set('ct_' + savedCtId, cc).catch(e => console.warn('[CoverStore] set failed:', e));
+      pushCoverToWorker('ct_' + savedCtId, cc);
+    });
   }
 
   try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
@@ -9771,11 +10230,21 @@ function saveCompleted() {
   populatePlatformFilter('completedPlatformFilter', completedGames);
   renderCompletedYearTabs();
   renderCompletedTable();
+  showUndoToast(`Removed “${_removed.title}”`, () => {
+    completedGames.splice(Math.min(_idx, completedGames.length), 0, _removed);
+    try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
+    scheduleSync();
+    populatePlatformFilter('completedPlatformFilter', completedGames);
+    renderCompletedYearTabs();
+    renderCompletedTable();
+  });
 }
 
 function deleteCompleted(id) {
-  if (!confirm('Remove this completion log?')) return;
-  completedGames = completedGames.filter(g => g.id !== id);
+  const _idx = completedGames.findIndex(g => g.id === id);
+  if (_idx < 0) return;
+  const _removed = completedGames[_idx];
+  completedGames.splice(_idx, 1);
   try { localStorage.setItem('retro_completed', JSON.stringify(completedGames.map(g => { const {cover, ...rest} = g; return rest; }))); } catch(e) {}
   scheduleSync();
   populatePlatformFilter('completedPlatformFilter', completedGames);
@@ -10619,10 +11088,249 @@ document.addEventListener('click', e => {
 });
 
 
+
+// ══ v1.8 ═══════════════════════════════════════════════════════════════════
+
+// ── Toast with optional undo ──
+let _toastTimer = null, _toastUndoFn = null;
+function showUndoToast(msg, undoFn) {
+  const el = document.getElementById('undoToast');
+  document.getElementById('undoToastMsg').textContent = msg;
+  document.getElementById('undoToastBtn').style.display = undoFn ? '' : 'none';
+  _toastUndoFn = undoFn || null;
+  el.style.display = 'flex';
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(hideToast, 8000);
+}
+function showToast(msg) { showUndoToast(msg, null); }
+function hideToast() {
+  document.getElementById('undoToast').style.display = 'none';
+  _toastUndoFn = null;
+}
+function undoToastAction() {
+  if (_toastUndoFn) { const fn = _toastUndoFn; _toastUndoFn = null; fn(); }
+  hideToast();
+}
+
+// ── Dark theme ──
+const THEME_ICON_MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 13A8.5 8.5 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>';
+const THEME_ICON_SUN  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+function updateThemeIcon() {
+  const btn = document.getElementById('btnTheme');
+  if (btn) btn.innerHTML = document.documentElement.dataset.theme === 'dark' ? THEME_ICON_SUN : THEME_ICON_MOON;
+}
+function initTheme() {
+  try { if (localStorage.getItem('retro_theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch(e) {}
+  updateThemeIcon();
+}
+function toggleTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  if (dark) delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = 'dark';
+  try { localStorage.setItem('retro_theme', dark ? 'light' : 'dark'); } catch(e) {}
+  updateThemeIcon();
+}
+
+// ── Full backup: export / import everything ──
+const BACKUP_KEYS = ['retro_posts','retro_owned','retro_completed','retro_legend','retro_series','retro_series_logos','retro_amiibo_data','retro_cover_shapes'];
+function exportAllData() {
+  const out = { app: 'retro-collection-tracker', version: '1.8.0', exportedAt: new Date().toISOString(), data: {} };
+  BACKUP_KEYS.forEach(k => {
+    try { const v = localStorage.getItem(k); if (v != null) out.data[k] = JSON.parse(v); } catch(e) {}
+  });
+  const blob = new Blob([JSON.stringify(out)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `retro-tracker-backup-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup downloaded (covers stay in cloud sync)');
+}
+function importAllData(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let obj;
+    try { obj = JSON.parse(reader.result); } catch(e) { showToast('That file isn\u2019t valid JSON'); return; }
+    if (!obj || obj.app !== 'retro-collection-tracker' || !obj.data) { showToast('Not a Retro Tracker backup file'); return; }
+    if (!confirm(`Replace ALL current data with this backup from ${obj.exportedAt ? obj.exportedAt.slice(0,10) : 'unknown date'}? This can\u2019t be undone.`)) return;
+    BACKUP_KEYS.forEach(k => {
+      if (obj.data[k] !== undefined) {
+        try { localStorage.setItem(k, JSON.stringify(obj.data[k])); } catch(e) {}
+      }
+    });
+    // Stamp as newest so the cloud pull on reload doesn't overwrite the restore
+    try { localStorage.setItem('retro_sync_ts', Date.now().toString()); } catch(e) {}
+    location.reload();
+  };
+  reader.readAsText(file);
+}
+
+// ── Copy caption + hashtags in house format from the post modal ──
+function copyInstagramBlock(btn) {
+  const caption = (document.getElementById('f-caption').value || '').trim();
+  const tags = (document.getElementById('f-tags').value || '').trim();
+  if (!caption && !tags) { showToast('Nothing to copy \u2014 caption and hashtags are empty'); return; }
+  const block = `${caption}\n-/-/-\n${tags}`;
+  navigator.clipboard.writeText(block).then(() => {
+    const count = (tags.match(/#[^\s#]+/g) || []).length;
+    if (count !== 5) showToast(`Copied \u2014 but heads up: ${count} hashtag${count === 1 ? '' : 's'} (house style is 5)`);
+    else showToast('Copied in house format \u2713');
+  }).catch(() => showToast('Couldn\u2019t access the clipboard'));
+}
+
+// ── ICS export: planned posts \u2192 phone calendar ──
+function icsEscape(s) {
+  return String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+}
+function exportCalendarIcs() {
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//rtgraves//retro-tracker//EN', 'X-WR-CALNAME:Retro IG Content'];
+  let count = 0;
+  posts.forEach(p => {
+    const d = postDateObj(p);
+    if (isNaN(d) || p.published === true) return;
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), day = String(d.getDate()).padStart(2, '0');
+    const next = new Date(d.getTime() + 86400000);
+    const y2 = next.getFullYear(), m2 = String(next.getMonth() + 1).padStart(2, '0'), d2 = String(next.getDate()).padStart(2, '0');
+    lines.push('BEGIN:VEVENT');
+    lines.push(`UID:post-${p.id}@retro.rtgraves.com`);
+    lines.push(`DTSTART;VALUE=DATE:${y}${m}${day}`);
+    lines.push(`DTEND;VALUE=DATE:${y2}${m2}${d2}`);
+    lines.push(`SUMMARY:${icsEscape('IG: ' + p.title)}`);
+    if (p.caption || p.tags) lines.push(`DESCRIPTION:${icsEscape((p.caption || '') + (p.tags ? '\n' + p.tags : ''))}`);
+    lines.push('END:VEVENT');
+    count++;
+  });
+  lines.push('END:VCALENDAR');
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'retro-content-calendar.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${count} unpublished post${count === 1 ? '' : 's'} \u2014 open the file to add to your calendar`);
+}
+
+// ── Shot list: next 30 days of unpublished posts, grouped by platform ──
+let _shotListText = '';
+function openShotListModal() {
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const horizon = new Date(start.getTime() + 30 * 86400000);
+  const upcoming = posts
+    .filter(p => { const d = postDateObj(p); return !isNaN(d) && d >= start && d <= horizon && p.published !== true; })
+    .sort((a, b) => postDateObj(a) - postDateObj(b));
+
+  const groups = {};
+  upcoming.forEach(p => {
+    // Longest owned-game title contained in the post title wins
+    let best = null;
+    const pt = p.title.toLowerCase();
+    ownedGames.forEach(g => {
+      if (g.column !== 'owned') return;
+      if (pt.includes(g.title.toLowerCase()) && (!best || g.title.length > best.title.length)) best = g;
+    });
+    const platform = best ? best.console : 'Unmatched \u2014 digital or archive';
+    (groups[platform] = groups[platform] || []).push({ post: p, game: best });
+  });
+
+  const el = document.getElementById('shotListBody');
+  const platforms = Object.keys(groups).sort((a, b) => a.startsWith('Unmatched') ? 1 : b.startsWith('Unmatched') ? -1 : a.localeCompare(b));
+  if (!platforms.length) {
+    el.innerHTML = `<div class="dash-empty">Nothing unpublished in the next 30 days.</div>`;
+    _shotListText = '';
+  } else {
+    let text = 'SHOT LIST \u2014 next 30 days\n';
+    el.innerHTML = platforms.map(plat => {
+      text += `\n${plat.toUpperCase()}\n`;
+      const rows = groups[plat].map(({ post, game }) => {
+        const d = postDateObj(post).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        text += `  [ ] ${game ? game.title : post.title} \u2014 ${d} \u00b7 ${post.title}\n`;
+        return `<div class="shot-row"><span>\u2610 ${escHtml(game ? game.title : post.title)}</span><span class="shot-meta">${d} \u00b7 ${escHtml(post.title)}</span></div>`;
+      }).join('');
+      return `<div class="shot-group-title">${escHtml(plat)} <span style="text-transform:none">\u00b7 ${groups[plat].length}</span></div>` + rows;
+    }).join('');
+    _shotListText = text;
+  }
+  document.getElementById('shotListModalOverlay').classList.add('open');
+}
+function closeShotListModal() {
+  document.getElementById('shotListModalOverlay').classList.remove('open');
+}
+function copyShotList(btn) {
+  if (!_shotListText) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(_shotListText).then(() => showToast('Shot list copied \u2713')).catch(() => showToast('Couldn\u2019t access the clipboard'));
+}
+
+// ── Play Next: owned-but-unfinished games tied to upcoming anniversary/franchise posts ──
+function playNextSuggestions(weeksAhead = 10, max = 5) {
+  const now = new Date();
+  const horizon = new Date(now.getTime() + weeksAhead * 7 * 86400000);
+  const upcoming = posts
+    .filter(p => { const d = postDateObj(p); return !isNaN(d) && d > now && d <= horizon && (p.type === 'anniversary' || p.type === 'franchise'); })
+    .sort((a, b) => postDateObj(a) - postDateObj(b));
+  const completedSet = new Set(completedGames.map(c => (c.title || '').toLowerCase()));
+  const out = [], seen = new Set();
+  upcoming.forEach(p => {
+    const pt = p.title.toLowerCase();
+    seriesData.forEach(s => {
+      if (!s.name || !pt.includes(s.name.toLowerCase())) return;
+      (s.games || []).forEach(sg => {
+        const t = (sg.title || '').toLowerCase();
+        if (!t || completedSet.has(t) || seen.has(t)) return;
+        const owned = ownedGames.find(g => g.column === 'owned' && g.title.toLowerCase() === t);
+        if (!owned) return;
+        seen.add(t);
+        out.push({ game: owned, post: p });
+      });
+    });
+  });
+  return out.slice(0, max);
+}
+
+initTheme();
+
+// Longer debounce means a bigger window where edits only live locally —
+// flush immediately whenever the tab is backgrounded or closed.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && _syncTimer) { clearTimeout(_syncTimer); _syncTimer = null; doSyncPush(); }
+});
+window.addEventListener('pagehide', () => {
+  if (_syncTimer) { clearTimeout(_syncTimer); _syncTimer = null; doSyncPush(); }
+});
+
+// ── Cover compression: full-res Wikipedia box art was 0.5–2MB per game ──
+// Thumbnails render at well under 480px, so store/upload at that size instead.
+async function compressCover(dataUrl) {
+  try {
+    if (!dataUrl || !dataUrl.startsWith('data:image/')) return dataUrl;
+    if (dataUrl.length < 160000) return dataUrl; // ~120KB — already small enough
+    const img = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = rej;
+      i.src = dataUrl;
+    });
+    const MAX = 480;
+    const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    const out = c.toDataURL('image/jpeg', 0.82);
+    return out.length < dataUrl.length ? out : dataUrl;
+  } catch(e) {
+    return dataUrl;
+  }
+}
+
 render();
 applyLegendSettings();
 // Load covers from IndexedDB, then pull any missing ones from the Worker
-initCovers().then(() => pullMissingCovers());
+initCovers().then(() => pullMissingCovers()).then(() => drainCoverPushQueue());
 try {
   const t = localStorage.getItem('retro_tab');
   if (t && t !== 'dashboard') switchTab(t);
@@ -10654,5 +11362,6 @@ initSync();
   </div>
 </div>
 
+<div class="toast" id="undoToast" style="display:none"><span id="undoToastMsg"></span><button id="undoToastBtn" onclick="undoToastAction()">Undo</button></div>
 </body>
 </html>
